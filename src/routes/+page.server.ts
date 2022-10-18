@@ -32,7 +32,7 @@ export const actions: Actions = {
 			});
 		}
 
-		throw redirect(303, '/dashboard');
+		throw redirect(303, '/profile');
 	},
 
 	signout: async (event) => {
