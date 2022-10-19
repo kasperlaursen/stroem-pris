@@ -1,8 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
+	content: ['./src/**/*.{html,js,svelte,ts}'],
+	theme: {
+		extend: {}
+	},
+	plugins: [
+		require('@tailwindcss/typography'),
+		require('@tailwindcss/forms')({
+			strategy: 'base' // Generate global styles
+		})
+	]
+};

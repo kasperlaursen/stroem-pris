@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Input from '$lib/components/Input.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import type { ActionData } from '.svelte-kit/types/src/routes/$types';
 
 	export let form: ActionData;
@@ -15,6 +17,6 @@
 {/if}
 
 <form method="POST" action="?/setPassword">
-	<input name="password" type="password" />
-	<button>Set Password</button>
+	<Input name="password" type="password" placeholder="Password" />
+	<Button>Set Password</Button>
 </form>

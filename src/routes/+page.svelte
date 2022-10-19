@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Input from '$lib/components/Input.svelte';
+	import Button from '$lib/components/Button.svelte';
 	import type { ActionData } from '.svelte-kit/types/src/routes/$types';
 
 	export let form: ActionData;
@@ -16,20 +18,20 @@
 	{/if}
 
 	<form method="POST" action="?/signin">
-		<input name="email" type="email" />
-		<input name="password" type="password" />
-		<button>Log in</button>
+		<Input name="email" type="email" placeholder="Email" />
+		<Input name="password" type="password" placeholder="Password" />
+		<Button>Log in</Button>
 	</form>
 {:else}
 	<pre>{JSON.stringify($page.data.session, null, 4)}</pre>
 	<h1>Welcome {$page.data.session.user.email}</h1>
 	<p>I am logged in!</p>
 	<form method="POST" action="?/signout">
-		<button>Log out</button>
+		<Button>Log out</Button>
 	</form>
 {/if}
 
 <form method="POST" action="?/reset">
-	<input name="email" type="email" />
-	<button>reset password</button>
+	<Input name="email" type="email" placeholder="Email" />
+	<Button>Reset password</Button>
 </form>
