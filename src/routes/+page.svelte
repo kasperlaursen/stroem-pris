@@ -8,7 +8,7 @@
 </script>
 
 {#if !$page.data.session}
-	<h1>I am not logged in</h1>
+	<h1>You are not logged in</h1>
 
 	{#if form && form?.error}
 		<div>
@@ -25,7 +25,7 @@
 {:else}
 	<pre>{JSON.stringify($page.data.session, null, 4)}</pre>
 	<h1>Welcome {$page.data.session.user.email}</h1>
-	<p>I am logged in!</p>
+	<p>You are logged in!</p>
 	<form method="POST" action="?/signout">
 		<Button>Log out</Button>
 	</form>

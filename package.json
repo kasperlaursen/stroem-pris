@@ -17,6 +17,7 @@
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@tailwindcss/typography": "^0.5.7",
+		"@types/luxon": "^3.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
 		"autoprefixer": "^10.4.12",
@@ -37,6 +38,7 @@
 	"type": "module",
 	"dependencies": {
 		"@supabase/auth-helpers-sveltekit": "^0.8.2",
-		"@tailwindcss/forms": "^0.5.3"
+		"@tailwindcss/forms": "^0.5.3",
+		"luxon": "^3.0.4"
 	}
 }
