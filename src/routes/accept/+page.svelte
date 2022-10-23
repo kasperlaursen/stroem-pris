@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Input from '$lib/components/Input.svelte';
-	import Button from '$lib/components/Button.svelte';
+	import Button from '$lib/components/base/Button.svelte';
 	import type { ActionData } from '.svelte-kit/types/src/routes/$types';
 
 	export let form: ActionData;
