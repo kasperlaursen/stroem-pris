@@ -78,7 +78,7 @@ export const GET: RequestHandler = async (event) => {
 		.from('spot')
 		.select('price_dkk, price_area, hour_utc')
 		.gte('hour_utc', fromDate.toUTC())
-		.lte('hour_utc', toDate.toUTC());
+		.lt('hour_utc', toDate.toUTC());
 	console.log('🗄 ', `Got ${tableData?.length} data point from Database, expected ${hourDiff}`);
 
 	if (tableData && tableData?.length > hourDiff) {
