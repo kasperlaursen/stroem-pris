@@ -14,7 +14,7 @@ export const getSpotDataFromDataService = async (
 	from: DateTime,
 	to: DateTime,
 	area: PriceAreas
-) => {
+): Promise<SpotResponse> => {
 	const start = from.toFormat('yyyy-MM-dd');
 	const end = to.toFormat('yyyy-MM-dd');
 	console.log(`🌍 Calling API for data between: ${start} AND ${end}`);
@@ -23,6 +23,5 @@ export const getSpotDataFromDataService = async (
 	const request = await fetch(
 		`${APIBase}?start=${start}&end=${end}&filter={"PriceArea":"${area}"}`
 	);
-	const data: SpotResponse = await request.json();
-	return data;
+	return await request.json();
 };
