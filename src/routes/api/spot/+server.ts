@@ -42,12 +42,13 @@ export const GET: RequestHandler = async (event) => {
 		day: Number(toDateSplit[2])
 	}, { zone: 'Europe/Copenhagen' });
 
+
 	// Validate dates are valid
 	if (!fromDate.isValid) {
-		throw error(400, 'Invalid from date: Must be valid date of the format "yyyy-mm-dd" 🤨');
+		throw error(400, '🤨 Invalid from date: Must be valid date of the format "yyyy-mm-dd"');
 	}
 	if (!toDate.isValid) {
-		throw error(400, 'Invalid to date: Must be valid date of the format "yyyy-mm-dd" 🤨');
+		throw error(400, '🤨 Invalid to date: Must be valid date of the format "yyyy-mm-dd"');
 	}
 
 	// Get hours between from and to dates
@@ -55,25 +56,23 @@ export const GET: RequestHandler = async (event) => {
 
 	// Make sure to date is after from date
 	if (fromDate > toDate || !hourDiff || hourDiff < 0) {
-		throw error(400, 'The "to" date must be later than the "from" date 🤦‍♂️');
+		throw error(400, '🤦‍♂️ The "to" date must be later than the "from" date');
 	}
 
 	// Return error of DB limit is exceeded
 	if (hourDiff > LIMIT) {
-		throw error(400, `Period is too long, requested ${hourDiff} datapoints, but no more than ${LIMIT} is allowed 😞`);
-
+		throw error(400, `😞 Period is too long, requested ${hourDiff} datapoints, but no more than ${LIMIT} is allowed`);
 	}
 
 	// Call supabase to check if data is available for the date range
 	const { supabaseClient } = await getSupabase(event);
 	const { data: tableData } = await supabaseClient.from('spot').select('price_dkk, price_area, hour_utc')
-		.eq('price_area', priceArea)
-		.gte('hour_utc', fromDate)
-		.lte("hour_utc", toDate);
-	console.log("🗄", `Got ${tableData?.length} datapoints from Database, expected ${hourDiff}`);
+		.gte('hour_utc', fromDate.toUTC())
+		.lte("hour_utc", toDate.toUTC());
+	console.log("🗄 ", `Got ${tableData?.length} datapoints from Database, expected ${hourDiff}`);
 
 	if (tableData && tableData?.length > hourDiff) {
-		throw error(500, 'Found more datapoints than expected 😱');
+		throw error(500, '😱 Found more datapoints than expected');
 	}
 
 	// If we miss datapoints
@@ -105,7 +104,7 @@ export const GET: RequestHandler = async (event) => {
 			.select('price_dkk, price_area, hour_utc');
 
 		if (dbError) {
-			throw error(500, `DB insert failed with: ${JSON.stringify(dbError)} 😢`);
+			throw error(500, `😢 DB insert failed with: ${JSON.stringify(dbError)}`);
 		}
 		// Return data
 		console.log("✅", `Returning ${[...safeTableData, ...insertedData].length} datapoints from api and database`);
