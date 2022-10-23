@@ -18,7 +18,7 @@
 		a.hourUTC.setZone('Europe/Copenhagen').hour > b.hourUTC.setZone('Europe/Copenhagen').hour
 			? 1
 			: -1
-	);
+	).reverse();
 
 	const isToday: boolean =
 		sortedData[0].hourUTC.setZone('Europe/Copenhagen').day === DateTime.now().day;
