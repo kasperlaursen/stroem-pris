@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Input from '$lib/components/Input.svelte';
+	import Input from '$lib/components/base/Input.svelte';
 	import Button from '$lib/components/base/Button.svelte';
 	import type { ActionData } from '.svelte-kit/types/src/routes/$types';
 
