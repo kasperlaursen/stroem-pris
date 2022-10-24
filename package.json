@@ -39,6 +39,8 @@
 	"dependencies": {
 		"@supabase/auth-helpers-sveltekit": "^0.8.2",
 		"@tailwindcss/forms": "^0.5.3",
-		"luxon": "^3.0.4"
+		"chart.js": "^3.9.1",
+		"luxon": "^3.0.4",
+		"svelte-chartjs": "^3.0.1"
 	}
 }

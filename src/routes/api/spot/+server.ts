@@ -72,11 +72,16 @@ export const GET: RequestHandler = async (event) => {
 		);
 	}
 
+	console.log(
+		'💸',
+		`Requested data between ${fromDateParam} and ${toDateParam}, for area ${priceArea}`
+	);
 	// Call supabase to check if data is available for the date range
 	const { supabaseClient } = await getSupabase(event);
 	const { data: tableData } = await supabaseClient
 		.from('spot')
 		.select('price_dkk, price_area, hour_utc')
+		.eq('price_area', priceArea)
 		.gte('hour_utc', fromDate.toUTC())
 		.lt('hour_utc', toDate.toUTC());
 	console.log('🗄 ', `Got ${tableData?.length} data point from Database, expected ${hourDiff}`);
