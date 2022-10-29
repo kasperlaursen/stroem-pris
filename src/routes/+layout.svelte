@@ -20,7 +20,7 @@
 </script>
 
 <Header />
-<div class="p-4">
+<div class="mx-auto my-4 container">
 	<slot />
 </div>
 <Footer />

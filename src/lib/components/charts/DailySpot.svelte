@@ -36,7 +36,7 @@
 	Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
 
 	const data: ChartData<'bar'> = {
-		labels: sortedData.map(({ hourUTC, priceDKK }) => {
+		labels: sortedData.map(({ hourUTC }) => {
 			const hour = hourUTC.setZone('Europe/Copenhagen').hour;
 			return `kl: ${`0${hour}`.slice(-2)} - ${`0${hour + 1}`.slice(-2)}`;
 		}),
@@ -44,7 +44,6 @@
 			{
 				label: 'kr/kwh DKK',
 				data: sortedData.map(({ priceDKK }) => Number((priceDKK / 1000).toFixed(2))),
-
 				backgroundColor: dataColors
 			}
 		]
@@ -60,7 +59,7 @@
 			datalabels: {
 				anchor: 'end',
 				align: 'end',
-				formatter: (value, context) => {
+				formatter: (value) => {
 					return `${value} kr`;
 				}
 			}
