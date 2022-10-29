@@ -10,15 +10,18 @@
 		LinearScale,
 		type ChartData
 	} from 'chart.js';
+	import ChartDataLabels from 'chartjs-plugin-datalabels';
 	import type { PriceAreas } from '$lib/energidataservice/types';
 	import { DateTime } from 'luxon';
 
 	export let spotData: { priceArea: PriceAreas; priceDKK: number; hourUTC: DateTime }[] = [];
-	const sortedData = spotData.sort((a, b) =>
-		a.hourUTC.setZone('Europe/Copenhagen').hour > b.hourUTC.setZone('Europe/Copenhagen').hour
-			? 1
-			: -1
-	).reverse();
+	const sortedData = spotData
+		.sort((a, b) =>
+			a.hourUTC.setZone('Europe/Copenhagen').hour > b.hourUTC.setZone('Europe/Copenhagen').hour
+				? 1
+				: -1
+		)
+		.reverse();
 
 	const isToday: boolean =
 		sortedData[0].hourUTC.setZone('Europe/Copenhagen').day === DateTime.now().day;
@@ -30,19 +33,17 @@
 		  )
 		: 'rgba(148, 163, 184, 1)';
 
-	Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+	Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
 
 	const data: ChartData<'bar'> = {
 		labels: sortedData.map(({ hourUTC, priceDKK }) => {
 			const hour = hourUTC.setZone('Europe/Copenhagen').hour;
-			return `kl: ${`0${hour}`.slice(-2)} - ${`0${hour + 1}`.slice(-2)}    ${(
-				priceDKK / 1000
-			).toFixed(2)} øre/kwh`;
+			return `kl: ${`0${hour}`.slice(-2)} - ${`0${hour + 1}`.slice(-2)}`;
 		}),
 		datasets: [
 			{
-				label: 'øre/kwh DKK',
-				data: sortedData.map(({ priceDKK }) => priceDKK / 1000),
+				label: 'kr/kwh DKK',
+				data: sortedData.map(({ priceDKK }) => Number((priceDKK / 1000).toFixed(2))),
 
 				backgroundColor: dataColors
 			}
@@ -50,4 +51,19 @@
 	};
 </script>
 
-<Bar {data} options={{ responsive: true, indexAxis: 'y' }} />
+<Bar
+	{data}
+	options={{
+		responsive: true,
+		indexAxis: 'y',
+		plugins: {
+			datalabels: {
+				anchor: 'end',
+				align: 'end',
+				formatter: (value, context) => {
+					return `${value} kr`;
+				}
+			}
+		}
+	}}
+/>
