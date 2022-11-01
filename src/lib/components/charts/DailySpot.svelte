@@ -13,6 +13,7 @@
 	import ChartDataLabels from 'chartjs-plugin-datalabels';
 	import type { PriceAreas } from '$lib/energidataservice/types';
 	import { DateTime } from 'luxon';
+	import { theme } from '$lib/stores';
 
 	export let spotData: { priceArea: PriceAreas; priceDKK: number; hourUTC: DateTime }[] = [];
 	const sortedData = spotData
@@ -51,9 +52,12 @@
 </script>
 
 <Bar
+	class="chart"
 	{data}
 	options={{
+		color: $theme === 'light' ? '#000' : '#fff',
 		responsive: true,
+		maintainAspectRatio: true,
 		indexAxis: 'y',
 		plugins: {
 			datalabels: {
@@ -66,3 +70,9 @@
 		}
 	}}
 />
+
+<style>
+	.chart {
+		min-height: 500px;
+	}
+</style>

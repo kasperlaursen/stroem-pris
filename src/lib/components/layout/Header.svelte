@@ -2,9 +2,12 @@
 	import { page } from '$app/stores';
 	import Button from '$lib/components/base/Button.svelte';
 	import Link from '$lib/components/base/Link.svelte';
+	import ThemeToggle from './ThemeToggle.svelte';
 </script>
 
-<header class="flex gap-4 items-center w-full p-4 border-b border-slate-200 bg-white">
+<header
+	class="flex gap-4 items-center w-full p-4 border-b bg-white dark:bg-neutral-800 dark:text-slate-50 text-slate-600 dark:border-neutral-700 border-slate-200"
+>
 	<h1
 		class="text-2xl uppercase font-extrabold md:text-3xl lg:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-500"
 	>
@@ -20,4 +23,5 @@
 			<Button color="SECONDARY">Log out</Button>
 		</form>
 	{/if}
+	<ThemeToggle />
 </header>
