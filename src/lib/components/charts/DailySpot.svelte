@@ -52,22 +52,22 @@
 		{
 			label: 'ElAfgift kr/kwh DKK',
 			data: elafgifter,
-			backgroundColor: getDataColors(13, 148, 136)
+			backgroundColor: getDataColors(52, 211, 153)
 		},
 		{
 			label: 'Transmissionstarif kr/kwh DKK',
 			data: transmissiionstariffer,
-			backgroundColor: getDataColors(202, 138, 4)
+			backgroundColor: getDataColors(34, 211, 238)
 		},
 		{
 			label: 'Systemtarif kr/kwh DKK',
 			data: systemtariffer,
-			backgroundColor: getDataColors(2, 132, 199)
+			backgroundColor: getDataColors(129, 140, 248)
 		},
 		{
 			label: 'Moms kr/kwh DKK',
 			data: moms,
-			backgroundColor: getDataColors(192, 38, 211)
+			backgroundColor: getDataColors(251, 191, 36)
 		},
 		{
 			label: 'Spot kr/kwh DKK',
