@@ -51,28 +51,33 @@
 	};
 </script>
 
-<Bar
-	class="chart"
-	{data}
-	options={{
-		color: $theme === 'light' ? '#000' : '#fff',
-		responsive: true,
-		maintainAspectRatio: true,
-		indexAxis: 'y',
-		plugins: {
-			datalabels: {
-				anchor: 'end',
-				align: 'end',
-				formatter: (value) => {
-					return `${value} kr`;
+<div class="overflow-hidden">
+	<Bar
+		class="chart"
+		{data}
+		style="max-width: 100%; height: 700px"
+		options={{
+			animation: false,
+			color: $theme === 'light' ? '#000' : '#fff',
+			responsive: true,
+			maintainAspectRatio: false,
+			indexAxis: 'y',
+			plugins: {
+				datalabels: {
+					anchor: 'end',
+					align: 'end',
+					formatter: (value) => {
+						return `${value} kr`;
+					}
 				}
 			}
-		}
-	}}
-/>
+		}}
+	/>
+</div>
 
 <style>
 	.chart {
-		min-height: 500px;
+		height: 500px;
+		width: 500px;
 	}
 </style>
