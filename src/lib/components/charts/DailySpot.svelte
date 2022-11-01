@@ -26,28 +26,65 @@
 
 	const isToday: boolean =
 		sortedData[0].hourUTC.setZone('Europe/Copenhagen').day === DateTime.now().day;
-	const dataColors = isToday
-		? sortedData.map(({ hourUTC }) =>
-				hourUTC.setZone('Europe/Copenhagen').hour < DateTime.now().hour
-					? 'rgba(148, 163, 184, 0.5)'
-					: 'rgba(148, 163, 184, 1)'
-		  )
-		: 'rgba(148, 163, 184, 1)';
+
+	const getDataColors = (r: number, g: number, b: number) =>
+		isToday
+			? sortedData.map(({ hourUTC }) =>
+					hourUTC.setZone('Europe/Copenhagen').hour < DateTime.now().hour
+						? `rgb(${r}, ${g}, ${b}, 0.5)`
+						: `rgba(${r}, ${g}, ${b}, 1)`
+			  )
+			: `rgba(${r}, ${g}, ${b}, 1)`;
 
 	Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
+
+	const elafgifter = sortedData.map(() => 0.723);
+	const transmissiionstariffer = sortedData.map(() => 0.049);
+	const systemtariffer = sortedData.map(() => 0.061);
+	const spot = sortedData.map(({ priceDKK }) => Number((priceDKK / 1000).toFixed(2)));
+	const moms = sortedData.map(
+		(value, index) =>
+			(elafgifter[index] + transmissiionstariffer[index] + systemtariffer[index] + spot[index]) *
+			0.25
+	);
+
+	const datasets = [
+		{
+			label: 'ElAfgift kr/kwh DKK',
+			data: elafgifter,
+			backgroundColor: getDataColors(13, 148, 136)
+		},
+		{
+			label: 'Transmissionstarif kr/kwh DKK',
+			data: transmissiionstariffer,
+			backgroundColor: getDataColors(202, 138, 4)
+		},
+		{
+			label: 'Systemtarif kr/kwh DKK',
+			data: systemtariffer,
+			backgroundColor: getDataColors(2, 132, 199)
+		},
+		{
+			label: 'Moms kr/kwh DKK',
+			data: moms,
+			backgroundColor: getDataColors(192, 38, 211)
+		},
+		{
+			label: 'Spot kr/kwh DKK',
+			data: spot,
+			backgroundColor: getDataColors(148, 163, 184)
+		}
+	];
+
+	const getTotalByIndex = (index: number) =>
+		datasets.reduce((previous, current) => current.data[index] + previous, 0);
 
 	const data: ChartData<'bar'> = {
 		labels: sortedData.map(({ hourUTC }) => {
 			const hour = hourUTC.setZone('Europe/Copenhagen').hour;
 			return `kl: ${`0${hour}`.slice(-2)} - ${`0${hour + 1}`.slice(-2)}`;
 		}),
-		datasets: [
-			{
-				label: 'kr/kwh DKK',
-				data: sortedData.map(({ priceDKK }) => Number((priceDKK / 1000).toFixed(2))),
-				backgroundColor: dataColors
-			}
-		]
+		datasets: datasets
 	};
 </script>
 
@@ -57,6 +94,14 @@
 		{data}
 		style="max-width: 100%; height: 700px"
 		options={{
+			scales: {
+				x: {
+					stacked: true
+				},
+				y: {
+					stacked: true
+				}
+			},
 			animation: false,
 			color: $theme === 'light' ? '#000' : '#fff',
 			responsive: true,
@@ -66,8 +111,12 @@
 				datalabels: {
 					anchor: 'end',
 					align: 'end',
-					formatter: (value) => {
-						return `${value} kr`;
+					formatter: (value, context) => {
+						if (context.dataset.label?.includes('Spot')) {
+							return `${getTotalByIndex(context.dataIndex).toFixed(2)} kr`;
+						} else {
+							return '';
+						}
 					}
 				}
 			}
