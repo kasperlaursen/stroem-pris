@@ -6,7 +6,7 @@
 </script>
 
 <header
-	class="flex gap-4 items-center w-full p-4 border-b bg-white dark:bg-neutral-800 dark:text-slate-50 text-slate-600 dark:border-neutral-700 border-slate-200"
+	class="flex gap-4 items-center w-full p-4  bg-transparent  dark:text-slate-50 text-slate-600 "
 >
 	<h1
 		class="text-2xl uppercase font-extrabold md:text-3xl lg:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-500"

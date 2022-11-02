@@ -10,7 +10,7 @@
     ${space ? 'p-4 gap-4' : ''}
     grid
     w-full
-    rounded-lg
+    rounded-2xl
     border
     bg-white
     border-gray-200
