@@ -1,6 +1,7 @@
 import type { PriceAreas } from './../lib/energidataservice/types';
 import { DateTime } from 'luxon';
 import type { PageLoad } from './$types';
+import type { FeeKeys } from '$lib/types/fees';
 
 export const load: PageLoad = async ({ fetch, url }) => {
 	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
@@ -19,5 +20,53 @@ export const load: PageLoad = async ({ fetch, url }) => {
 		hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
 	}));
 
-	return { spotToday, priceArea };
+	const feesResponse = await fetch(`/api/fees`);
+	const feesData = (await feesResponse.json()) as {
+		from: string;
+		key: FeeKeys;
+		value: number;
+	}[];
+
+	const feesToday: { [fee in FeeKeys]: number } = {
+		balancetarif: getCurrentFeeByDateAndKey(
+			feesData,
+			'balancetarif',
+			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
+		),
+		elafgift: getCurrentFeeByDateAndKey(
+			feesData,
+			'elafgift',
+			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
+		),
+		systemtarif: getCurrentFeeByDateAndKey(
+			feesData,
+			'systemtarif',
+			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
+		),
+		transmissionstarif: getCurrentFeeByDateAndKey(
+			feesData,
+			'transmissionstarif',
+			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
+		)
+	};
+
+	return { spotToday, priceArea, feesToday };
+};
+
+const getCurrentFeeByDateAndKey = (
+	feesData: {
+		from: string;
+		key: FeeKeys;
+		value: number;
+	}[],
+	feeKey: FeeKeys,
+	date: DateTime
+): number => {
+	return feesData
+		.filter(({ key, from }) => key === feeKey && DateTime.fromISO(from, { zone: 'utc' }) <= date)
+		.reduce(function (r, a) {
+			return DateTime.fromISO(r.from, { zone: 'utc' }) > DateTime.fromISO(a.from, { zone: 'utc' })
+				? r
+				: a;
+		}).value;
 };

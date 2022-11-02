@@ -14,8 +14,11 @@
 	import type { PriceAreas } from '$lib/energidataservice/types';
 	import { DateTime } from 'luxon';
 	import { theme } from '$lib/stores';
+	import type { FeeKeys } from '$lib/types/fees';
 
 	export let spotData: { priceArea: PriceAreas; priceDKK: number; hourUTC: DateTime }[] = [];
+	export let feeData: { [fee in FeeKeys]: number };
+
 	const sortedData = spotData
 		.sort((a, b) =>
 			a.hourUTC.setZone('Europe/Copenhagen').hour > b.hourUTC.setZone('Europe/Copenhagen').hour
@@ -38,9 +41,9 @@
 
 	Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
 
-	const elafgifter = sortedData.map(() => 0.723);
-	const transmissiionstariffer = sortedData.map(() => 0.049);
-	const systemtariffer = sortedData.map(() => 0.061);
+	const elafgifter = sortedData.map(() => feeData.elafgift / 100);
+	const transmissiionstariffer = sortedData.map(() => feeData.transmissionstarif / 100);
+	const systemtariffer = sortedData.map(() => feeData.systemtarif / 100);
 	const spot = sortedData.map(({ priceDKK }) => Number((priceDKK / 1000).toFixed(2)));
 	const moms = sortedData.map(
 		(value, index) =>

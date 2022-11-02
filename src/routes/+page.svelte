@@ -16,5 +16,5 @@
 			<Link color={data.priceArea === 'DK2' ? 'PRIMARY' : 'SECONDARY'} href="?area=DK2">DK2</Link>
 		</span>
 	</div>
-	<DailySpot spotData={data.spotToday} />
+	<DailySpot spotData={data.spotToday} feeData={data.feesToday} />
 </Card>
