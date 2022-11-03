@@ -20,12 +20,9 @@
 		Priserne i grafen er uden Nettarif (også kaldet Transport) da denne variere mellem netselskaber.
 		<br />
 		Du kan se hvilket netselskab du har på
-		<a
-			class="cursor-pointer text-sky-700 underline hover:text-sky-900"
-			href="https://www.danskenergi.dk/vejledning/nettilslutning/find-netselskab"
-		>
+		<Link href="https://www.danskenergi.dk/vejledning/nettilslutning/find-netselskab">
 			Danskenergi.dk
-		</a>
+		</Link>
 	</p>
 	<DailySpot spotData={data.spotToday} feeData={data.feesToday} />
 </Card>

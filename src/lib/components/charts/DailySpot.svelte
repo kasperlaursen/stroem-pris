@@ -15,6 +15,7 @@
 	import { DateTime } from 'luxon';
 	import { theme } from '$lib/stores';
 	import type { FeeKeys } from '$lib/types/fees';
+	import Link from '../base/Link.svelte';
 
 	export let spotData: { priceArea: PriceAreas; priceDKK: number; hourUTC: DateTime }[] = [];
 	export let feeData: { [fee in FeeKeys]: number };
