@@ -53,27 +53,27 @@
 
 	const datasets = [
 		{
-			label: 'ElAfgift kr/kwh DKK',
+			label: 'ElAfgift',
 			data: elafgifter,
 			backgroundColor: getDataColors(52, 211, 153)
 		},
 		{
-			label: 'Transmissionstarif kr/kwh DKK',
+			label: 'Transmissionstarif',
 			data: transmissiionstariffer,
 			backgroundColor: getDataColors(34, 211, 238)
 		},
 		{
-			label: 'Systemtarif kr/kwh DKK',
+			label: 'Systemtarif',
 			data: systemtariffer,
 			backgroundColor: getDataColors(129, 140, 248)
 		},
 		{
-			label: 'Moms kr/kwh DKK',
+			label: 'Moms',
 			data: moms,
 			backgroundColor: getDataColors(251, 191, 36)
 		},
 		{
-			label: 'Spot kr/kwh DKK',
+			label: 'Spot',
 			data: spot,
 			backgroundColor: getDataColors(148, 163, 184)
 		}
@@ -116,7 +116,7 @@
 					align: 'end',
 					formatter: (value, context) => {
 						if (context.dataset.label?.includes('Spot')) {
-							return `${getTotalByIndex(context.dataIndex).toFixed(2)} kr`;
+							return `${getTotalByIndex(context.dataIndex).toFixed(2)} kr/kwh`;
 						} else {
 							return '';
 						}
