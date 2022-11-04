@@ -121,7 +121,9 @@
 					callbacks: {
 						label: (context) => {
 							return `${(context.parsed.x * 100).toFixed(1)} øre/kwh`;
-						}
+						},
+						afterLabel: (context) =>
+							`Total: ${getTotalByIndex(context.dataIndex, data.datasets).toFixed(2)} kr/kwh`
 					}
 				},
 				datalabels: {
