@@ -5,9 +5,7 @@
 	import ThemeToggle from './ThemeToggle.svelte';
 </script>
 
-<header
-	class="flex gap-4 items-center w-full p-4  bg-transparent  dark:text-slate-50 text-slate-600 "
->
+<header class="flex gap-4 items-center w-full p-4  bg-transparent">
 	<h1
 		class="text-2xl uppercase font-extrabold md:text-3xl lg:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-500"
 	>

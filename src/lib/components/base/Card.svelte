@@ -15,8 +15,8 @@
     bg-white
     border-gray-200
     dark:textbg-slate-50
-    dark:bg-neutral-800
-    dark:border-neutral-700
+    dark:bg-neutral-900
+    dark:border-neutral-800
   `}
 >
 	<slot />
