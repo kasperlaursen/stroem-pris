@@ -13,6 +13,7 @@ export const GET: RequestHandler = async (event) => {
 	// Get data parameters
 	const fromDateParam = url.searchParams.get('from');
 	const toDateParam = url.searchParams.get('to');
+	console.log(fromDateParam, toDateParam, url.search);
 	const priceArea: PriceAreas = url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
 
 	// Validate required parameters exist

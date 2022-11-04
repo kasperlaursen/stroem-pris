@@ -5,14 +5,19 @@ import type { FeeKeys } from '$lib/types/fees';
 
 export const load: PageLoad = async ({ fetch, url }) => {
 	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
-	const todayFrom = DateTime.now().toFormat('yyyy-MM-dd');
-	const todayTo = DateTime.now().plus({ days: 1 }).toFormat('yyyy-MM-dd');
+	const dateParam = url.searchParams.get('date');
+	const todayFrom = dateParam ?? DateTime.now().toISODate();
+	const todayTo = dateParam
+		? DateTime.fromISO(dateParam).plus({ days: 1 }).toISODate()
+		: DateTime.now().plus({ days: 1 }).toISODate();
 	const todayResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
 	const todayData = (await todayResponse.json()) as {
 		price_area: PriceAreas;
 		hour_utc: string;
 		price_dkk: number;
 	}[];
+
+	console.log(todayFrom, todayTo);
 
 	const spotToday = todayData.map(({ price_area, hour_utc, price_dkk }) => ({
 		priceArea: price_area,
@@ -50,7 +55,7 @@ export const load: PageLoad = async ({ fetch, url }) => {
 		)
 	};
 
-	return { spotToday, priceArea, feesToday };
+	return { spotToday, priceArea, feesToday, date: todayFrom };
 };
 
 const getCurrentFeeByDateAndKey = (
