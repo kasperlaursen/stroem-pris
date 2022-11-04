@@ -23,7 +23,7 @@
 			<form method="get">
 				Spot pris for
 				<input
-					class="border-0 rounded bg-neutral-200 p-1 cursor-pointer"
+					class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 p-1 cursor-pointer"
 					type="date"
 					name="date"
 					bind:value={date}
