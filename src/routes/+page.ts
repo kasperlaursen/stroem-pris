@@ -55,9 +55,10 @@ export const load: PageLoad = async ({ fetch, url }) => {
 			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
 		)
 	};
-	const validation = !isValidDate
-		? `Data findes ikke senere end ${todayTo}, viser data for i dag.`
-		: '';
+	const validation =
+		dateParam && !isValidDate
+			? `Data findes ikke senere end ${todayTo}, viser data for i dag.`
+			: '';
 	return { spotToday, priceArea, feesToday, date: todayFrom, validation };
 };
 
