@@ -6,8 +6,11 @@ import type { FeeKeys } from '$lib/types/fees';
 export const load: PageLoad = async ({ fetch, url }) => {
 	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
 	const dateParam = url.searchParams.get('date');
-	const todayFrom = dateParam ?? DateTime.now().toISODate();
-	const todayTo = dateParam
+	const isValidDate =
+		dateParam &&
+		DateTime.fromISO(dateParam).toMillis() <= DateTime.now().plus({ days: 1 }).toMillis();
+	const todayFrom = isValidDate ? dateParam : DateTime.now().toISODate();
+	const todayTo = isValidDate
 		? DateTime.fromISO(dateParam).plus({ days: 1 }).toISODate()
 		: DateTime.now().plus({ days: 1 }).toISODate();
 	const todayResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
