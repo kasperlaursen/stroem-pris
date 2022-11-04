@@ -117,6 +117,13 @@
 			maintainAspectRatio: false,
 			indexAxis: 'y',
 			plugins: {
+				tooltip: {
+					callbacks: {
+						label: (context) => {
+							return `${(context.parsed.x * 100).toFixed(1)} øre/kwh`;
+						}
+					}
+				},
 				datalabels: {
 					anchor: 'end',
 					align: 'end',
