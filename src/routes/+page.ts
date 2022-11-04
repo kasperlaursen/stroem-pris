@@ -20,8 +20,6 @@ export const load: PageLoad = async ({ fetch, url }) => {
 		price_dkk: number;
 	}[];
 
-	console.log(todayFrom, todayTo);
-
 	const spotToday = todayData.map(({ price_area, hour_utc, price_dkk }) => ({
 		priceArea: price_area,
 		priceDKK: price_dkk,
@@ -57,8 +55,10 @@ export const load: PageLoad = async ({ fetch, url }) => {
 			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
 		)
 	};
-
-	return { spotToday, priceArea, feesToday, date: todayFrom };
+	const validation = !isValidDate
+		? `Data findes ikke senere end ${todayTo}, viser data for i dag.`
+		: '';
+	return { spotToday, priceArea, feesToday, date: todayFrom, validation };
 };
 
 const getCurrentFeeByDateAndKey = (

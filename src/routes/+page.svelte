@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import Alert from '$lib/components/base/Alert.svelte';
 	import Card from '$lib/components/base/Card.svelte';
 	import Link from '$lib/components/base/Link.svelte';
 	import DailySpot from '$lib/components/charts/DailySpot.svelte';
@@ -16,6 +17,10 @@
 		event.target.form.submit();
 	};
 </script>
+
+{#if data.validation}
+	<Alert>{data.validation}</Alert>
+{/if}
 
 <Card>
 	<div class="flex justify-between">
