@@ -30,6 +30,7 @@
 					on:change={handleChange}
 					max={DateTime.now().plus({ days: 1 }).toISODate()}
 				/>
+				<input hidden name="area" bind:value={data.priceArea} />
 			</form>
 		</h1>
 		<span>
