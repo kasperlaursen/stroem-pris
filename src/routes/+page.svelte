@@ -20,7 +20,9 @@
 		style: 'narrow'
 	});
 
-	$: dateDiff = DateTime.fromISO(selectedDate, { zone: 'UTC' }).diffNow('days').days.toFixed(0);
+	$: dateDiff = Math.ceil(
+		(DateTime.fromISO(selectedDate).toMillis() - DateTime.now().toMillis()) / (1000 * 60 * 60 * 24)
+	);
 
 	const handleChange = (event: any) => {
 		event.target.form.submit();
@@ -35,7 +37,7 @@
 	<Card>
 		<form method="get" class="flex justify-between">
 			<h1 class="font-medium text-lg">
-				Spot pris for {relativeDateFormatter.format(Number(dateDiff), 'day')}
+				Spot pris for {relativeDateFormatter.format(dateDiff, 'day')}
 			</h1>
 			<span>
 				<input
