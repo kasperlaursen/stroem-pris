@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Alert from '$lib/components/base/Alert.svelte';
+	import Button from '$lib/components/base/Button.svelte';
 	import Card from '$lib/components/base/Card.svelte';
 	import Link from '$lib/components/base/Link.svelte';
 	import DailySpot from '$lib/components/charts/DailySpot.svelte';
@@ -7,9 +8,19 @@
 	import { DateTime } from 'luxon';
 
 	export let data: PageData;
-	const selectedDate = data.date;
 
+	const selectedDate = data.date;
 	$: date = selectedDate;
+
+	const selectedArea = data.priceArea;
+	$: area = selectedArea;
+
+	$: relativeDateFormatter = new Intl.RelativeTimeFormat('da-DK', {
+		numeric: 'auto',
+		style: 'narrow'
+	});
+
+	$: dateDiff = DateTime.fromISO(selectedDate, { zone: 'UTC' }).diffNow('days').days.toFixed(0);
 
 	const handleChange = (event: any) => {
 		event.target.form.submit();
@@ -22,26 +33,30 @@
 	{/each}
 
 	<Card>
-		<div class="flex justify-between">
+		<form method="get" class="flex justify-between">
 			<h1 class="font-medium text-lg">
-				<form method="get">
-					Spot pris for
-					<input
-						class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 p-1 cursor-pointer"
-						type="date"
-						name="date"
-						bind:value={date}
-						on:change={handleChange}
-						max={DateTime.now().plus({ days: 1 }).toISODate()}
-					/>
-					<input hidden name="area" bind:value={data.priceArea} />
-				</form>
+				Spot pris for {relativeDateFormatter.format(Number(dateDiff), 'day')}
 			</h1>
 			<span>
-				<Link color={data.priceArea === 'DK1' ? 'PRIMARY' : 'SECONDARY'} href="?area=DK1">DK1</Link>
-				<Link color={data.priceArea === 'DK2' ? 'PRIMARY' : 'SECONDARY'} href="?area=DK2">DK2</Link>
+				<input
+					class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer"
+					type="date"
+					name="date"
+					bind:value={date}
+					on:change={handleChange}
+					max={DateTime.now().plus({ days: 1 }).toISODate()}
+				/>
+				<select
+					name="area"
+					bind:value={data.priceArea}
+					on:change={handleChange}
+					class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer"
+				>
+					<option value="DK1">DK1</option>
+					<option value="DK2">DK2</option>
+				</select>
 			</span>
-		</div>
+		</form>
 		<p>
 			Priserne i grafen er uden Nettarif (også kaldet Transport) da denne variere mellem
 			netselskaber.
