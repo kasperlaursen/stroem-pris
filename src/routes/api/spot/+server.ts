@@ -97,13 +97,21 @@ export const GET: RequestHandler = async (event) => {
 
 		// Get data from external API
 		const apiData = await getSpotDataFromDataService(fromDate, toDate, priceArea);
-		if (!apiData.records || !apiData.records.length) {
+
+		if (apiData.success === false) {
+			// If the api call returned an error, surface it to the users.
+			return json(apiData);
+		}
+
+		const records = apiData.data.records;
+		if (!records || !records.length) {
 			throw error(500, `Got 0 records from API.`);
 		}
-		console.log('🌍', `Got ${apiData.records.length} data point from api, expected ${hourDiff}`);
+
+		console.log('🌍', `Got ${records.length} data point from api, expected ${hourDiff}`);
 
 		// Filter Data to only insert missing rows (constraint on hour_utc && price_area)
-		const filteredData = apiData.records.filter(
+		const filteredData = records.filter(
 			({ HourUTC, PriceArea }) =>
 				!safeTableData?.some(
 					({ hour_utc, price_area }) =>
@@ -132,12 +140,12 @@ export const GET: RequestHandler = async (event) => {
 			'✅',
 			`Returning ${[...safeTableData, ...insertedData].length} data point from api and database`
 		);
-		return json([...safeTableData, ...insertedData]);
+		return json({ success: true, data: [...safeTableData, ...insertedData] });
 	}
 
 	// Data already in DB, lets return it
 	console.log('✅', `Returning ${tableData?.length} data point from database`);
-	return json(tableData);
+	return json({ success: true, data: tableData });
 };
 
 /**

@@ -1,7 +1,10 @@
 import type { PriceAreas } from './../lib/energidataservice/types';
+import type { InternalError } from '$lib/types/api';
+
 import { DateTime } from 'luxon';
 import type { PageLoad } from './$types';
 import type { FeeKeys } from '$lib/types/fees';
+import type { InternalApiResponse } from '$lib/types/api';
 
 export const load: PageLoad = async ({ fetch, url }) => {
 	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
@@ -13,18 +16,41 @@ export const load: PageLoad = async ({ fetch, url }) => {
 	const todayTo = isValidDate
 		? DateTime.fromISO(dateParam).plus({ days: 1 }).toISODate()
 		: DateTime.now().plus({ days: 1 }).toISODate();
-	const todayResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
-	const todayData = (await todayResponse.json()) as {
-		price_area: PriceAreas;
-		hour_utc: string;
-		price_dkk: number;
-	}[];
 
-	const spotToday = todayData.map(({ price_area, hour_utc, price_dkk }) => ({
-		priceArea: price_area,
-		priceDKK: price_dkk,
-		hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
-	}));
+	const todayResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
+	const todayData = (await todayResponse.json()) as InternalApiResponse<
+		{
+			price_area: PriceAreas;
+			hour_utc: string;
+			price_dkk: number;
+		}[]
+	>;
+
+	const errors: InternalError[] = [];
+
+	if (dateParam && !isValidDate) {
+		errors.push({ message: `Data findes ikke senere end ${todayTo}, viser data for i dag.` });
+	}
+
+	if (todayData.success === false) {
+		errors.push(todayData.error);
+	}
+
+	let spotToday:
+		| null
+		| {
+				priceArea: PriceAreas;
+				hourUTC: DateTime;
+				priceDKK: number;
+		  }[] = null;
+
+	if (todayData.success === true) {
+		spotToday = todayData.data.map(({ price_area, hour_utc, price_dkk }) => ({
+			priceArea: price_area,
+			priceDKK: price_dkk,
+			hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
+		}));
+	}
 
 	const feesResponse = await fetch(`/api/fees`);
 	const feesData = (await feesResponse.json()) as {
@@ -55,11 +81,8 @@ export const load: PageLoad = async ({ fetch, url }) => {
 			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
 		)
 	};
-	const validation =
-		dateParam && !isValidDate
-			? `Data findes ikke senere end ${todayTo}, viser data for i dag.`
-			: '';
-	return { spotToday, priceArea, feesToday, date: todayFrom, validation };
+
+	return { spotToday, priceArea, feesToday, date: todayFrom, errors };
 };
 
 const getCurrentFeeByDateAndKey = (
