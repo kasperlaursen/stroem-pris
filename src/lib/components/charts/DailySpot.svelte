@@ -105,7 +105,15 @@
 		options={{
 			scales: {
 				x: {
-					stacked: true
+					stacked: true,
+					max:
+						Math.floor(
+							Math.max(
+								...(data.labels
+									? data.labels.map((_, index) => getTotalByIndex(index, data.datasets))
+									: [])
+							)
+						) + 1
 				},
 				y: {
 					stacked: true
