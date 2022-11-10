@@ -7,10 +7,10 @@ export const load: PageLoad = async (event) => {
 	if (!session) {
 		throw redirect(303, '/');
 	}
-	const { data: tableData } = await supabaseClient.from('profiles').select('*');
+	const { data: tokenData } = await supabaseClient.from('datahub_tokens').select('refresh_token');
 
 	return {
 		user: session.user,
-		tableData
+		hasToken: tokenData && tokenData?.length > 0
 	};
 };

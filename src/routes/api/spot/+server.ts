@@ -1,69 +1,27 @@
 import { getSpotDataFromDataService } from '$lib/energidataservice/api';
 import type { PriceAreas } from '$lib/energidataservice/types';
 import { LIMIT } from '$lib/supabaseClient';
+import { validateStringsAsISODateRange } from '$lib/utils/dateValidaton';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { error, json } from '@sveltejs/kit';
 import { DateTime } from 'luxon';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async (event) => {
-	console.log('💸', `Spot api request`);
+	console.log('💸 🆕', `Spot api request`);
 	const { url } = event;
 
 	// Get data parameters
 	const fromDateParam = url.searchParams.get('from');
 	const toDateParam = url.searchParams.get('to');
-	console.log(fromDateParam, toDateParam, url.search);
+
 	const priceArea: PriceAreas = url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
 
-	// Validate required parameters exist
-	if (!fromDateParam || !toDateParam) {
-		throw error(400, 'Missing required parameters');
+	const dateValidaton = validateStringsAsISODateRange(fromDateParam, toDateParam);
+	if (!dateValidaton.isValid) {
+		throw error(dateValidaton.errorCode, dateValidaton.errorMessage);
 	}
-
-	// Split date param to array
-	const fromDateSplit = fromDateParam.split('-');
-	const toDateSplit = toDateParam.split('-');
-
-	// Verify date parameters has correct length
-	if (fromDateSplit.length !== 3 || toDateSplit.length !== 3) {
-		throw error(400, 'Invalid date: Must be valid date of the format "yyyy-mm-dd"');
-	}
-
-	// Convert date parameters to DateTime
-	const fromDate = DateTime.fromObject(
-		{
-			year: Number(fromDateSplit[0]),
-			month: Number(fromDateSplit[1]),
-			day: Number(fromDateSplit[2])
-		},
-		{ zone: 'Europe/Copenhagen' }
-	);
-
-	const toDate = DateTime.fromObject(
-		{
-			year: Number(toDateSplit[0]),
-			month: Number(toDateSplit[1]),
-			day: Number(toDateSplit[2])
-		},
-		{ zone: 'Europe/Copenhagen' }
-	);
-
-	// Validate dates are valid
-	if (!fromDate.isValid) {
-		throw error(400, '🤨 Invalid from date: Must be valid date of the format "yyyy-mm-dd"');
-	}
-	if (!toDate.isValid) {
-		throw error(400, '🤨 Invalid to date: Must be valid date of the format "yyyy-mm-dd"');
-	}
-
-	// Get hours between from and to dates
-	const hourDiff = toDate.diff(fromDate, 'hours').toObject().hours;
-
-	// Make sure to date is after from date
-	if (fromDate > toDate || !hourDiff || hourDiff < 0) {
-		throw error(400, '🤦‍♂️ The "to" date must be later than the "from" date');
-	}
+	const { fromDate, toDate, hourDiff } = dateValidaton;
 
 	// Return error of DB limit is exceeded
 	if (hourDiff > LIMIT) {
@@ -74,7 +32,7 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	console.log(
-		'💸',
+		'💸 🗓️ ',
 		`Requested data between ${fromDateParam} and ${toDateParam}, for area ${priceArea}`
 	);
 	// Call supabase to check if data is available for the date range
@@ -85,7 +43,7 @@ export const GET: RequestHandler = async (event) => {
 		.eq('price_area', priceArea)
 		.gte('hour_utc', fromDate.toUTC())
 		.lt('hour_utc', toDate.toUTC());
-	console.log('🗄 ', `Got ${tableData?.length} data point from Database, expected ${hourDiff}`);
+	console.log('💸 🗄 ', `Got ${tableData?.length} data point from Database, expected ${hourDiff}`);
 
 	if (tableData && tableData?.length > hourDiff) {
 		throw error(500, '😱 Found more data point than expected');
@@ -108,7 +66,7 @@ export const GET: RequestHandler = async (event) => {
 			throw error(500, `Got 0 records from API.`);
 		}
 
-		console.log('🌍', `Got ${records.length} data point from api, expected ${hourDiff}`);
+		console.log('💸 🌍', `Got ${records.length} data point from api, expected ${hourDiff}`);
 
 		// Filter Data to only insert missing rows (constraint on hour_utc && price_area)
 		const filteredData = records.filter(
@@ -120,7 +78,7 @@ export const GET: RequestHandler = async (event) => {
 		);
 
 		// Save data to Database
-		console.log('⏳', `Saving ${filteredData.length} data point from api to database`);
+		console.log('💸 ⏳', `Saving ${filteredData.length} data point from api to database`);
 		const { data: insertedData, error: dbError } = await supabaseClient
 			.from('spot')
 			.insert(
@@ -144,12 +102,13 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	// Data already in DB, lets return it
-	console.log('✅', `Returning ${tableData?.length} data point from database`);
+	console.log('💸 ✅', `Returning ${tableData?.length} data point from database`);
 	return json({ success: true, data: tableData });
 };
 
 /**
  * Convert ISO date string to Epoc.
+ *
  *  _**!!:** The string must be utc timezone._
  * @param date An ISO date string to get as Epoc
  * @returns {number} Date as Epoc number

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Alert from '$lib/components/base/Alert.svelte';
-	import Button from '$lib/components/base/Button.svelte';
 	import Card from '$lib/components/base/Card.svelte';
 	import Link from '$lib/components/base/Link.svelte';
 	import DailySpot from '$lib/components/charts/DailySpot.svelte';
@@ -60,7 +59,7 @@
 			</span>
 		</form>
 		<p>
-			Priserne i grafen er uden Nettarif (også kaldet Transport) da denne variere mellem
+			Priserne i grafen er uden Nettarif (også kaldet Transport) da denne varierer mellem
 			netselskaber.
 			<br />
 			Du kan se hvilket netselskab du har på

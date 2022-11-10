@@ -3,7 +3,7 @@ import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async (event) => {
-	console.log('💰', `Fees api request`);
+	console.log('💰 🆕', `Fees api request`);
 
 	const { supabaseClient } = await getSupabase(event);
 	const { data } = await supabaseClient.from('fees').select('from, key, value');
@@ -12,5 +12,6 @@ export const GET: RequestHandler = async (event) => {
 		throw error(500, '😱 Failed to find valid fee data...');
 	}
 
+	console.log('💰 ✅', `Returning from database`);
 	return json(data);
 };
