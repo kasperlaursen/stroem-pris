@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let space: boolean = true;
+	export let icon: string = '';
 	const customClasses = $$restProps.class;
 </script>
 
@@ -10,6 +11,7 @@
     ${space ? 'p-4 gap-4' : ''}
     grid
     w-full
+    relative
     rounded-2xl
     border
     bg-white
@@ -20,4 +22,7 @@
   `}
 >
 	<slot />
+	{#if icon}
+		<div class={`absolute top-2 right-4`}>{icon}</div>
+	{/if}
 </div>

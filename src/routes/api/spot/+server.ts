@@ -95,7 +95,7 @@ export const GET: RequestHandler = async (event) => {
 		}
 		// Return data
 		console.log(
-			'✅',
+			'💸 ✅',
 			`Returning ${[...safeTableData, ...insertedData].length} data point from api and database`
 		);
 		return json({ success: true, data: [...safeTableData, ...insertedData] });

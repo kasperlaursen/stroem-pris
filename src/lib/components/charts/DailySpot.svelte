@@ -148,10 +148,3 @@
 		}}
 	/>
 </div>
-
-<style>
-	.chart {
-		height: 500px;
-		width: 500px;
-	}
-</style>
