@@ -34,7 +34,7 @@
 	{/each}
 
 	<Card>
-		<form method="get" class="flex justify-between">
+		<form method="get" action="/" class="flex justify-between">
 			<h1 class="font-medium text-lg">
 				Spot pris for {relativeDateFormatter.format(dateDiff, 'day')}
 			</h1>
