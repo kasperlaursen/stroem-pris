@@ -19,6 +19,7 @@
 	import { DateTime } from 'luxon';
 	import { theme } from '$lib/stores';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
+	import { onDestroy } from 'svelte';
 
 	export let spotData: PageData['spotData'] = [];
 	export let month: PageData['month'];

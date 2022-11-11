@@ -16,6 +16,7 @@
 	import { DateTime } from 'luxon';
 	import { theme } from '$lib/stores';
 	import type { FeeKeys } from '$lib/types/fees';
+	import { onDestroy } from 'svelte';
 
 	export let spotData: { priceArea: PriceAreas; priceDKK: number; hourUTC: DateTime }[] = [];
 	export let feeData: { [fee in FeeKeys]: number };
@@ -94,6 +95,17 @@
 		allData.reduce((previous, current) => current.data[index] + previous, 0);
 
 	Chart.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartDataLabels);
+	onDestroy(() => {
+		Chart.unregister(
+			Title,
+			Tooltip,
+			Legend,
+			BarElement,
+			CategoryScale,
+			LinearScale,
+			ChartDataLabels
+		);
+	});
 </script>
 
 <div class="overflow-hidden">
