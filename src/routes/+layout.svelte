@@ -22,6 +22,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Strømpris</title>
+</svelte:head>
+
 <Header />
 <div class="mx-auto my-4 container min-h-[calc(100vh-72px)]">
 	{#if Boolean($navigating)}
