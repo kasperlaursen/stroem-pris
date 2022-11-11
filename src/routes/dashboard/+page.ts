@@ -30,14 +30,14 @@ export const load: PageLoad = async (event) => {
 		year: DateTime.now().year
 	}).toISODate();
 
-	const { usageMeterData, errors: usageMeterErrors } = await getusageMeterForMonth(
+	const { data: usageMeterData, errors: usageMeterErrors } = await getusageMeterForMonth(
 		fetch,
 		monthFrom,
 		monthTo
 	);
 	errors.concat(usageMeterErrors);
 
-	const { spotData, errors: spotErrors } = await getSpotForMonth(
+	const { data: spotData, errors: spotErrors } = await getSpotForMonth(
 		fetch,
 		monthFrom,
 		monthTo,
@@ -55,7 +55,13 @@ export const load: PageLoad = async (event) => {
 };
 
 const getusageMeterForMonth = async (fetch: Fetch, monthFrom: string, monthTo: string) => {
+	const errors: InternalError[] = [];
 	const usageMeterRequest = await fetch(`/api/meter/?from=${monthFrom}&to=${monthTo}`);
+	if (usageMeterRequest.status !== 200) {
+		errors.push({ message: usageMeterRequest.statusText, code: usageMeterRequest.status });
+		return { errors, data: [] };
+	}
+
 	const usageMeterResponse = (await usageMeterRequest.json()) as InternalApiResponse<
 		{
 			hour_utc: string;
@@ -63,8 +69,6 @@ const getusageMeterForMonth = async (fetch: Fetch, monthFrom: string, monthTo: s
 			measurement: number;
 		}[]
 	>;
-
-	const errors: InternalError[] = [];
 
 	if (usageMeterResponse.success === false) {
 		errors.push(usageMeterResponse.error);
@@ -84,7 +88,7 @@ const getusageMeterForMonth = async (fetch: Fetch, monthFrom: string, monthTo: s
 		}));
 	}
 
-	return { errors, usageMeterData };
+	return { errors, data: usageMeterData };
 };
 
 const getSpotForMonth = async (
@@ -93,7 +97,12 @@ const getSpotForMonth = async (
 	monthTo: string,
 	priceArea: string
 ) => {
+	const errors: InternalError[] = [];
 	const spotRequest = await fetch(`/api/spot/?from=${monthFrom}&to=${monthTo}&area=${priceArea}`);
+	if (spotRequest.status !== 200) {
+		errors.push({ message: spotRequest.statusText, code: spotRequest.status });
+		return { errors, data: [] };
+	}
 	const spotResponse = (await spotRequest.json()) as InternalApiResponse<
 		{
 			price_area: PriceAreas;
@@ -101,8 +110,6 @@ const getSpotForMonth = async (
 			price_dkk: number;
 		}[]
 	>;
-
-	const errors: InternalError[] = [];
 
 	if (spotResponse.success === false) {
 		errors.push(spotResponse.error);
@@ -121,5 +128,5 @@ const getSpotForMonth = async (
 			hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
 		}));
 	}
-	return { errors, spotData };
+	return { errors, data: spotData };
 };

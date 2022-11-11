@@ -82,7 +82,7 @@ export const validateStringsAsISODateRange = (
 	// toDate no later than now
 	const now = DateTime.now();
 	const safeToDate =
-		maxToday && toDate.diffNow().days >= 0
+		maxToday && toDate.diffNow('days').days >= 0
 			? DateTime.fromObject({
 					day: now.day,
 					month: now.month,

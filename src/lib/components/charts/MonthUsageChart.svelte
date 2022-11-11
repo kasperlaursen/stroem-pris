@@ -8,6 +8,7 @@
 		BarElement,
 		CategoryScale,
 		LinearScale,
+		LogarithmicScale,
 		type ChartData,
 		type ChartDataset,
 		PointElement,
@@ -20,51 +21,52 @@
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
 
 	export let spotData: PageData['spotData'] = [];
+	export let month: PageData['month'];
 	export let usageMeterData: PageData['usageMeterData'] = [];
 
 	let data: any;
 
-	const hours = [...Array(24).keys()] as const;
+	const days = [...Array(DateTime.fromObject({ month }).daysInMonth).keys()].map((key) => key + 1);
 
 	$: {
-		const spotHourAverage = hours.map((_, index) => {
+		const spotDayAverage = days.map((key, index) => {
 			const relevantEntries = spotData.filter(
-				({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index
+				({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').day === key
 			);
 			return relevantEntries.reduce((a, { priceDKK }) => a + priceDKK, 0) / relevantEntries.length;
 		});
 
-		const usageMeterHourAverage = hours.map((_, index) => {
+		const usageMeterDayTotal = days.map((key, index) => {
 			const relevantEntries = usageMeterData.filter(
-				({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index
+				({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').day === key
 			);
-			return (
-				relevantEntries.reduce((a, { measurement }) => a + measurement, 0) / relevantEntries.length
-			);
+			return relevantEntries.reduce((a, { measurement }) => a + measurement, 0);
 		});
 
 		const datasets: [ChartData<'line'>['datasets'][number], ChartData<'bar'>['datasets'][number]] =
 			[
 				{
-					label: 'Forbrug',
+					label: 'Forbrug (kwh)',
 					type: 'line',
 					cubicInterpolationMode: 'monotone',
-					data: usageMeterHourAverage,
+					yAxisID: 'A',
+					data: usageMeterDayTotal,
 					backgroundColor: 'rgba(244, 63, 94)',
 					borderColor: 'rgba(244, 63, 94)'
 				},
 				{
-					label: 'Spot',
+					label: 'Spot Gennemsnit (kr/kwh)',
 					type: 'bar',
-					data: spotHourAverage,
+					yAxisID: 'B',
+					data: spotDayAverage,
 					backgroundColor: 'rgba(148, 163, 184, 0.7)'
 				}
 			];
 
 		data = {
-			labels: hours.map((_, index) => {
-				const hour = DateTime.fromObject({ hour: index });
-				return `${hour.toFormat('HH:mm')} - ${hour.plus({ hours: 1 }).toFormat('HH:mm')}`;
+			labels: days.map((key) => {
+				const day = DateTime.fromObject({ day: key, month });
+				return day.toFormat('dd / MM');
 			}),
 			datasets: datasets
 		};
@@ -74,6 +76,7 @@
 		Title,
 		Tooltip,
 		Legend,
+		LogarithmicScale,
 		BarElement,
 		BarController,
 		LineController,
@@ -84,7 +87,7 @@
 	);
 </script>
 
-<h2>Månedens gennemsnit pr. time</h2>
+<h2>Månedens forbrug pr. dag</h2>
 <div class="overflow-hidden">
 	<Chart
 		type="bar"
@@ -102,13 +105,13 @@
 			indexAxis: 'x',
 			plugins: {},
 			scales: {
-				y: {
+				A: {
 					type: 'linear',
 					display: true,
 					position: 'left'
 				},
-				y1: {
-					type: 'linear',
+				B: {
+					type: 'logarithmic',
 					display: true,
 					position: 'right',
 					grid: {

@@ -26,6 +26,8 @@ export const GET: RequestHandler = async (event) => {
 	}
 	const { fromDate, toDate, hourDiff } = dateValidaton;
 
+	console.log('📊 🆕', `Meter api request from ${fromDate.toISODate()} to ${toDate.toISODate()}`);
+
 	// Check for LIMIT reached...
 	if (hourDiff > LIMIT) {
 		throw error(
@@ -76,7 +78,7 @@ export const GET: RequestHandler = async (event) => {
 	const { refresh_token, data_token, data_token_expire_utc } = dbTokens[0];
 	let validDataToken: string = data_token;
 	// Check for Data_Token for user
-	if (!data_token || DateTime.fromSQL(data_token_expire_utc).diffNow().minutes < 10) {
+	if (!data_token || DateTime.fromISO(data_token_expire_utc).diffNow('minutes').minutes < 10) {
 		console.log('📊 🗄 ', `Data_token needs to be refreshed.`);
 
 		// Check for Refresh_Token for user
@@ -103,7 +105,7 @@ export const GET: RequestHandler = async (event) => {
 		console.log('📊 🗄 ', `Saving token`, setTokenError?.message);
 	}
 
-	// Get data form API
+	//Get data form API
 	const meterResponse = await getData(validDataToken, fromDate.toISODate(), toDate.toISODate(), [
 		meterId
 	]);

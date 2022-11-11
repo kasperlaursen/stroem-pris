@@ -22,26 +22,43 @@
 	export let spotData: PageData['spotData'] = [];
 	export let usageMeterData: PageData['usageMeterData'] = [];
 
+	let firstDate =
+		usageMeterData.sort((a, b) => a.hourUTC.toMillis() - b.hourUTC.toMillis()).at(1)?.hourUTC ??
+		DateTime.now().set({ day: 1 });
+
+	let lastDate =
+		usageMeterData.sort((a, b) => a.hourUTC.toMillis() - b.hourUTC.toMillis()).at(-1)?.hourUTC ??
+		DateTime.now().toUTC().minus({ days: 1 });
+
+	let date: string = lastDate.toISODate();
+
 	let data: any;
 
 	const hours = [...Array(24).keys()] as const;
 
 	$: {
-		const spotHourAverage = hours.map((_, index) => {
-			const relevantEntries = spotData.filter(
-				({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index
-			);
-			return relevantEntries.reduce((a, { priceDKK }) => a + priceDKK, 0) / relevantEntries.length;
-		});
+		const spotHourAverage = hours.map(
+			(_, index) =>
+				spotData
+					.filter(
+						({ hourUTC }) =>
+							hourUTC.setZone('Europe/Copenhagen').day ===
+							DateTime.fromISO(date).setZone('Europe/Copenhagen').day
+					)
+					.find(({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index)?.priceDKK ?? 0
+		);
 
-		const usageMeterHourAverage = hours.map((_, index) => {
-			const relevantEntries = usageMeterData.filter(
-				({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index
-			);
-			return (
-				relevantEntries.reduce((a, { measurement }) => a + measurement, 0) / relevantEntries.length
-			);
-		});
+		const usageMeterHourAverage = hours.map(
+			(_, index) =>
+				usageMeterData
+					.filter(
+						({ hourUTC }) =>
+							hourUTC.setZone('Europe/Copenhagen').day ===
+							DateTime.fromISO(date).setZone('Europe/Copenhagen').day
+					)
+					.find(({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index)
+					?.measurement ?? 0
+		);
 
 		const datasets: [ChartData<'line'>['datasets'][number], ChartData<'bar'>['datasets'][number]] =
 			[
@@ -49,13 +66,16 @@
 					label: 'Forbrug',
 					type: 'line',
 					cubicInterpolationMode: 'monotone',
+					yAxisID: 'A',
 					data: usageMeterHourAverage,
+
 					backgroundColor: 'rgba(244, 63, 94)',
 					borderColor: 'rgba(244, 63, 94)'
 				},
 				{
 					label: 'Spot',
 					type: 'bar',
+					yAxisID: 'B',
 					data: spotHourAverage,
 					backgroundColor: 'rgba(148, 163, 184, 0.7)'
 				}
@@ -84,7 +104,17 @@
 	);
 </script>
 
-<h2>Månedens gennemsnit pr. time</h2>
+<h2 class="flex justify-between">
+	Dagens forbrug pr. time <input
+		class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer"
+		type="date"
+		name="date"
+		bind:value={date}
+		max={lastDate.toISODate()}
+		min={firstDate.toISODate()}
+	/>
+</h2>
+
 <div class="overflow-hidden">
 	<Chart
 		type="bar"
@@ -102,12 +132,12 @@
 			indexAxis: 'x',
 			plugins: {},
 			scales: {
-				y: {
+				A: {
 					type: 'linear',
 					display: true,
 					position: 'left'
 				},
-				y1: {
+				B: {
 					type: 'linear',
 					display: true,
 					position: 'right',

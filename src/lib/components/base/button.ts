@@ -7,7 +7,7 @@ export const buttonVariantClasses = {
 	DANGER:
 		'ring-red-300 bg-red-600 border-red-600 text-dark hover:bg-red-700 hover:border-red-700 focus:bg-red-700 focus:border-red-700 active:bg-red-800 active:border-red-800',
 	GHOST:
-		'ring-slate-300 font-semibold bg-transparent border-transparent text-slate-800 hover:bg-slate-200 hover:border-slate-200 focus:bg-slate-300 active:bg-slate-500 active:border-slate-500'
+		'ring-neutral-300 bg-neutral-200 border-neutral-200 text-neutral-600 hover:bg-neutral-300 hover:text-neutral-800 hover:border-neutral-300 focus:bg-neutral-300 focus:border-neutral-300 active:bg-neutral-500 active:border-neutral-500'
 };
 
 export const buttonBaseClasses =

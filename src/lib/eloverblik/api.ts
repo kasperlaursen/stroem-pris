@@ -11,6 +11,7 @@ import type { APIResponse, Result } from './types';
 export const getToken = async (
 	refreshToken: string
 ): Promise<InternalApiResponse<{ token: string }>> => {
+	console.log(`📊 🌍`, `Calling datahub for new Token...`);
 	const response = await fetch(`${BASE_PATH}/token`, {
 		method: 'GET',
 		headers: {
@@ -81,12 +82,17 @@ export const getData = async (
 
 	if (response.status === 200) {
 		const data = ((await response.json()) as APIResponse).result;
+
 		if (data) {
 			return { success: true, data };
 		}
 	}
+
 	return {
 		success: false,
-		error: { message: 'Der er sket en uventet fejl i forsøget på at hente data fra Eloverblik.dk' }
+		error: {
+			message: 'Der er sket en uventet fejl i forsøget på at hente data fra Eloverblik.dk',
+			code: response.status
+		}
 	};
 };

@@ -5,6 +5,8 @@
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
 	import { DateTime } from 'luxon';
 	import Card from '$lib/components/base/Card.svelte';
+	import MonthUsageChart from '$lib/components/charts/MonthUsageChart.svelte';
+	import DayUsageChart from '$lib/components/charts/DayUsageChart.svelte';
 
 	export let data: PageData;
 	const { errors, month, priceArea, session, spotData, usageMeterData } = data;
@@ -121,7 +123,7 @@
 		<Widget
 			data={{
 				title: 'Laveste gennemsnit',
-				value: lowestUsageMeterData.toFixed(3),
+				value: lowestUsageMeterData.toFixed(2),
 				unit: 'kwh'
 			}}
 			icon="💤"
@@ -130,15 +132,22 @@
 		<Widget
 			data={{
 				title: 'Højeste gennemsnit',
-				value: highestUsageMeterData.toFixed(3),
+				value: highestUsageMeterData.toFixed(2),
 				unit: 'kwh'
 			}}
 			icon="😱"
 		/>
 	</section>
-	<section>
+	<section class="grid gap-4 lg:grid-cols-2">
 		<Card>
 			<MonthAverageCompare {usageMeterData} {spotData} />
 		</Card>
+		<Card>
+			<MonthUsageChart {usageMeterData} {spotData} {month} />
+		</Card>
 	</section>
+
+	<Card>
+		<DayUsageChart {usageMeterData} {spotData} />
+	</Card>
 </div>
