@@ -18,6 +18,7 @@
 	import { DateTime } from 'luxon';
 	import { theme } from '$lib/stores';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
+	import Button from '../base/Button.svelte';
 
 	export let spotData: PageData['spotData'] = [];
 	export let usageMeterData: PageData['usageMeterData'] = [];
@@ -105,14 +106,39 @@
 </script>
 
 <h2 class="flex justify-between">
-	Dagens forbrug pr. time <input
-		class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer"
-		type="date"
-		name="date"
-		bind:value={date}
-		max={lastDate.toISODate()}
-		min={firstDate.toISODate()}
-	/>
+	Dagens forbrug pr. time
+	<span class="flex gap-4 items-center">
+		<span
+			class={`${
+				DateTime.fromISO(date).toMillis() > firstDate.toMillis()
+					? 'cursor-pointer hover:animate-pulse'
+					: 'cursor-not-allowed pointer-events-none opacity-40'
+			} select-none`}
+			on:keyup
+			on:click={() => {
+				date = DateTime.fromISO(date).minus({ days: 1 }).toISODate();
+			}}>⬅️</span
+		>
+		<span
+			class={`${
+				DateTime.fromISO(date).toMillis() <= lastDate.toMillis()
+					? 'cursor-pointer hover:animate-pulse'
+					: 'cursor-not-allowed pointer-events-none opacity-40'
+			} select-none`}
+			on:keyup
+			on:click={() => {
+				date = DateTime.fromISO(date).plus({ days: 1 }).toISODate();
+			}}>➡️</span
+		>
+		<input
+			class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer"
+			type="date"
+			name="date"
+			bind:value={date}
+			max={lastDate.toISODate()}
+			min={firstDate.toISODate()}
+		/>
+	</span>
 </h2>
 
 <div class="overflow-hidden">
