@@ -23,6 +23,7 @@
         focus:bg-white 
         focus:border-blue-600 
         focus:outline-none
+        disabled:bg-slate-300
         ${customClasses}
       `}
 />

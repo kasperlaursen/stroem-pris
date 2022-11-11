@@ -18,7 +18,7 @@ export const getSpotDataFromDataService = async (
 ): Promise<InternalApiResponse<SpotResponse>> => {
 	const start = from.toFormat('yyyy-MM-dd');
 	const end = to.toFormat('yyyy-MM-dd');
-	console.log(`🌍 Calling Spot API for data between: ${start} AND ${end}`);
+	console.log(`💸 🌍`, `Calling Spot API for data between: ${start} AND ${end}`);
 
 	const APIBase = 'https://api.energidataservice.dk/v2/dataset/Elspotprices';
 	const request = await fetch(

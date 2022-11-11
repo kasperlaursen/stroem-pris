@@ -1,5 +1,5 @@
 /** Structure for internal error massages */
-export type InternalError = { message: string };
+export type InternalError = { message: string; code?: number | string };
 
 /** Internal API response structure for successful external fetch calls */
 type InternalApiResponseSuccess<Data> = { success: true; data: Data };

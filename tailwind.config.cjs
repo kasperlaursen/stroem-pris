@@ -10,9 +10,17 @@ module.exports = {
 				},
 				dark: colors.slate[200],
 				light: colors.slate[800]
-			})
+			}),
+			gridTemplateColumns: {
+				'auto-fit-250': 'repeat(auto-fit, minmax(250px, 1fr))'
+			}
 		}
 	},
+	safelist: [
+		{
+			pattern: /row-span-(1|2|3|4|5|6)/
+		}
+	],
 	plugins: [
 		require('@tailwindcss/typography'),
 		require('@tailwindcss/forms')({
