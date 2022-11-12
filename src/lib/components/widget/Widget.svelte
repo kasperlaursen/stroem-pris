@@ -14,12 +14,14 @@
 		class={`${customClasses} row-span-${data.length < 5 ? data.length : data.length - 1} gap-4`}
 		{icon}
 	>
+		<slot />
 		{#each data as entry}
 			<WidgetContent {...entry} />
 		{/each}
 	</Card>
 {:else}
 	<Card {customClasses} {icon}>
+		<slot />
 		<WidgetContent {...data} />
 	</Card>
 {/if}

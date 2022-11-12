@@ -7,6 +7,7 @@
 	import Card from '$lib/components/base/Card.svelte';
 	import MonthUsageChart from '$lib/components/charts/MonthUsageChart.svelte';
 	import DayUsageChart from '$lib/components/charts/DayUsageChart.svelte';
+	import FixedPriceWidget from '$lib/components/widget/FixedPriceWidget.svelte';
 
 	export let data: PageData;
 	const { errors, month, priceArea, session, spotData, usageMeterData } = data;
@@ -57,6 +58,18 @@
 			.slice(0, usageMeterData.length / 24)
 			.reduce((acc, measurement) => acc + measurement, 0) /
 		(usageMeterData.length / 24);
+
+	$: totalUsageSpotPrice = () => {
+		const hourlyUsageDKK = usageMeterData
+			.map(({ hourUTC: meterHourUTC, measurement }) => {
+				const priceAtHour = spotData.find(
+					({ hourUTC: spotHourUTC }) => spotHourUTC.toMillis() === meterHourUTC.toMillis()
+				)?.priceDKK;
+				return priceAtHour ? priceAtHour * measurement : null;
+			})
+			.filter((value) => Boolean(value)) as number[];
+		return hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0);
+	};
 </script>
 
 <div class="grid gap-4">
@@ -98,6 +111,8 @@
 			icon="💸"
 		/>
 
+		<FixedPriceWidget totalSpot={totalUsageSpotPrice()} {totalUsage} />
+
 		<Widget
 			data={[
 				{
@@ -136,6 +151,14 @@
 				unit: 'kwh'
 			}}
 			icon="😱"
+		/>
+		<Widget
+			data={{
+				title: 'Total pris (spot)',
+				value: totalUsageSpotPrice().toFixed(2),
+				unit: 'kr'
+			}}
+			icon="💰"
 		/>
 	</section>
 	<section class="grid gap-4 lg:grid-cols-2">
