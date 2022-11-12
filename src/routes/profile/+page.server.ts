@@ -12,8 +12,9 @@ export const actions: Actions = {
 		}
 		// we are save, let the user create the post
 		const formData = await request.formData();
-		const token = formData.get('refresh_token');
+		const token = formData.get('token');
 
+		console.log(token);
 		const { error: setTokenError } = await supabaseClient
 			.from('datahub_tokens')
 			.upsert({ user_id: session.user.id, refresh_token: token });
