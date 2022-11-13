@@ -11,9 +11,17 @@ type Fetch = (input: URL | RequestInfo, init?: RequestInit | undefined) => Promi
 
 export const load: PageLoad = async (event) => {
 	const { fetch, url } = event;
-	const { session } = await getSupabase(event);
+	const { session, supabaseClient } = await getSupabase(event);
 	if (!session) {
 		throw redirect(303, '/');
+	}
+
+	const { data: tokenData } = await supabaseClient
+		.from('datahub_tokens')
+		.select('refresh_token, usage_meter_id');
+
+	if (!tokenData || !tokenData?.[0].refresh_token || !tokenData?.[0].usage_meter_id) {
+		throw redirect(303, '/profile');
 	}
 
 	const errors: InternalError[] = [];
