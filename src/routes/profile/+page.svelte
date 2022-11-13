@@ -10,8 +10,8 @@
 
 <div class="grid gap-4 sm:grid-cols-2 grid-cols-1">
 	<Card>
-		<h2 class="font-semibold mb-2 uppercase">Profil Information:</h2>
-		<div class="key-value-gird pl-2 gap-x-4 gap-y-1">
+		<h2 class="font-semibold mb-2">Din Information:</h2>
+		<div class="key-value-gird pl-2 gap-x-4 gap-y-1 place-content-start">
 			<b>Email:</b> <span>{user.email}</span>
 			<b>Telefon:</b> <span>{user.phone || 'Unknown'}</span>
 			<b>Oprettet:</b> <span>{new Date(user.created_at).toLocaleDateString()}</span>
@@ -20,10 +20,10 @@
 	</Card>
 
 	<Card>
-		<h2 class="font-semibold mb-2 uppercase">Datahub token:</h2>
+		<h2 class="font-semibold mb-2 ">Eloverblik integration</h2>
 		<p>
 			Indsæt og gem din datahub token for at få adgang til funktioner baseret på målerdata. <br />
-			<i>Din token gemmes i vores database og andre brugere vil ikke have adgang til den.</i>
+			<i>Din token gemmes i vores database, andre brugere vil ikke have adgang til den.</i>
 		</p>
 		<form method="POST" action="?/setToken" class="grid gap-4">
 			<Input
@@ -43,6 +43,17 @@
 					Efter sletning kan du gemme en ny token ovenfor.
 				</p>
 				<Button class="self-end" color="DANGER">Slet Token</Button>
+			</form>
+			<hr class="m-2" />
+
+			<h3 class="font-semibold mb-2">Målepunkt ID</h3>
+			<p>
+				Udfylde feltet med dit målepunkt ID fra eloverblik. <br />
+				Har du flere målepinkter i eloverblik, skal du vælge måleunktetet "Forbrugt fra net".
+			</p>
+			<form method="POST" action="?/setMeterId" class="grid gap-4">
+				<Input value={data.meterId} name="meterid" type="text" class="w-full" />
+				<Button class="self-end">Gem Målepunkt</Button>
 			</form>
 		{/if}
 	</Card>

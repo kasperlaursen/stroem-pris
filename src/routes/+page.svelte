@@ -58,7 +58,7 @@
 				</select>
 			</span>
 		</form>
-		<p>
+		<p class="text-sm">
 			Priserne i grafen er uden Nettarif (også kaldet Transport) da denne varierer mellem
 			netselskaber.
 			<br />

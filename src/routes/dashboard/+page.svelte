@@ -70,18 +70,41 @@
 			.filter((value) => Boolean(value)) as number[];
 		return hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0);
 	};
+
+	const handleChange = (event: any) => {
+		event.target.form.submit();
+	};
+
+	const months = [...Array(DateTime.now().month).keys()].map((index) =>
+		DateTime.fromObject({ month: index + 1 }).toFormat('MMMM', {
+			locale: 'da-DK'
+		})
+	);
+	let monthNumber = Number(month);
 </script>
 
 <div class="grid gap-4">
 	{#each errors as error}
 		<Alert>{error.message}</Alert>
 	{/each}
-	<section>
+	<section class="flex justify-between">
 		<h2 class="text-2xl font-medium capitalize">
 			🗓️ {DateTime.fromObject({ month: month }).toFormat('MMMM y', {
 				locale: 'da-DK'
 			})}
 		</h2>
+		<form method="get" action="?/" class="flex justify-between">
+			<select
+				name="month"
+				bind:value={monthNumber}
+				on:change={handleChange}
+				class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer capitalize"
+			>
+				{#each months as name, index}
+					<option value={index + 1}>{name}</option>
+				{/each}
+			</select>
+		</form>
 	</section>
 	<section class="grid gap-4 grid-cols-auto-fit-250 max-w-full">
 		<Widget

@@ -7,10 +7,13 @@ export const load: PageLoad = async (event) => {
 	if (!session) {
 		throw redirect(303, '/');
 	}
-	const { data: tokenData } = await supabaseClient.from('datahub_tokens').select('refresh_token');
+	const { data: tokenData } = await supabaseClient
+		.from('datahub_tokens')
+		.select('refresh_token, usage_meter_id');
 
 	return {
 		user: session.user,
-		hasToken: tokenData && tokenData?.length > 0
+		meterId: tokenData?.[0].usage_meter_id,
+		hasToken: Boolean(tokenData && tokenData?.[0].refresh_token)
 	};
 };

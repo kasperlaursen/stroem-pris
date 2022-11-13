@@ -1,6 +1,8 @@
 import { browser } from '$app/environment';
 import { writable } from 'svelte/store';
 
+const isBrowser = typeof window !== 'undefined';
+
 const defaultValue = 'light';
 const isDarkMode = () =>
 	localStorage.theme === 'dark' ||
@@ -21,4 +23,13 @@ theme.subscribe((value) => {
 	}
 });
 
-export { theme };
+// Get the value out of storage on load.
+const localFixed = isBrowser ? localStorage.localFixed : 0;
+const fixed = writable(localFixed || 0);
+fixed.subscribe((value) => {
+	if (isBrowser) {
+		localStorage.localFixed = value;
+	}
+});
+
+export { theme, fixed };
