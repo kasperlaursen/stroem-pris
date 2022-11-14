@@ -30,9 +30,9 @@
 <div class="mx-auto my-4 container min-h-[calc(100vh-72px)]">
 	{#if Boolean($navigating)}
 		<div class="h-full w-full grid place-items-center">
-			<span class="grid place-items-center">
+			<span class="grid place-items-center text-cyan-400">
 				<Icon src={Bolt} theme="solid" class="animate-spin h-8 w-8" />
-				Loading data...
+				Henter data, vent venligst...
 			</span>
 		</div>
 	{:else}

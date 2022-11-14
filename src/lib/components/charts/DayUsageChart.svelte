@@ -18,7 +18,7 @@
 	import { DateTime } from 'luxon';
 	import { theme } from '$lib/stores';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
-	import Button from '../base/Button.svelte';
+	import { Heading, Input } from 'flowbite-svelte';
 
 	export let spotData: PageData['spotData'] = [];
 	export let usageMeterData: PageData['usageMeterData'] = [];
@@ -105,8 +105,8 @@
 	);
 </script>
 
-<h2 class="flex justify-between">
-	Dagens forbrug pr. time
+<div class="flex justify-between">
+	<Heading customSize="text-lg font-semibold">Dagens forbrug pr. time</Heading>
 	<span class="flex gap-4 items-center">
 		<span
 			class={`${
@@ -130,8 +130,9 @@
 				date = DateTime.fromISO(date).plus({ days: 1 }).toISODate();
 			}}>➡️</span
 		>
-		<input
-			class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer"
+		<Input
+			class="!text-base !leading-4"
+			size="sm"
 			type="date"
 			name="date"
 			bind:value={date}
@@ -139,8 +140,7 @@
 			min={firstDate.toISODate()}
 		/>
 	</span>
-</h2>
-
+</div>
 <div class="overflow-hidden">
 	<Chart
 		type="bar"

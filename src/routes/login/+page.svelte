@@ -1,11 +1,7 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import Input from '$lib/components/base/Input.svelte';
-	import Button from '$lib/components/base/Button.svelte';
 	import type { ActionData } from '.svelte-kit/types/src/routes/$types';
-	import Card from '$lib/components/base/Card.svelte';
-	import Alert from '$lib/components/base/Alert.svelte';
 	import Link from '$lib/components/base/Link.svelte';
+	import { Alert, Button, Card, Input, Label, P } from 'flowbite-svelte';
 
 	export let form: ActionData;
 	let showReset: boolean = false;
@@ -17,25 +13,28 @@
 
 <div class="max-w-sm m-auto mt-10 grid gap-2">
 	{#if form && form?.error}
-		<Alert title="Login failed!">
-			<p class="mt-1 text-red-700">{form.error}</p>
+		<Alert color="red" title="Login failed!">
+			{form.error}
 		</Alert>
 	{/if}
 
 	<Card>
 		<form method="POST" action="?/signin" class="grid gap-4">
-			<Input name="email" type="email" placeholder="Email" />
-			<Input name="password" type="password" placeholder="Password" />
-			<Button>Log in</Button>
+			<Label for="email">E-mail:</Label>
+			<Input id="email" name="email" type="email" placeholder="E-mail" />
+			<Label for="password">Kodeord:</Label>
+			<Input id="password" name="password" type="password" placeholder="Kodeord" />
+			<Button type="submit">Log in</Button>
 		</form>
 	</Card>
-	<Link href="#" on:click={handleClick}>Forgot password?</Link>
+	<Link href="#" on:click={handleClick}>Glemt dit kodeord?</Link>
 
 	{#if showReset}
 		<Card>
-			<form method="POST" action="?/reset" class="flex gap-4">
-				<Input name="email" type="email" placeholder="Email" class="grow" />
-				<Button>Reset password</Button>
+			<form method="POST" action="?/reset" class="grid gap-4">
+				<Label for="email">E-mail:</Label>
+				<Input id="email" name="email" type="email" placeholder="E-mail" class="grow" />
+				<Button type="submit">Nulstil kodeord</Button>
 			</form>
 		</Card>
 	{/if}

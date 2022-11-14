@@ -1,11 +1,12 @@
 <script>
+	import { P } from 'flowbite-svelte';
 	import Link from '../base/Link.svelte';
 </script>
 
 <footer
 	class="bg-white dark:bg-neutral-900 dark:border-neutral-700 border-slate-200 p-4 gap-4 flex justify-between border-t flex-wrap"
 >
-	<p class="flex gap-2 flex-wrap">
+	<P class="flex gap-2 flex-wrap">
 		Kilder:
 		<Link href="https://energinet.dk/El/Elmarkedet/Tariffer/Aktuelle-tariffer">
 			Transmissionstarif & Systemtarif fra Energinet.dk
@@ -14,8 +15,8 @@
 			Spot Priser fra Energidataservice.dk
 		</Link> |
 		<Link href="https://skat.dk/data.aspx?oid=2234584">ElAfgift</Link>
-	</p>
-	<p>
+	</P>
+	<P>
 		Created by <Link
 			class="text-sky-600"
 			target="_blank"
@@ -24,5 +25,5 @@
 		>
 			Kasper Laursen
 		</Link>
-	</p>
+	</P>
 </footer>

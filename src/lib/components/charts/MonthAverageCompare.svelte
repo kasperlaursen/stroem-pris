@@ -18,6 +18,7 @@
 	import { DateTime } from 'luxon';
 	import { theme } from '$lib/stores';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
+	import { Heading } from 'flowbite-svelte';
 
 	export let spotData: PageData['spotData'] = [];
 	export let usageMeterData: PageData['usageMeterData'] = [];
@@ -84,7 +85,7 @@
 	);
 </script>
 
-<h2>Månedens gennemsnit pr. time</h2>
+<Heading customSize="text-lg font-semibold">Månedens gennemsnit pr. time</Heading>
 <div class="overflow-hidden">
 	<Chart
 		type="bar"

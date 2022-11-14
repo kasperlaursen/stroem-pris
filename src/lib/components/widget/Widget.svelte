@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Card from '../base/Card.svelte';
+	import { Card } from 'flowbite-svelte';
 	import WidgetContent from './WidgetContent.svelte';
 	export let data:
 		| { title: string; value: string; unit?: string; valueColor?: string }
@@ -10,17 +10,21 @@
 
 {#if Array.isArray(data)}
 	<Card
+		padding="sm"
 		{...$$restProps}
-		class={`${customClasses} row-span-${data.length < 5 ? data.length : data.length - 1} gap-4`}
-		{icon}
+		class={`${customClasses} row-span-${
+			data.length < 5 ? data.length : data.length - 1
+		} gap-4 !p-4 !relative`}
 	>
+		<div class={`absolute top-2 right-4`}>{icon}</div>
 		<slot />
 		{#each data as entry}
 			<WidgetContent {...entry} />
 		{/each}
 	</Card>
 {:else}
-	<Card {customClasses} {icon}>
+	<Card padding="sm" horizontal {customClasses} class="!p-4  !relative">
+		<div class={`absolute top-2 right-4`}>{icon}</div>
 		<slot />
 		<WidgetContent {...data} />
 	</Card>

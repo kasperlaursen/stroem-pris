@@ -1,9 +1,8 @@
 <script lang="ts">
-	import Alert from '$lib/components/base/Alert.svelte';
-	import Card from '$lib/components/base/Card.svelte';
 	import Link from '$lib/components/base/Link.svelte';
 	import DailySpot from '$lib/components/charts/DailySpot.svelte';
 	import type { PageData } from '.svelte-kit/types/src/routes/$types';
+	import { Card, Input, Select, Alert, P, Heading } from 'flowbite-svelte';
 	import { DateTime } from 'luxon';
 
 	export let data: PageData;
@@ -26,39 +25,45 @@
 	const handleChange = (event: any) => {
 		event.target.form.submit();
 	};
+
+	const areaOptions = [
+		{ value: 'DK1', name: 'DK1' },
+		{ value: 'DK2', name: 'DK2' }
+	];
 </script>
 
 <div class="grid gap-4">
 	{#each data.errors as error}
-		<Alert>{error.message}</Alert>
+		<Alert color="red">{error.message}</Alert>
 	{/each}
 
-	<Card>
-		<form method="get" action="/" class="flex justify-between">
-			<h1 class="font-medium text-lg">
+	<Card class="!max-w-full gap-4">
+		<form method="get" action="/" class="grid grid-cols-2">
+			<Heading customSize="text-xl" class="font-medium text-lg shrink">
 				Spot pris for {relativeDateFormatter.format(dateDiff, 'day')}
-			</h1>
-			<span>
-				<input
-					class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer"
+			</Heading>
+			<div class="grid gap-4 grid-cols-2 justify-self-end">
+				<Input
+					class="!text-base !leading-4"
+					size="sm"
 					type="date"
 					name="date"
 					bind:value={date}
 					on:change={handleChange}
 					max={DateTime.now().plus({ days: 1 }).toISODate()}
 				/>
-				<select
+				<Select
+					size="sm"
+					id="area"
 					name="area"
+					items={areaOptions}
+					placeholder="Område"
 					bind:value={data.priceArea}
 					on:change={handleChange}
-					class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer"
-				>
-					<option value="DK1">DK1</option>
-					<option value="DK2">DK2</option>
-				</select>
-			</span>
+				/>
+			</div>
 		</form>
-		<p class="text-sm">
+		<P class="text-sm">
 			Priserne i grafen er uden Nettarif (også kaldet Transport) da denne varierer mellem
 			netselskaber.
 			<br />
@@ -66,7 +71,7 @@
 			<Link href="https://www.danskenergi.dk/vejledning/nettilslutning/find-netselskab">
 				Danskenergi.dk
 			</Link>
-		</p>
+		</P>
 		{#if data.spotToday}
 			<DailySpot spotData={data.spotToday} feeData={data.feesToday} />
 		{/if}

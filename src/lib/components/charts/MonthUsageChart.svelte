@@ -20,6 +20,7 @@
 	import { theme } from '$lib/stores';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
 	import { onDestroy } from 'svelte';
+	import { Heading } from 'flowbite-svelte';
 
 	export let spotData: PageData['spotData'] = [];
 	export let month: PageData['month'];
@@ -88,7 +89,7 @@
 	);
 </script>
 
-<h2>Månedens forbrug pr. dag</h2>
+<Heading customSize="text-lg font-semibold">Månedens forbrug pr. dag</Heading>
 <div class="overflow-hidden">
 	<Chart
 		type="bar"

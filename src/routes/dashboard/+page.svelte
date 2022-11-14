@@ -1,13 +1,12 @@
 <script lang="ts">
-	import Alert from '$lib/components/base/Alert.svelte';
 	import Widget from '$lib/components/widget/Widget.svelte';
 	import MonthAverageCompare from '$lib/components/charts/MonthAverageCompare.svelte';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
 	import { DateTime } from 'luxon';
-	import Card from '$lib/components/base/Card.svelte';
 	import MonthUsageChart from '$lib/components/charts/MonthUsageChart.svelte';
 	import DayUsageChart from '$lib/components/charts/DayUsageChart.svelte';
 	import FixedPriceWidget from '$lib/components/widget/FixedPriceWidget.svelte';
+	import { Heading, Select, Card, Alert } from 'flowbite-svelte';
 
 	export let data: PageData;
 	const { errors, month, priceArea, session, spotData, usageMeterData } = data;
@@ -80,7 +79,8 @@
 			locale: 'da-DK'
 		})
 	);
-	let monthNumber = Number(month);
+	let monthNumber = String(month);
+	const monthOptions = months.map((name, index) => ({ value: String(index + 1), name }));
 </script>
 
 <div class="grid gap-4">
@@ -88,22 +88,21 @@
 		<Alert>{error.message}</Alert>
 	{/each}
 	<section class="flex justify-between">
-		<h2 class="text-2xl font-medium capitalize">
+		<Heading customSize="text-2xl font-bold" class="capitalize">
 			🗓️ {DateTime.fromObject({ month: month }).toFormat('MMMM y', {
 				locale: 'da-DK'
 			})}
-		</h2>
-		<form method="get" action="?/" class="flex justify-between">
-			<select
+		</Heading>
+		<form method="get" action="?/" class="w-32">
+			<Select
+				id="month"
 				name="month"
+				items={monthOptions}
+				placeholder="Måned"
+				class="capitalize"
 				bind:value={monthNumber}
 				on:change={handleChange}
-				class="border-0 rounded bg-neutral-200 dark:bg-neutral-800 cursor-pointer capitalize"
-			>
-				{#each months as name, index}
-					<option value={index + 1}>{name}</option>
-				{/each}
-			</select>
+			/>
 		</form>
 	</section>
 	<section class="grid gap-4 grid-cols-auto-fit-250 max-w-full">
@@ -185,15 +184,15 @@
 		/>
 	</section>
 	<section class="grid gap-4 lg:grid-cols-2">
-		<Card>
+		<Card class="min-w-full gap-4">
 			<MonthAverageCompare {usageMeterData} {spotData} />
 		</Card>
-		<Card>
+		<Card class="min-w-full gap-4">
 			<MonthUsageChart {usageMeterData} {spotData} {month} />
 		</Card>
 	</section>
 
-	<Card>
+	<Card class="min-w-full gap-4">
 		<DayUsageChart {usageMeterData} {spotData} />
 	</Card>
 </div>
