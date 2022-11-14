@@ -10,7 +10,7 @@
     ${customClasses}
     ${space ? 'p-4 gap-4' : ''}
     grid
-    place-content-start
+    content-start
     w-full
     relative
     rounded-2xl
