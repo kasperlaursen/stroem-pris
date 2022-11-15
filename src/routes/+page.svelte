@@ -27,8 +27,8 @@
 	};
 
 	const areaOptions = [
-		{ value: 'DK1', name: 'DK1' },
-		{ value: 'DK2', name: 'DK2' }
+		{ value: 'DK1', name: 'Vest for storebælt' },
+		{ value: 'DK2', name: 'Øst for storebælt' }
 	];
 </script>
 
@@ -38,8 +38,8 @@
 	{/each}
 
 	<Card class="!max-w-full gap-4">
-		<form method="get" action="/" class="grid grid-cols-2">
-			<Heading customSize="text-xl" class="font-medium text-lg shrink">
+		<form method="get" action="/" class="grid md:grid-cols-2 gap-4 justify-center">
+			<Heading customSize="text-xl" class="font-medium text-lg text-center md:text-start">
 				Spot pris for {relativeDateFormatter.format(dateDiff, 'day')}
 			</Heading>
 			<div class="grid gap-4 grid-cols-2 justify-self-end">
@@ -54,6 +54,7 @@
 				/>
 				<Select
 					size="sm"
+					class="pr-8"
 					id="area"
 					name="area"
 					items={areaOptions}
