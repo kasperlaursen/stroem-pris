@@ -23,7 +23,7 @@
 			title: 'Forskel',
 			value: (totalUsage * ($fixed / 100) - totalSpot).toFixed(2),
 			unit: 'kr',
-			valueColor: totalUsage * ($fixed / 100) > totalSpot ? 'text-red-500' : 'text-green-500'
+			valueColor: totalUsage * ($fixed / 100) > totalSpot ? '!text-red-500' : '!text-emerald-500'
 		}
 	]}
 	icon="🤑"
