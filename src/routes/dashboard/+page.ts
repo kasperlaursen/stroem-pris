@@ -20,7 +20,7 @@ export const load: PageLoad = async (event) => {
 		.from('datahub_tokens')
 		.select('refresh_token, usage_meter_id');
 
-	if (!tokenData || !tokenData?.[0].refresh_token || !tokenData?.[0].usage_meter_id) {
+	if (!tokenData || !tokenData?.[0]?.refresh_token || !tokenData?.[0]?.usage_meter_id) {
 		throw redirect(303, '/profile');
 	}
 
