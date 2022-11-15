@@ -89,7 +89,7 @@ export const validateStringsAsISODateRange = (
 	}
 
 	if (max === 'TOMORROW' && toDate.diffNow('days').days >= 1) {
-		const tomorrow = DateTime.now().plus({ days: 1 });
+		const tomorrow = DateTime.now().plus({ days: 2 });
 		safeToDate = DateTime.fromObject({
 			day: tomorrow.day,
 			month: tomorrow.month,
