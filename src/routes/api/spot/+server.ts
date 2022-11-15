@@ -17,7 +17,7 @@ export const GET: RequestHandler = async (event) => {
 
 	const priceArea: PriceAreas = url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
 
-	const dateValidaton = validateStringsAsISODateRange(fromDateParam, toDateParam);
+	const dateValidaton = validateStringsAsISODateRange(fromDateParam, toDateParam, 'TOMORROW');
 	if (!dateValidaton.isValid) {
 		throw error(dateValidaton.errorCode, dateValidaton.errorMessage);
 	}
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async (event) => {
 
 	console.log(
 		'💸 🗓️ ',
-		`Requested data between ${fromDateParam} and ${toDateParam}, for area ${priceArea}`
+		`Requested data between ${fromDateParam} and ${toDate.toISODate()}, for area ${priceArea}`
 	);
 	// Call supabase to check if data is available for the date range
 	const { supabaseClient } = await getSupabase(event);

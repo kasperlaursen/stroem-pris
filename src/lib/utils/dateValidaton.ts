@@ -24,7 +24,7 @@ type DateReturn = ValidDateReturn | InvalidDateReturn;
 export const validateStringsAsISODateRange = (
 	fromDateString: string | null,
 	toDateString: string | null,
-	maxToday: boolean = false
+	max: 'NONE' | 'TODAY' | 'TOMORROW' = 'NONE'
 ): DateReturn => {
 	// Validate required parameters exist
 	if (!fromDateString || !toDateString) {
@@ -80,15 +80,22 @@ export const validateStringsAsISODateRange = (
 	}
 
 	// toDate no later than now
-	const now = DateTime.now();
-	const safeToDate =
-		maxToday && toDate.diffNow('days').days >= 0
-			? DateTime.fromObject({
-					day: now.day,
-					month: now.month,
-					year: now.year
-			  })
-			: toDate;
+
+	let safeToDate = toDate;
+
+	if (max === 'TODAY' && toDate.diffNow('days').days >= 0) {
+		const today = DateTime.now();
+		safeToDate = DateTime.fromObject({ day: today.day, month: today.month, year: today.year });
+	}
+
+	if (max === 'TOMORROW' && toDate.diffNow('days').days >= 1) {
+		const tomorrow = DateTime.now().plus({ days: 1 });
+		safeToDate = DateTime.fromObject({
+			day: tomorrow.day,
+			month: tomorrow.month,
+			year: tomorrow.year
+		});
+	}
 
 	// Get hours between from and to dates
 	const hourDiff = safeToDate.diff(fromDate, 'hours').toObject().hours;

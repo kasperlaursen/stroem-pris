@@ -20,7 +20,7 @@ export const GET: RequestHandler = async (event) => {
 	const fromDateParam = url.searchParams.get('from');
 	const toDateParam = url.searchParams.get('to');
 
-	const dateValidaton = validateStringsAsISODateRange(fromDateParam, toDateParam, true);
+	const dateValidaton = validateStringsAsISODateRange(fromDateParam, toDateParam, 'TODAY');
 	if (!dateValidaton.isValid) {
 		throw error(dateValidaton.errorCode, dateValidaton.errorMessage);
 	}
