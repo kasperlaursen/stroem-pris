@@ -13,7 +13,7 @@ export const load: PageLoad = async (event) => {
 
 	return {
 		user: session.user,
-		meterId: tokenData?.[0].usage_meter_id,
-		hasToken: Boolean(tokenData && tokenData?.[0].refresh_token)
+		meterId: tokenData?.[0]?.usage_meter_id ?? '',
+		hasToken: Boolean(tokenData && tokenData?.[0]?.refresh_token)
 	};
 };
