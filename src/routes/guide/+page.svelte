@@ -87,7 +87,7 @@
 		{#if hasToken}
 			<li class="grid gap-4 py-8">
 				<Heading tag="h5" id="step-9">
-					9. Indsæt dit MålepunktsID herunder og gtryk "Gem Målepunkt"
+					9. Indsæt dit MålepunktsID herunder og tryk "Gem Målepunkt"
 				</Heading>
 				<form method="POST" action="?/setMeterId" class="grid gap-4">
 					<Input value={data.meterId} name="meterid" type="text" class="w-full" />

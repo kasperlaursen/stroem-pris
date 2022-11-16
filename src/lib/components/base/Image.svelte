@@ -11,7 +11,7 @@
 	class={`
         cursor-pointer
         ${customClasses}
-        ${active ? `z-50 fixed inset-0 p-4 md:p-12 xl:p-32 bg-black bg-opacity-50` : `max-w-xl`}
+        ${active ? `z-50 fixed inset-0 p-4 md:p-12 xl:p-32 bg-black bg-opacity-80` : `max-w-3xl`}
         `}
 >
 	<img {alt} {src} class={`max-w-full mx-auto `} />
