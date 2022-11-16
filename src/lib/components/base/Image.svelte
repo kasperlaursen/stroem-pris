@@ -1,0 +1,18 @@
+<script lang="ts">
+	export let alt: string;
+	export let src: string;
+	const customClasses = $$restProps.class;
+	let active: boolean = false;
+</script>
+
+<div
+	on:click={() => (active = !active)}
+	{...$$restProps}
+	class={`
+        cursor-pointer
+        ${customClasses}
+        ${active ? `z-50 fixed inset-0 p-4 md:p-12 xl:p-32 bg-black bg-opacity-50` : `max-w-xl`}
+        `}
+>
+	<img {alt} {src} class={`max-w-full mx-auto `} />
+</div>
