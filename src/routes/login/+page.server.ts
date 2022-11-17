@@ -1,7 +1,7 @@
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { AuthHelperError } from '@supabase/auth-helpers-shared';
 import { invalid, redirect, type Actions } from '@sveltejs/kit';
-import type { PageLoad } from '.svelte-kit/types/src/routes/profile/$types';
+import type { PageLoad } from '.svelte-kit/types/src/routes/settings/$types';
 
 export const load: PageLoad = async (event) => {
 	const { session } = await getSupabase(event);
@@ -40,7 +40,7 @@ export const actions: Actions = {
 			});
 		}
 
-		throw redirect(303, '/profile');
+		throw redirect(303, '/settings');
 	},
 
 	reset: async (event) => {

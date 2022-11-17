@@ -1,4 +1,4 @@
-<!-- src/routes/profile/+page.svelte -->
+<!-- src/routes/settings/+page.svelte -->
 <script lang="ts">
 	import Link from '$lib/components/base/Link.svelte';
 	import { Button, Card, Heading, Helper, Hr, Input, Label, P, Select } from 'flowbite-svelte';

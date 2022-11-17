@@ -24,7 +24,7 @@ export const actions: Actions = {
 				supabaseErrorMessage: setSettingsError.message
 			});
 		}
-		throw redirect(303, '/profile');
+		throw redirect(303, '/settings');
 	},
 	setToken: async (event) => {
 		const { request } = event;
@@ -47,7 +47,7 @@ export const actions: Actions = {
 				supabaseErrorMessage: setTokenError.message
 			});
 		}
-		throw redirect(303, '/profile');
+		throw redirect(303, '/settings');
 	},
 	setMeterId: async (event) => {
 		const { request } = event;
@@ -72,7 +72,7 @@ export const actions: Actions = {
 				supabaseErrorMessage: setMeterError.message
 			});
 		}
-		throw redirect(303, '/profile');
+		throw redirect(303, '/settings');
 	},
 	deleteToken: async (event) => {
 		const { request } = event;
@@ -93,6 +93,6 @@ export const actions: Actions = {
 				supabaseErrorMessage: setTokenError.message
 			});
 		}
-		throw redirect(303, '/profile');
+		throw redirect(303, '/settings');
 	}
 };
