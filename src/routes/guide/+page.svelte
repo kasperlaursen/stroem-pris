@@ -52,7 +52,7 @@
 		</li>
 		<li class="grid gap-4 py-8">
 			<Heading tag="h5" id="step-6">
-				6. Klik på "Kopier til dklipsholder" for at kopiere hele din token
+				6. Klik på "Kopier til udklipsholder" for at kopiere hele din token
 			</Heading>
 			<Image class="mx-auto" alt="Showing where to click in the eloverblik ui" src={Step6} />
 		</li>
@@ -93,6 +93,7 @@
 					<Input value={data.meterId} name="meterid" type="text" class="w-full" />
 					{#if data.meterId}
 						<P class="text-center">Din MålepunktsID er nu gemt</P>
+						<Link class="text-center" href="/dashboard">Se din data på siden: Mit Overblik</Link>
 					{:else}
 						<Button type="submit" class="self-end">Gem Målepunkt</Button>
 					{/if}
