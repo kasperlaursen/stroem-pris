@@ -11,7 +11,7 @@
 	import type { PageData } from '.svelte-kit/types/src/routes/guide/$types';
 
 	export let data: PageData;
-	$: ({ hasToken } = data);
+	$: ({ hasToken, isUser, meterId } = data);
 </script>
 
 <Card class="min-w-max m-auto gap-4">
@@ -56,48 +56,58 @@
 			</Heading>
 			<Image class="mx-auto" alt="Showing where to click in the eloverblik ui" src={Step6} />
 		</li>
-
-		<li class="grid gap-4 py-8">
-			<Heading tag="h5" id="step-7">7. Indsæt din token herunder og tryk "Gem Token"</Heading>
-			<form method="POST" action="?/setToken" class="grid gap-4">
-				<Input
-					placeholder="Indsæt Token"
-					disabled={hasToken}
-					value={hasToken ? '**********' : ''}
-					name="token"
-					type="password"
-					class="w-full"
-				/>
-				{#if hasToken}
-					<P class="text-center">Din token er nu gemt</P>
-				{:else}
-					<Button type="submit" class="self-end">Gem Token</Button>
-				{/if}
-			</form>
-		</li>
-
-		<li class="grid gap-4 py-8">
-			<Heading tag="h5" id="step-8">8. Kopier dit MålepunktsID fra Eloverblik</Heading>
-			<P>Klik på ElOverblik logoet for at komme tilbage til startsiden.</P>
-			<P>Har du mere end 1 målepunkt skal du kopiere ID for punktet "Forbrugt fra net".</P>
-			<P>Ser du ikke mere end 1 målepunkt skal du kopiere det id du ser.</P>
-			<Image class="mx-auto" alt="Showing where to click in the eloverblik ui" src={Step8} />
-		</li>
-
-		{#if hasToken}
+		{#if isUser}
 			<li class="grid gap-4 py-8">
-				<Heading tag="h5" id="step-9">
-					9. Indsæt dit MålepunktsID herunder og tryk "Gem Målepunkt"
-				</Heading>
-				<form method="POST" action="?/setMeterId" class="grid gap-4">
-					<Input value={data.meterId} name="meterid" type="text" class="w-full" />
-					{#if data.meterId}
-						<P class="text-center">Din MålepunktsID er nu gemt</P>
-						<Link class="text-center" href="/dashboard">Se din data på siden: Mit Overblik</Link>
+				<Heading tag="h5" id="step-7">7. Indsæt din token herunder og tryk "Gem Token"</Heading>
+
+				<form method="POST" action="?/setToken" class="grid gap-4">
+					<Input
+						placeholder="Indsæt Token"
+						disabled={hasToken}
+						value={hasToken ? '**********' : ''}
+						name="token"
+						type="password"
+						class="w-full"
+					/>
+					{#if hasToken}
+						<P class="text-center">Din token er nu gemt</P>
 					{:else}
-						<Button type="submit" class="self-end">Gem Målepunkt</Button>
+						<Button type="submit" class="self-end">Gem Token</Button>
 					{/if}
 				</form>
+			</li>
+
+			<li class="grid gap-4 py-8">
+				<Heading tag="h5" id="step-8">8. Kopier dit MålepunktsID fra Eloverblik</Heading>
+				<P>Klik på ElOverblik logoet for at komme tilbage til startsiden.</P>
+				<P>Har du mere end 1 målepunkt skal du kopiere ID for punktet "Forbrugt fra net".</P>
+				<P>Ser du ikke mere end 1 målepunkt skal du kopiere det id du ser.</P>
+				<Image class="mx-auto" alt="Showing where to click in the eloverblik ui" src={Step8} />
+			</li>
+
+			{#if hasToken}
+				<li class="grid gap-4 py-8">
+					<Heading tag="h5" id="step-9">
+						9. Indsæt dit MålepunktsID herunder og tryk "Gem Målepunkt"
+					</Heading>
+					<form method="POST" action="?/setMeterId" class="grid gap-4">
+						<Input value={meterId} name="meterid" type="text" class="w-full" />
+						{#if meterId}
+							<P class="text-center">Din MålepunktsID er nu gemt</P>
+							<Link class="text-center" href="/dashboard">Se din data på siden: Mit Overblik</Link>
+						{:else}
+							<Button type="submit" class="self-end">Gem Målepunkt</Button>
+						{/if}
+					</form>
+				</li>
+			{/if}
+		{:else}
+			<li class="grid gap-4 py-8">
+				<Heading tag="h5" id="step-7">Du skal være logget ind for at fortsætte.</Heading>
+				<P>
+					Der er på nuværende tidspunkt ikke åbnet for nye brugere. <br />
+					Du er velkommen til at kontakte mig for at hører nærmere.
+				</P>
 			</li>
 		{/if}
 	</ol>
