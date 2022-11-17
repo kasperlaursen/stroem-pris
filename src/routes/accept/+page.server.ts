@@ -11,6 +11,6 @@ export const actions: Actions = {
 		await supabaseClient.auth.updateUser({
 			password
 		});
-		throw redirect(303, '/');
+		throw redirect(303, '/guide');
 	}
 };
