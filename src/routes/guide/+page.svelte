@@ -14,7 +14,7 @@
 	$: ({ hasToken, isUser, meterId } = data);
 </script>
 
-<Card class="min-w-max m-auto gap-4">
+<Card size="xl" class="mx-auto gap-4">
 	<Heading tag="h3">Kom godt igang</Heading>
 	<P>
 		For at vise data og lave beregninger på <b>dit elforbrug</b>, er der et par skridt vi skal
