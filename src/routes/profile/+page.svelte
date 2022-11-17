@@ -1,5 +1,6 @@
 <!-- src/routes/profile/+page.svelte -->
 <script lang="ts">
+	import Link from '$lib/components/base/Link.svelte';
 	import { Button, Card, Heading, Hr, Input, P } from 'flowbite-svelte';
 	import type { PageData } from './$types';
 	export let data: PageData;
@@ -31,6 +32,7 @@
 			Indsæt og gem din datahub token for at få adgang til funktioner baseret på målerdata. <br />
 			<i>Din token gemmes i vores database, andre brugere vil ikke have adgang til den.</i>
 		</P>
+		<P>Ved du ikke hvordan du får din Token? <Link href="/guide">Følg vores nemme guide</Link></P>
 		<form method="POST" action="?/setToken" class="grid gap-4">
 			<Input
 				disabled={hasToken}
