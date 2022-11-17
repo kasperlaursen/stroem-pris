@@ -58,9 +58,9 @@
 				Dit overblik
 			</NavLi>
 			<NavLi
-				href="/profile"
+				href="/settings"
 				class="flex gap-2 items-center"
-				active={$page.url.pathname === '/profile'}
+				active={$page.url.pathname === '/settings'}
 			>
 				<Icon src={Cog} theme="solid" class={`h-4 w-4`} />
 				Indstillinger

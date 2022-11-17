@@ -21,12 +21,23 @@ export const load: PageLoad = async (event) => {
 		.select('refresh_token, usage_meter_id');
 
 	if (!tokenData || !tokenData?.[0]?.refresh_token || !tokenData?.[0]?.usage_meter_id) {
-		throw redirect(303, '/profile');
+		throw redirect(303, '/settings');
 	}
 
 	const errors: InternalError[] = [];
 
-	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
+	const { data: settingData, error } = await supabaseClient
+		.from('user_settings')
+		.select('price_area');
+
+	const priceArea: PriceAreas =
+		url.searchParams.get('area') === 'DK1'
+			? 'DK1'
+			: url.searchParams.get('area') === 'DK2'
+			? 'DK2'
+			: settingData?.[0]?.price_area === 'DK2'
+			? 'DK2'
+			: 'DK1';
 
 	const month = url.searchParams.get('month')
 		? Number(url.searchParams.get('month'))

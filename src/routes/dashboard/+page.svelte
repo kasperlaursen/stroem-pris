@@ -81,25 +81,41 @@
 	);
 	let monthNumber = String(month);
 	const monthOptions = months.map((name, index) => ({ value: String(index + 1), name }));
+
+	const areaOptions = [
+		{ value: 'DK1', name: 'Vest for storebælt' },
+		{ value: 'DK2', name: 'Øst for storebælt' }
+	];
 </script>
 
 <div class="grid gap-4">
 	{#each errors as error}
 		<Alert>{error.message}</Alert>
 	{/each}
-	<section class="flex justify-between">
+	<section class="flex justify-between flex-col sm:flex-row gap-4">
 		<Heading customSize="text-2xl font-bold" class="capitalize">
 			🗓️ {DateTime.fromObject({ month: month }).toFormat('MMMM y', {
 				locale: 'da-DK'
 			})}
 		</Heading>
-		<form method="get" action="?/" class="w-32">
+		<form method="get" action="?/" class="flex gap-4 grow ">
 			<Select
+				size="sm"
+				class="pr-8 w-60"
+				id="area"
+				name="area"
+				items={areaOptions}
+				placeholder="Område"
+				value={priceArea}
+				on:change={handleChange}
+			/>
+			<Select
+				size="sm"
 				id="month"
 				name="month"
+				class="pr-8 capitalize"
 				items={monthOptions}
 				placeholder="Måned"
-				class="capitalize"
 				bind:value={monthNumber}
 				on:change={handleChange}
 			/>

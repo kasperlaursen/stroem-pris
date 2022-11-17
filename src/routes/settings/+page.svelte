@@ -1,14 +1,19 @@
-<!-- src/routes/profile/+page.svelte -->
+<!-- src/routes/settings/+page.svelte -->
 <script lang="ts">
 	import Link from '$lib/components/base/Link.svelte';
-	import { Button, Card, Heading, Hr, Input, P } from 'flowbite-svelte';
+	import { Button, Card, Heading, Helper, Hr, Input, Label, P, Select } from 'flowbite-svelte';
 	import type { PageData } from './$types';
 	export let data: PageData;
-	$: ({ user, hasToken } = data);
+	$: ({ user, hasToken, priceArea } = data);
+
+	const areaOptions = [
+		{ value: 'DK1', name: 'Vest for storebælt' },
+		{ value: 'DK2', name: 'Øst for storebælt' }
+	];
 </script>
 
 <div class="grid gap-4 sm:grid-cols-2 grid-cols-1">
-	<Card class="min-w-full gap-4">
+	<Card class="min-w-full gap-4  col-start-1">
 		<Heading customSize="text-xl font-semibold" tag="h2" class="font-semibold mb-2">
 			Din Information:
 		</Heading>
@@ -24,7 +29,30 @@
 		</div>
 	</Card>
 
-	<Card class="min-w-full gap-4">
+	<Card class="min-w-full gap-4  col-start-1">
+		<Heading customSize="text-xl font-semibold" tag="h2" class="font-semibold mb-2">
+			Personlige indstillinger:
+		</Heading>
+		<form method="POST" action="?/updateSettings" class="grid gap-4">
+			<Label>Hvilket område bor du i?</Label>
+			<Select
+				size="sm"
+				class="pr-8"
+				id="area"
+				name="area"
+				items={areaOptions}
+				placeholder="Område"
+				value={priceArea}
+			/>
+			<Helper>
+				El priserne er forskellige om du bor øst eller vest for storebælt. <br />
+				Vælg din lokation for at få korrekt data.
+			</Helper>
+			<Button type="submit" class="self-end">Gem Indstillinger</Button>
+		</form>
+	</Card>
+
+	<Card class="min-w-full gap-4 col-start-2 row-start-1 row-span-3">
 		<Heading customSize="text-xl font-semibold" tag="h2" class="font-semibold mb-2">
 			Eloverblik integration
 		</Heading>
