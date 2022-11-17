@@ -26,7 +26,18 @@ export const load: PageLoad = async (event) => {
 
 	const errors: InternalError[] = [];
 
-	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
+	const { data: settingData, error } = await supabaseClient
+		.from('user_settings')
+		.select('price_area');
+
+	const priceArea: PriceAreas =
+		url.searchParams.get('area') === 'DK1'
+			? 'DK1'
+			: url.searchParams.get('area') === 'DK2'
+			? 'DK2'
+			: settingData?.[0]?.price_area === 'DK2'
+			? 'DK2'
+			: 'DK1';
 
 	const month = url.searchParams.get('month')
 		? Number(url.searchParams.get('month'))
