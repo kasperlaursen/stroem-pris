@@ -3,6 +3,29 @@ import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { error, invalid, redirect } from '@sveltejs/kit';
 
 export const actions: Actions = {
+	updateSettings: async (event) => {
+		const { request } = event;
+		const { session, supabaseClient } = await getSupabase(event);
+		if (!session) {
+			// the user is not signed in
+			throw error(403, { message: 'Unauthorized' });
+		}
+		// we are save, let the user create the post
+		const formData = await request.formData();
+		const area = formData.get('area') === 'DK2' ? 'DK2' : 'DK1';
+
+		const { error: setSettingsError } = await supabaseClient
+			.from('user_settings')
+			.upsert({ user_id: session.user.id, price_area: area });
+
+		if (setSettingsError) {
+			console.log(setSettingsError);
+			return invalid(500, {
+				supabaseErrorMessage: setSettingsError.message
+			});
+		}
+		throw redirect(303, '/profile');
+	},
 	setToken: async (event) => {
 		const { request } = event;
 		const { session, supabaseClient } = await getSupabase(event);
