@@ -12,8 +12,8 @@
 	];
 </script>
 
-<div class="grid gap-4 sm:grid-cols-2 grid-cols-1">
-	<Card class="min-w-full gap-4  col-start-1">
+<div class="grid gap-4 md:grid-cols-2 grid-cols-1">
+	<Card class="min-w-full gap-4 col-start-1">
 		<Heading customSize="text-xl font-semibold" tag="h2" class="font-semibold mb-2">
 			Din Information:
 		</Heading>
@@ -29,7 +29,7 @@
 		</div>
 	</Card>
 
-	<Card class="min-w-full gap-4  col-start-1">
+	<Card class="min-w-full gap-4 col-start-1">
 		<Heading customSize="text-xl font-semibold" tag="h2" class="font-semibold mb-2">
 			Personlige indstillinger:
 		</Heading>
@@ -52,7 +52,7 @@
 		</form>
 	</Card>
 
-	<Card class="min-w-full gap-4 col-start-2 row-start-1 row-span-3">
+	<Card class="min-w-full gap-4 md:col-start-2 md:row-start-1 row-span-3">
 		<Heading customSize="text-xl font-semibold" tag="h2" class="font-semibold mb-2">
 			Eloverblik integration
 		</Heading>
