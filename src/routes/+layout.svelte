@@ -27,7 +27,7 @@
 </svelte:head>
 
 <Header />
-<div class="mx-auto my-4 container min-h-[calc(100vh-72px)]">
+<div class="mx-auto my-4 sm:px-4 container min-h-[calc(100vh-72px)]">
 	{#if Boolean($navigating)}
 		<div class="h-full w-full grid place-items-center">
 			<span class="grid place-items-center text-cyan-400">

@@ -11,6 +11,7 @@
 {#if Array.isArray(data)}
 	<Card
 		padding="sm"
+		size="lg"
 		{...$$restProps}
 		class={`${customClasses} row-span-${
 			data.length < 5 ? data.length : data.length - 1
@@ -23,7 +24,7 @@
 		{/each}
 	</Card>
 {:else}
-	<Card padding="sm" horizontal {customClasses} class="!p-4  !relative">
+	<Card padding="sm" size="lg" horizontal {customClasses} class="!p-4  !relative">
 		<div class={`absolute top-2 right-4`}>{icon}</div>
 		<slot />
 		<WidgetContent {...data} />

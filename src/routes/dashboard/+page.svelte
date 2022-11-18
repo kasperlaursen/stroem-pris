@@ -121,7 +121,7 @@
 			/>
 		</form>
 	</section>
-	<section class="grid gap-4 grid-cols-auto-fit-250 max-w-full">
+	<section class="grid gap-4 grid-cols-auto-fit-250 grid-rows-[90px] max-w-full">
 		<Widget
 			data={{
 				title: 'Dit Forbrug',
