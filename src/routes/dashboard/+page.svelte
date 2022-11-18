@@ -133,7 +133,25 @@
 
 		<Widget
 			data={{
-				title: 'Gennemsnit kr/kwh (spot)',
+				title: 'Total spot pris',
+				value: totalUsageSpotPrice().toFixed(2),
+				unit: 'kr'
+			}}
+			icon="💰"
+		/>
+
+		<Widget
+			data={{
+				title: 'Dit spot gennemsnit kr/kwh',
+				value: usageSpotAverage().toFixed(2),
+				unit: 'kr/kwh'
+			}}
+			icon="💸"
+		/>
+
+		<Widget
+			data={{
+				title: 'Gennemsnit spot kr/kwh',
 				value: spotAverage,
 				unit: 'kr/kwh'
 			}}
@@ -142,14 +160,27 @@
 
 		<Widget
 			data={{
-				title: 'Forbrug kr/kwh (spot)',
-				value: usageSpotAverage().toFixed(2),
-				unit: 'kr/kwh'
+				title: 'Laveste time gennemsnit',
+				value: lowestUsageMeterData.toFixed(2),
+				unit: 'kwh'
 			}}
-			icon="💸"
+			icon="💤"
 		/>
 
-		<FixedPriceWidget totalSpot={totalUsageSpotPrice()} {totalUsage} />
+		<Widget
+			data={{
+				title: 'Højeste time gennemsnit',
+				value: highestUsageMeterData.toFixed(2),
+				unit: 'kwh'
+			}}
+			icon="😱"
+		/>
+
+		<FixedPriceWidget
+			totalSpot={totalUsageSpotPrice()}
+			{totalUsage}
+			class="lg:col-start-3 lg:row-start-1 xl:col-start-4 2xl:col-start-5"
+		/>
 
 		<Widget
 			data={[
@@ -160,7 +191,13 @@
 				{
 					title: 'Seneste spot datapunkt',
 					value: spotDataLatestDate
-				},
+				}
+			]}
+			icon="ℹ️"
+		/>
+
+		<Widget
+			data={[
 				{
 					title: 'Antal forbrug datapunkter',
 					value: usageMeterDataCount.toString()
@@ -172,33 +209,8 @@
 			]}
 			icon="ℹ️"
 		/>
-
-		<Widget
-			data={{
-				title: 'Laveste gennemsnit',
-				value: lowestUsageMeterData.toFixed(2),
-				unit: 'kwh'
-			}}
-			icon="💤"
-		/>
-
-		<Widget
-			data={{
-				title: 'Højeste gennemsnit',
-				value: highestUsageMeterData.toFixed(2),
-				unit: 'kwh'
-			}}
-			icon="😱"
-		/>
-		<Widget
-			data={{
-				title: 'Total pris (spot)',
-				value: totalUsageSpotPrice().toFixed(2),
-				unit: 'kr'
-			}}
-			icon="💰"
-		/>
 	</section>
+	<Heading tag="h6">Grafer</Heading>
 	<section class="grid gap-4 lg:grid-cols-2">
 		<Card class="min-w-full gap-4">
 			<MonthAverageCompare {usageMeterData} {spotData} />
