@@ -121,7 +121,9 @@
 			/>
 		</form>
 	</section>
-	<section class="grid gap-4 grid-cols-auto-fit-250 grid-rows-[90px] max-w-full">
+	<section
+		class=" widget-grid grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-full"
+	>
 		<Widget
 			data={{
 				title: 'Dit Forbrug',
@@ -179,7 +181,7 @@
 		<FixedPriceWidget
 			totalSpot={totalUsageSpotPrice()}
 			{totalUsage}
-			class="lg:col-start-3 lg:row-start-1 xl:col-start-4 2xl:col-start-5"
+			class="lg:col-start-3 row-span-4 lg:row-start-1 lg:row-end-5 xl:col-start-4 2xl:col-start-5"
 		/>
 
 		<Widget

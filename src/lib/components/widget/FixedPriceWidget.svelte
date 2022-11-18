@@ -27,7 +27,7 @@
 		}
 	]}
 	icon="🤑"
-	class={`${customClasses} row-span-4`}
+	class={`${customClasses}`}
 	{...$$restProps}
 >
 	<P weight="medium" class="opacity-60">Fast pris beregner</P>

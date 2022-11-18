@@ -9,7 +9,7 @@
 </script>
 
 <div {...$$restProps} class={customClasses}>
-	<P weight="medium" class="opacity-60">{title}</P>
+	<P weight="medium" size="sm" class="opacity-60">{title}</P>
 	<P weight="bold" size="xl" class={valueColor}>
 		{value}
 		{#if unit}
