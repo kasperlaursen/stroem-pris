@@ -20,7 +20,7 @@ export const getSpotDataFromDataService = async (
 	const end = to.toFormat('yyyy-MM-dd');
 	console.log(`💸 🌍`, `Calling Spot API for data between: ${start} AND ${end}`);
 
-	const APIBase = 'https://api.energidataservice.dk/v2/dataset/Elspotprices';
+	const APIBase = 'https://api.energidataservice.dk/dataset/Elspotprices';
 	const request = await fetch(
 		`${APIBase}?start=${start}&end=${end}&filter={"PriceArea":"${area}"}`
 	);
