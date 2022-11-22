@@ -15,13 +15,17 @@
 		LineController,
 		BarController
 	} from 'chart.js';
+	import ChartDataLabels from 'chartjs-plugin-datalabels';
 	import { DateTime } from 'luxon';
 	import { theme } from '$lib/stores';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
 	import { Heading, Input } from 'flowbite-svelte';
+	import type { FeeKeys } from '$lib/types/fees';
 
 	export let spotData: PageData['spotData'] = [];
 	export let usageMeterData: PageData['usageMeterData'] = [];
+	export let feeData: { [fee in FeeKeys]: number };
+	export let visible: { moms: boolean; elafgift: boolean; tariffer: boolean };
 
 	let firstDate =
 		usageMeterData.sort((a, b) => a.hourUTC.toMillis() - b.hourUTC.toMillis()).at(1)?.hourUTC ??
@@ -49,6 +53,18 @@
 					.find(({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index)?.priceDKK ?? 0
 		);
 
+		const elafgifter = hours.map(() => feeData.elafgift / 100);
+		const transmissiionstariffer = hours.map(() => feeData.transmissionstarif / 100);
+		const systemtariffer = hours.map(() => feeData.systemtarif / 100);
+		const moms = hours.map(
+			(index) =>
+				(elafgifter[index] +
+					transmissiionstariffer[index] +
+					systemtariffer[index] +
+					spotHourAverage[index]) *
+				0.25
+		);
+
 		const usageMeterHourAverage = hours.map(
 			(_, index) =>
 				usageMeterData
@@ -61,26 +77,64 @@
 					?.measurement ?? 0
 		);
 
-		const datasets: [ChartData<'line'>['datasets'][number], ChartData<'bar'>['datasets'][number]] =
-			[
-				{
-					label: 'Forbrug',
-					type: 'line',
-					cubicInterpolationMode: 'monotone',
-					yAxisID: 'A',
-					data: usageMeterHourAverage,
+		const datasets: [
+			ChartData<'line'>['datasets'][number],
+			ChartData<'bar'>['datasets'][number],
+			ChartData<'bar'>['datasets'][number],
+			ChartData<'bar'>['datasets'][number],
+			ChartData<'bar'>['datasets'][number],
+			ChartData<'bar'>['datasets'][number]
+		] = [
+			{
+				label: 'Forbrug',
+				type: 'line',
+				cubicInterpolationMode: 'monotone',
+				yAxisID: 'A',
+				data: usageMeterHourAverage,
 
-					backgroundColor: 'rgba(244, 63, 94)',
-					borderColor: 'rgba(244, 63, 94)'
-				},
-				{
-					label: 'Spot',
-					type: 'bar',
-					yAxisID: 'B',
-					data: spotHourAverage,
-					backgroundColor: 'rgba(148, 163, 184, 0.7)'
-				}
-			];
+				backgroundColor: 'rgba(244, 63, 94)',
+				borderColor: 'rgba(244, 63, 94)'
+			},
+			{
+				label: 'ElAfgift',
+				type: 'bar',
+				yAxisID: 'B',
+				data: elafgifter,
+				backgroundColor: 'rgb(52, 211, 153)',
+				hidden: !visible.elafgift
+			},
+			{
+				label: 'Transmissionstarif',
+				type: 'bar',
+				yAxisID: 'B',
+				data: transmissiionstariffer,
+				backgroundColor: 'rgb(34, 211, 238)',
+				hidden: !visible.tariffer
+			},
+			{
+				label: 'Systemtarif',
+				type: 'bar',
+				yAxisID: 'B',
+				data: systemtariffer,
+				backgroundColor: 'rgb(129, 140, 248)',
+				hidden: !visible.tariffer
+			},
+			{
+				label: 'Moms',
+				type: 'bar',
+				yAxisID: 'B',
+				data: moms,
+				backgroundColor: 'rgb(251, 191, 36)',
+				hidden: !visible.moms
+			},
+			{
+				label: 'Spot',
+				type: 'bar',
+				yAxisID: 'B',
+				data: spotHourAverage,
+				backgroundColor: 'rgba(148, 163, 184, 0.7)'
+			}
+		];
 
 		data = {
 			labels: hours.map((_, index) => {
@@ -90,6 +144,12 @@
 			datasets: datasets
 		};
 	}
+	const getTotalByIndex = (index: number, datasets: ChartData<'bar'>['datasets'][number][]) =>
+		datasets.reduce(
+			(previous, { hidden, label, data }, reduceIndex) =>
+				label !== 'Forbrug' || hidden ? (data[index] as number) + previous : previous,
+			0
+		);
 
 	ChartJS.register(
 		Title,
@@ -101,7 +161,8 @@
 		CategoryScale,
 		LinearScale,
 		PointElement,
-		LineElement
+		LineElement,
+		ChartDataLabels
 	);
 </script>
 
@@ -156,20 +217,52 @@
 			responsive: true,
 			maintainAspectRatio: false,
 			indexAxis: 'x',
-			plugins: {},
+			plugins: {
+				tooltip: {
+					callbacks: {
+						label: (context) => {
+							if (context.dataset.label === 'Forbrug') {
+								return `${context.parsed.y} kwh`;
+							}
+							return `${(context.parsed.y * 100).toFixed(1)} øre/kwh`;
+						}
+					}
+				},
+				datalabels: {
+					anchor: 'end',
+					align: 'end',
+					rotation: -90,
+					formatter: (value, context) => {
+						if (context.dataset.label?.includes('Spot')) {
+							return `${getTotalByIndex(context.dataIndex, data.datasets).toFixed(2)} kr`;
+						} else {
+							return '';
+						}
+					}
+				}
+			},
 			scales: {
+				x: {
+					stacked: true
+				},
 				A: {
 					type: 'linear',
 					display: true,
 					position: 'left'
 				},
 				B: {
+					stacked: true,
+					stack: 'all',
 					type: 'linear',
 					display: true,
 					position: 'right',
 					grid: {
 						drawOnChartArea: false
-					}
+					},
+					max:
+						Math.floor(
+							Math.max(...hours.map((_, index) => getTotalByIndex(index, data.datasets)))
+						) + 1
 				}
 			}
 		}}

@@ -19,9 +19,11 @@
 	import { theme } from '$lib/stores';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
 	import { Heading } from 'flowbite-svelte';
+	import type { FeeKeys } from '$lib/types/fees';
 
 	export let spotData: PageData['spotData'] = [];
 	export let usageMeterData: PageData['usageMeterData'] = [];
+	export let feeData: { [fee in FeeKeys]: number };
 
 	let data: any;
 

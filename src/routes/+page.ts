@@ -5,6 +5,7 @@ import { DateTime } from 'luxon';
 import type { PageLoad } from './$types';
 import type { FeeKeys } from '$lib/types/fees';
 import type { InternalApiResponse } from '$lib/types/api';
+import { getCurrentFeeByDateAndKey } from '$lib/utils/fees';
 
 export const load: PageLoad = async ({ fetch, url }) => {
 	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
@@ -83,22 +84,4 @@ export const load: PageLoad = async ({ fetch, url }) => {
 	};
 
 	return { spotToday, priceArea, feesToday, date: todayFrom, errors };
-};
-
-const getCurrentFeeByDateAndKey = (
-	feesData: {
-		from: string;
-		key: FeeKeys;
-		value: number;
-	}[],
-	feeKey: FeeKeys,
-	date: DateTime
-): number => {
-	return feesData
-		.filter(({ key, from }) => key === feeKey && DateTime.fromISO(from, { zone: 'utc' }) <= date)
-		.reduce(function (r, a) {
-			return DateTime.fromISO(r.from, { zone: 'utc' }) > DateTime.fromISO(a.from, { zone: 'utc' })
-				? r
-				: a;
-		}).value;
 };

@@ -6,8 +6,19 @@
 	import MonthUsageChart from '$lib/components/charts/MonthUsageChart.svelte';
 	import DayUsageChart from '$lib/components/charts/DayUsageChart.svelte';
 	import FixedPriceWidget from '$lib/components/widget/FixedPriceWidget.svelte';
-	import { Heading, Select, Card, Alert, Button, Drawer, Toggle } from 'flowbite-svelte';
+	import {
+		Heading,
+		Select,
+		Card,
+		Alert,
+		Button,
+		Drawer,
+		Toggle,
+		Input,
+		Label
+	} from 'flowbite-svelte';
 	import { sineIn } from 'svelte/easing';
+	import { getCurrentFeeByDateAndKey } from '$lib/utils/fees';
 
 	let drawerHidden = true;
 	let transitionParams = {
@@ -17,24 +28,76 @@
 	};
 
 	export let data: PageData;
-	const { errors, month, priceArea, session, spotData, usageMeterData } = data;
+	const { errors, month, priceArea, spotData, usageMeterData, feesData } = data;
 
-	$: spotAverage = (
-		spotData?.reduce((acc, { priceDKK }) => acc + priceDKK, 0) / spotData?.length
-	).toFixed(2);
+	let moms = typeof localStorage !== 'undefined' ? localStorage.settingMoms === 'true' : false;
+	let elafgift =
+		typeof localStorage !== 'undefined' ? localStorage.settingElafgift === 'true' : false;
+	let tariffer =
+		typeof localStorage !== 'undefined' ? localStorage.settingTariffer === 'true' : false;
+	let compareFixedKwhPrice =
+		typeof localStorage !== 'undefined' ? Number(localStorage.settingCompareFixedKwhPrice) : 0;
+	let compareSpotFeeKwh =
+		typeof localStorage !== 'undefined' ? Number(localStorage.settingCompareSpotFeeKwh) : 0;
+
+	$: compareFixedKwhPriceKR = compareFixedKwhPrice ? compareFixedKwhPrice / 100 : 0;
+	$: compareSpotFeeKwhKR = compareSpotFeeKwh ? compareSpotFeeKwh / 100 : 0;
+
+	$: withVat = (value: number): number => value * (moms ? 1.25 : 1);
+
+	$: feesAtTime = (hourUTC: DateTime): number => {
+		let fees = 0;
+		if (elafgift) {
+			fees +=
+				getCurrentFeeByDateAndKey(
+					feesData,
+					'elafgift',
+					hourUTC.set({ hour: 0, minute: 0, second: 0 })
+				) / 100;
+		}
+
+		if (tariffer) {
+			fees +=
+				getCurrentFeeByDateAndKey(
+					feesData,
+					'elafgift',
+					hourUTC.set({ hour: 0, minute: 0, second: 0 })
+				) / 100;
+
+			fees +=
+				getCurrentFeeByDateAndKey(
+					feesData,
+					'systemtarif',
+					hourUTC.set({ hour: 0, minute: 0, second: 0 })
+				) / 100;
+
+			fees +=
+				getCurrentFeeByDateAndKey(
+					feesData,
+					'transmissionstarif',
+					hourUTC.set({ hour: 0, minute: 0, second: 0 })
+				) / 100;
+		}
+		return fees;
+	};
+
+	$: spotAveragePrice = withVat(
+		spotData?.reduce((acc, { priceDKK, hourUTC }) => acc + (priceDKK + feesAtTime(hourUTC)), 0) /
+			spotData?.length
+	);
 
 	$: totalUsage = usageMeterData.reduce((acc, { measurement }) => acc + measurement, 0);
 
-	$: usageSpotAverage = () => {
+	$: usageSpotAveragePrice = () => {
 		const hourlyUsageDKK = usageMeterData
 			.map(({ hourUTC: meterHourUTC, measurement }) => {
 				const priceAtHour = spotData.find(
 					({ hourUTC: spotHourUTC }) => spotHourUTC.toMillis() === meterHourUTC.toMillis()
 				)?.priceDKK;
-				return priceAtHour ? priceAtHour * measurement : null;
+				return priceAtHour ? (priceAtHour + feesAtTime(meterHourUTC)) * measurement : null;
 			})
 			.filter((value) => Boolean(value)) as number[];
-		return hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0) / totalUsage;
+		return withVat(hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0) / totalUsage);
 	};
 
 	$: spotDataCount = spotData.length;
@@ -72,10 +135,22 @@
 				const priceAtHour = spotData.find(
 					({ hourUTC: spotHourUTC }) => spotHourUTC.toMillis() === meterHourUTC.toMillis()
 				)?.priceDKK;
-				return priceAtHour ? priceAtHour * measurement : null;
+				return priceAtHour
+					? (priceAtHour + feesAtTime(meterHourUTC) + (compareSpotFeeKwhKR || 0)) * measurement
+					: null;
 			})
 			.filter((value) => Boolean(value)) as number[];
-		return hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0);
+		return withVat(hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0));
+	};
+
+	$: totalUsageFixedPrice = () => {
+		const hourlyUsageDKK = usageMeterData
+			.map(
+				({ hourUTC: meterHourUTC, measurement }) =>
+					(compareFixedKwhPriceKR + feesAtTime(meterHourUTC)) * measurement
+			)
+			.filter((value) => Boolean(value)) as number[];
+		return withVat(hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0));
 	};
 
 	const handleChange = (event: any) => {
@@ -95,18 +170,49 @@
 		{ value: 'DK2', name: 'Øst for storebælt' }
 	];
 
-	let moms = typeof localStorage !== 'undefined' ? localStorage.settingMoms === 'true' : false;
-	let elafgift =
-		typeof localStorage !== 'undefined' ? localStorage.settingElafgift === 'true' : false;
-	let tariffer =
-		typeof localStorage !== 'undefined' ? localStorage.settingTariffer === 'true' : false;
-
 	const handleSettingsChange = () => {
+		console.log('handleSettingsChange', compareFixedKwhPrice);
 		if (typeof localStorage !== 'undefined') {
 			localStorage.settingMoms = moms;
 			localStorage.settingElafgift = elafgift;
 			localStorage.settingTariffer = tariffer;
+			localStorage.settingCompareFixedKwhPrice = compareFixedKwhPrice;
+			localStorage.settingCompareSpotFeeKwh = compareSpotFeeKwh;
 		}
+	};
+	$: getMessage = () => {
+		const parts = [];
+		if (moms) parts.push('Moms');
+		if (elafgift) parts.push('Afgift');
+		if (tariffer) parts.push('Tariffer');
+		let last;
+		if (parts.length > 1) {
+			last = parts.pop();
+		}
+		return `Alle priser vises inklusiv ${parts.join(', ')} ${last ? ` og ${last}` : ''}`;
+	};
+
+	const currentFees = {
+		balancetarif: getCurrentFeeByDateAndKey(
+			feesData,
+			'balancetarif',
+			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
+		),
+		elafgift: getCurrentFeeByDateAndKey(
+			feesData,
+			'elafgift',
+			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
+		),
+		systemtarif: getCurrentFeeByDateAndKey(
+			feesData,
+			'systemtarif',
+			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
+		),
+		transmissionstarif: getCurrentFeeByDateAndKey(
+			feesData,
+			'transmissionstarif',
+			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
+		)
 	};
 </script>
 
@@ -162,9 +268,27 @@
 			<Toggle name="moms" bind:checked={moms}>Vis data inklusiv Moms</Toggle>
 			<Toggle name="elafgift" bind:checked={elafgift}>Vis data inklusiv ElAfgift</Toggle>
 			<Toggle name="tariffer" bind:checked={tariffer}>Vis data inklusiv Tariffer</Toggle>
+
+			<Heading tag="h6" class="mt-4">Fast pris</Heading>
+			<Label class="text-xs" for="fixed">Fastpris uden afgifter og moms (øre/kwh)</Label>
+			<Input
+				id="fixed"
+				placeholder="Fastpris pr. kwh"
+				bind:value={compareFixedKwhPrice}
+				type="number"
+			/>
+
+			<Heading tag="h6" class="mt-4">Variabel med gebyr</Heading>
+			<Label class="text-xs" for="fixed">Gebyr pr. kwh uden moms (øre/kwh)</Label>
+			<Input id="fixed" placeholder="Gebyr pr. kwh" bind:value={compareSpotFeeKwh} type="number" />
+
 			<Heading tag="h6" class="mt-4">Transport</Heading>
 		</form>
 	</Drawer>
+
+	{#if moms || elafgift || tariffer}
+		<Alert color="dark">{getMessage()}</Alert>
+	{/if}
 	<section
 		class=" widget-grid grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-full"
 	>
@@ -181,7 +305,7 @@
 			data={{
 				title: 'Total spot pris',
 				value: totalUsageSpotPrice().toFixed(2),
-				unit: 'kr'
+				unit: `kr `
 			}}
 			icon="💰"
 		/>
@@ -189,7 +313,7 @@
 		<Widget
 			data={{
 				title: 'Dit spot gennemsnit kr/kwh',
-				value: usageSpotAverage().toFixed(2),
+				value: usageSpotAveragePrice().toFixed(2),
 				unit: 'kr/kwh'
 			}}
 			icon="💸"
@@ -198,7 +322,7 @@
 		<Widget
 			data={{
 				title: 'Gennemsnit spot kr/kwh',
-				value: spotAverage,
+				value: spotAveragePrice.toFixed(2),
 				unit: 'kr/kwh'
 			}}
 			icon="📈"
@@ -222,10 +346,32 @@
 			icon="😱"
 		/>
 
-		<FixedPriceWidget
-			totalSpot={totalUsageSpotPrice()}
-			{totalUsage}
-			class="lg:col-start-3 row-span-4 lg:row-start-1 lg:row-end-5 xl:col-start-4 2xl:col-start-5"
+		<Widget
+			data={[
+				{
+					title: 'Total pris (fast)',
+					value: compareFixedKwhPrice
+						? totalUsageFixedPrice().toFixed(2)
+						: 'Klik ⚙️ for opsætning.',
+					unit: compareFixedKwhPrice ? 'kr' : ''
+				},
+				{
+					title: 'Total pris (spot)',
+					value: totalUsageSpotPrice().toFixed(2),
+					unit: 'kr'
+				},
+				{
+					title: 'Forskel',
+					value: (totalUsageFixedPrice() - totalUsageSpotPrice()).toFixed(2),
+					unit: 'kr',
+					valueColor:
+						totalUsageFixedPrice() / 100 > totalUsageSpotPrice()
+							? '!text-red-500'
+							: '!text-emerald-500'
+				}
+			]}
+			icon="🤑"
+			class="lg:col-start-3 row-span-3 lg:row-start-1 lg:row-end-4 xl:col-start-4 2xl:col-start-5"
 		/>
 
 		<Widget
@@ -259,14 +405,19 @@
 	<Heading tag="h6">Grafer</Heading>
 	<section class="grid gap-4 lg:grid-cols-2">
 		<Card class="min-w-full gap-4">
-			<MonthAverageCompare {usageMeterData} {spotData} />
+			<MonthAverageCompare {usageMeterData} {spotData} feeData={currentFees} />
 		</Card>
 		<Card class="min-w-full gap-4">
-			<MonthUsageChart {usageMeterData} {spotData} {month} />
+			<MonthUsageChart {usageMeterData} {spotData} {month} feeData={currentFees} />
 		</Card>
 	</section>
 
 	<Card class="min-w-full gap-4">
-		<DayUsageChart {usageMeterData} {spotData} />
+		<DayUsageChart
+			{usageMeterData}
+			{spotData}
+			feeData={currentFees}
+			visible={{ moms, tariffer, elafgift }}
+		/>
 	</Card>
 </div>

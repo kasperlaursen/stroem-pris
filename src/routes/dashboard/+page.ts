@@ -6,6 +6,7 @@ import type { InternalApiResponse } from '$lib/types/api';
 import type { PriceAreas } from '$lib/energidataservice/types';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { redirect } from '@sveltejs/kit';
+import type { FeeKeys } from '$lib/types/fees';
 
 type Fetch = (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
 
@@ -64,8 +65,16 @@ export const load: PageLoad = async (event) => {
 	);
 	errors.concat(spotErrors);
 
+	const feesResponse = await fetch(`/api/fees`);
+	const feesData = (await feesResponse.json()) as {
+		from: string;
+		key: FeeKeys;
+		value: number;
+	}[];
+
 	return {
 		usageMeterData,
+		feesData,
 		spotData,
 		priceArea,
 		month,
