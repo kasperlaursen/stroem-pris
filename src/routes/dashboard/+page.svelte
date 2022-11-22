@@ -6,7 +6,15 @@
 	import MonthUsageChart from '$lib/components/charts/MonthUsageChart.svelte';
 	import DayUsageChart from '$lib/components/charts/DayUsageChart.svelte';
 	import FixedPriceWidget from '$lib/components/widget/FixedPriceWidget.svelte';
-	import { Heading, Select, Card, Alert } from 'flowbite-svelte';
+	import { Heading, Select, Card, Alert, Button, Drawer, Toggle } from 'flowbite-svelte';
+	import { sineIn } from 'svelte/easing';
+
+	let drawerHidden = true;
+	let transitionParams = {
+		x: 320,
+		duration: 200,
+		easing: sineIn
+	};
 
 	export let data: PageData;
 	const { errors, month, priceArea, session, spotData, usageMeterData } = data;
@@ -86,6 +94,20 @@
 		{ value: 'DK1', name: 'Vest for storebælt' },
 		{ value: 'DK2', name: 'Øst for storebælt' }
 	];
+
+	let moms = typeof localStorage !== 'undefined' ? localStorage.settingMoms === 'true' : false;
+	let elafgift =
+		typeof localStorage !== 'undefined' ? localStorage.settingElafgift === 'true' : false;
+	let tariffer =
+		typeof localStorage !== 'undefined' ? localStorage.settingTariffer === 'true' : false;
+
+	const handleSettingsChange = () => {
+		if (typeof localStorage !== 'undefined') {
+			localStorage.settingMoms = moms;
+			localStorage.settingElafgift = elafgift;
+			localStorage.settingTariffer = tariffer;
+		}
+	};
 </script>
 
 <div class="grid gap-4">
@@ -119,8 +141,30 @@
 				bind:value={monthNumber}
 				on:change={handleChange}
 			/>
+			<Button color="dark" on:click={() => (drawerHidden = !drawerHidden)}>⚙️</Button>
 		</form>
 	</section>
+	<Drawer
+		transitionType="fly"
+		{transitionParams}
+		bind:hidden={drawerHidden}
+		placement="right"
+		id="settingsDrawer"
+	>
+		<div class="flex justify-between items-center mb-4">
+			<Heading tag="h5">Visnings indstillinger</Heading>
+			<Button color="dark" class="place-self-end" on:click={() => (drawerHidden = !drawerHidden)}>
+				X
+			</Button>
+		</div>
+		<form class="grid gap-4" on:change={handleSettingsChange}>
+			<Heading tag="h6">Moms & Afgifter</Heading>
+			<Toggle name="moms" bind:checked={moms}>Vis data inklusiv Moms</Toggle>
+			<Toggle name="elafgift" bind:checked={elafgift}>Vis data inklusiv ElAfgift</Toggle>
+			<Toggle name="tariffer" bind:checked={tariffer}>Vis data inklusiv Tariffer</Toggle>
+			<Heading tag="h6" class="mt-4">Transport</Heading>
+		</form>
+	</Drawer>
 	<section
 		class=" widget-grid grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-full"
 	>
