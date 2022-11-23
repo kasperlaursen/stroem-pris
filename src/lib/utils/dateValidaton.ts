@@ -85,20 +85,28 @@ export const validateStringsAsISODateRange = (
 
 	if (max === 'TODAY' && toDate.diffNow('days').days >= 0) {
 		const today = DateTime.now();
-		safeToDate = DateTime.fromObject({ day: today.day, month: today.month, year: today.year });
+		safeToDate = DateTime.fromObject(
+			{ day: today.day, month: today.month, year: today.year },
+			{ zone: 'Europe/Copenhagen' }
+		);
 	}
 
 	if (max === 'TOMORROW' && toDate.diffNow('days').days >= 1) {
 		const tomorrow = DateTime.now().plus({ days: 2 });
-		safeToDate = DateTime.fromObject({
-			day: tomorrow.day,
-			month: tomorrow.month,
-			year: tomorrow.year
-		});
+		safeToDate = DateTime.fromObject(
+			{
+				day: tomorrow.day,
+				month: tomorrow.month,
+				year: tomorrow.year
+			},
+			{ zone: 'Europe/Copenhagen' }
+		);
 	}
 
 	// Get hours between from and to dates
 	const hourDiff = safeToDate.diff(fromDate, 'hours').toObject().hours;
+
+	console.log('🐞', safeToDate.toISO(), fromDate.toISO(), hourDiff);
 
 	// Make sure to date is after from date
 	if (fromDate > safeToDate || !hourDiff || hourDiff < 0) {

@@ -28,7 +28,7 @@ export const getSpotDataFromDataService = async (
 
 	// It should never be possible to get a response with less that 24 hours of data.
 	// If we get less, the data is not useable, and we return and error.
-	if (!data.total || data.total < 24) {
+	if (!data.total || data.total < 24 || (data.statusCode && data.statusCode !== 200)) {
 		return {
 			success: false,
 			error: {
