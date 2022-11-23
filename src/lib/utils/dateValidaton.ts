@@ -98,7 +98,7 @@ export const validateStringsAsISODateRange = (
 	}
 
 	// Get hours between from and to dates
-	const hourDiff = safeToDate.diff(fromDate, 'hours').toObject().hours;
+	const hourDiff = safeToDate.toUTC().diff(fromDate.toUTC(), 'hours').toObject().hours;
 
 	// Make sure to date is after from date
 	if (fromDate > safeToDate || !hourDiff || hourDiff < 0) {
