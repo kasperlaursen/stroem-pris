@@ -8,7 +8,7 @@
 
 <Card class="min-w-full gap-4" padding="none">
 	<div class="flex justify-between p-8 pb-0">
-		<Heading customSize="text-lg font-semibold">Månedens gennemsnit pr. time</Heading>
+		<Heading customSize="text-lg font-semibold">Månedens total forbrug pr. dag</Heading>
 	</div>
 	<PriceUsageChart
 		data={data.map(({ hour, price, usage }) => ({

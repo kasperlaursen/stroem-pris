@@ -115,7 +115,7 @@
 						color: '#fff',
 						background: '#ea580c'
 					},
-					text: 'Mnd. gns. Forbrug'
+					text: `Mnd. gns. Forbrug`
 				}
 			});
 		}
