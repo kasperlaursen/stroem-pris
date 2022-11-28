@@ -1,11 +1,7 @@
 <script lang="ts">
 	import Widget from '$lib/components/widget/Widget.svelte';
-	import MonthAverageCompare from '$lib/components/charts/MonthAverageCompare.svelte';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
 	import { DateTime } from 'luxon';
-	import MonthUsageChart from '$lib/components/charts/MonthUsageChart.svelte';
-	import DayUsageChart from '$lib/components/charts/DayUsageChart.svelte';
-	import FixedPriceWidget from '$lib/components/widget/FixedPriceWidget.svelte';
 	import {
 		Heading,
 		Select,
@@ -19,6 +15,9 @@
 	} from 'flowbite-svelte';
 	import { sineIn } from 'svelte/easing';
 	import { getCurrentFeeByDateAndKey } from '$lib/utils/fees';
+	import DailyUsageChartCard from './DailyUsageChartCard.svelte';
+	import MonthAverageChartCard from './MonthAverageChartCard.svelte';
+	import FullMonthUsageCard from './FullMonthUsageCard.svelte';
 
 	let drawerHidden = true;
 	let transitionParams = {
@@ -30,15 +29,17 @@
 	export let data: PageData;
 	const { errors, month, priceArea, spotData, usageMeterData, feesData } = data;
 
-	let moms = typeof localStorage !== 'undefined' ? localStorage.settingMoms === 'true' : false;
+	let moms = typeof localStorage !== 'undefined' ? localStorage.settingMoms !== 'false' : true;
 	let elafgift =
-		typeof localStorage !== 'undefined' ? localStorage.settingElafgift === 'true' : false;
+		typeof localStorage !== 'undefined' ? localStorage.settingElafgift !== 'false' : true;
 	let tariffer =
-		typeof localStorage !== 'undefined' ? localStorage.settingTariffer === 'true' : false;
+		typeof localStorage !== 'undefined' ? localStorage.settingTariffer !== 'false' : true;
 	let compareFixedKwhPrice =
 		typeof localStorage !== 'undefined' ? Number(localStorage.settingCompareFixedKwhPrice) : 0;
 	let compareSpotFeeKwh =
 		typeof localStorage !== 'undefined' ? Number(localStorage.settingCompareSpotFeeKwh) : 0;
+
+	const hours = [...Array(24).keys()] as const;
 
 	$: compareFixedKwhPriceKR = compareFixedKwhPrice ? compareFixedKwhPrice / 100 : 0;
 	$: compareSpotFeeKwhKR = compareSpotFeeKwh ? compareSpotFeeKwh / 100 : 0;
@@ -57,13 +58,6 @@
 		}
 
 		if (tariffer) {
-			fees +=
-				getCurrentFeeByDateAndKey(
-					feesData,
-					'elafgift',
-					hourUTC.set({ hour: 0, minute: 0, second: 0 })
-				) / 100;
-
 			fees +=
 				getCurrentFeeByDateAndKey(
 					feesData,
@@ -190,29 +184,6 @@
 			last = parts.pop();
 		}
 		return `Alle priser vises inklusiv ${parts.join(', ')} ${last ? ` og ${last}` : ''}`;
-	};
-
-	const currentFees = {
-		balancetarif: getCurrentFeeByDateAndKey(
-			feesData,
-			'balancetarif',
-			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
-		),
-		elafgift: getCurrentFeeByDateAndKey(
-			feesData,
-			'elafgift',
-			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
-		),
-		systemtarif: getCurrentFeeByDateAndKey(
-			feesData,
-			'systemtarif',
-			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
-		),
-		transmissionstarif: getCurrentFeeByDateAndKey(
-			feesData,
-			'transmissionstarif',
-			DateTime.now().set({ hour: 0, minute: 0, second: 0 })
-		)
 	};
 </script>
 
@@ -404,20 +375,61 @@
 	</section>
 	<Heading tag="h6">Grafer</Heading>
 	<section class="grid gap-4 lg:grid-cols-2">
-		<Card class="min-w-full gap-4">
-			<MonthAverageCompare {usageMeterData} {spotData} feeData={currentFees} />
-		</Card>
-		<Card class="min-w-full gap-4">
-			<MonthUsageChart {usageMeterData} {spotData} {month} feeData={currentFees} />
-		</Card>
+		<MonthAverageChartCard
+			data={hours.map((_, index) => {
+				const relevantPrices = spotData.filter(
+					({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index
+				);
+				const relevantUsage = usageMeterData.filter(
+					({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index
+				);
+				return {
+					price:
+						relevantPrices.reduce(
+							(a, { priceDKK, hourUTC }) => a + withVat(priceDKK + feesAtTime(hourUTC)),
+							0
+						) / relevantPrices.length,
+					hour: DateTime.fromObject({ hour: index }),
+					usage:
+						relevantUsage.reduce((a, { measurement }) => a + measurement, 0) / relevantUsage.length
+				};
+			})}
+		/>
+
+		<FullMonthUsageCard
+			data={[...Array(DateTime.fromObject({ month }).daysInMonth).keys()].map((key) => {
+				const relevantPrices = spotData.filter(
+					({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').day === key + 1
+				);
+
+				const relevantUsage = usageMeterData.filter(
+					({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').day === key + 1
+				);
+
+				return {
+					price:
+						relevantPrices.reduce(
+							(a, { priceDKK, hourUTC }) => a + withVat(priceDKK + feesAtTime(hourUTC)),
+							0
+						) / relevantPrices.length,
+					usage: relevantUsage.reduce((a, { measurement }) => a + measurement, 0),
+					hour: DateTime.fromObject({ month, day: key + 1 })
+				};
+			})}
+		/>
 	</section>
 
-	<Card class="min-w-full gap-4">
-		<DayUsageChart
-			{usageMeterData}
-			{spotData}
-			feeData={currentFees}
-			visible={{ moms, tariffer, elafgift }}
-		/>
-	</Card>
+	<DailyUsageChartCard
+		data={usageMeterData.map(({ measurement, hourUTC }) => {
+			const spot = spotData.find(
+				({ hourUTC: spotHourUTC }) => hourUTC.toMillis() === spotHourUTC.toMillis()
+			)?.priceDKK;
+			const price = spot ? withVat(spot + feesAtTime(hourUTC)) : null;
+			return {
+				price,
+				hour: hourUTC.setZone('Europe/Copenhagen'),
+				usage: measurement
+			};
+		})}
+	/>
 </div>
