@@ -27,13 +27,19 @@
 	};
 
 	export let data: PageData;
-	const { errors, month, priceArea, spotData, usageMeterData, feesData } = data;
+	let {
+		errors,
+		month,
+		year,
+		priceArea,
+		spotData,
+		usageMeterData,
+		feesData,
+		elafgift,
+		tariffer,
+		moms
+	} = data;
 
-	let moms = typeof localStorage !== 'undefined' ? localStorage.settingMoms !== 'false' : true;
-	let elafgift =
-		typeof localStorage !== 'undefined' ? localStorage.settingElafgift !== 'false' : true;
-	let tariffer =
-		typeof localStorage !== 'undefined' ? localStorage.settingTariffer !== 'false' : true;
 	let compareFixedKwhPrice =
 		typeof localStorage !== 'undefined' ? Number(localStorage.settingCompareFixedKwhPrice) : 0;
 	let compareSpotFeeKwh =
@@ -167,9 +173,6 @@
 	const handleSettingsChange = () => {
 		console.log('handleSettingsChange', compareFixedKwhPrice);
 		if (typeof localStorage !== 'undefined') {
-			localStorage.settingMoms = moms;
-			localStorage.settingElafgift = elafgift;
-			localStorage.settingTariffer = tariffer;
 			localStorage.settingCompareFixedKwhPrice = compareFixedKwhPrice;
 			localStorage.settingCompareSpotFeeKwh = compareSpotFeeKwh;
 		}
@@ -234,27 +237,48 @@
 				X
 			</Button>
 		</div>
-		<form class="grid gap-4" on:change={handleSettingsChange}>
+		<form class="grid gap-4" method="POST" action="?/updateSettings">
 			<Heading tag="h6">Moms & Afgifter</Heading>
-			<Toggle name="moms" bind:checked={moms}>Vis data inklusiv Moms</Toggle>
-			<Toggle name="elafgift" bind:checked={elafgift}>Vis data inklusiv ElAfgift</Toggle>
-			<Toggle name="tariffer" bind:checked={tariffer}>Vis data inklusiv Tariffer</Toggle>
+			<Toggle name="moms" value="moms" bind:checked={moms}>Vis data inklusiv Moms</Toggle>
+			<Toggle name="elafgift" value="elafgift" bind:checked={elafgift}
+				>Vis data inklusiv ElAfgift</Toggle
+			>
+			<Toggle name="tariffer" value="tariffer" bind:checked={tariffer}
+				>Vis data inklusiv Tariffer</Toggle
+			>
 
+			<Button type="submit" class="w-max place-self-end">Gem valg</Button>
+		</form>
+		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings">
+			<input type="hidden" bind:value={month} name="month" />
+			<input type="hidden" bind:value={year} name="year" />
 			<Heading tag="h6" class="mt-4">Fast pris</Heading>
 			<Label class="text-xs" for="fixed">Fastpris uden afgifter og moms (øre/kwh)</Label>
 			<Input
-				id="fixed"
+				id="fixedPrice"
+				name="fixedPrice"
 				placeholder="Fastpris pr. kwh"
 				bind:value={compareFixedKwhPrice}
 				type="number"
 			/>
-
-			<Heading tag="h6" class="mt-4">Variabel med gebyr</Heading>
-			<Label class="text-xs" for="fixed">Gebyr pr. kwh uden moms (øre/kwh)</Label>
-			<Input id="fixed" placeholder="Gebyr pr. kwh" bind:value={compareSpotFeeKwh} type="number" />
-
-			<Heading tag="h6" class="mt-4">Transport</Heading>
+			<Button type="submit" class="w-max place-self-end">Gem pris</Button>
 		</form>
+		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings">
+			<input type="hidden" bind:value={month} name="month" />
+			<input type="hidden" bind:value={year} name="year" />
+			<Heading tag="h6" class="mt-4">Variabel med gebyr</Heading>
+			<Label class="text-xs" for="feePrice">Gebyr pr. kwh uden moms (øre/kwh)</Label>
+			<Input
+				step="0.1"
+				id="feePrice"
+				name="feePrice"
+				placeholder="Gebyr pr. kwh"
+				bind:value={compareSpotFeeKwh}
+				type="number"
+			/>
+			<Button type="submit" class="w-max place-self-end">Gem gebyr</Button>
+		</form>
+		<Heading tag="h6" class="mt-4">Transport</Heading>
 	</Drawer>
 
 	{#if moms || elafgift || tariffer}

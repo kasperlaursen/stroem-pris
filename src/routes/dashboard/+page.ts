@@ -29,7 +29,13 @@ export const load: PageLoad = async (event) => {
 
 	const { data: settingData, error } = await supabaseClient
 		.from('user_settings')
-		.select('price_area');
+		.select('price_area, show_vat, show_fees, show_tariff');
+
+	const { show_vat, show_fees, show_tariff } = settingData?.[0] ?? {
+		show_vat: true,
+		show_feesshow_vat: true,
+		show_tariffshow_vat: true
+	};
 
 	const priceArea: PriceAreas =
 		url.searchParams.get('area') === 'DK1'
@@ -43,11 +49,14 @@ export const load: PageLoad = async (event) => {
 	const month = url.searchParams.get('month')
 		? Number(url.searchParams.get('month'))
 		: DateTime.now().month;
-	const monthFrom = DateTime.fromObject({ day: 1, month, year: DateTime.now().year }).toISODate();
+	const year = url.searchParams.get('year')
+		? Number(url.searchParams.get('year'))
+		: DateTime.now().year;
+	const monthFrom = DateTime.fromObject({ day: 1, month, year }).toISODate();
 	const monthTo = DateTime.fromObject({
 		day: 1,
 		month: month + 1,
-		year: DateTime.now().year
+		year
 	}).toISODate();
 
 	const { data: usageMeterData, errors: usageMeterErrors } = await getusageMeterForMonth(
@@ -78,7 +87,11 @@ export const load: PageLoad = async (event) => {
 		spotData,
 		priceArea,
 		month,
-		errors
+		year,
+		errors,
+		elafgift: show_fees,
+		tariffer: show_fees,
+		moms: show_vat
 	};
 };
 
