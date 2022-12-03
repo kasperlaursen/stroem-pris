@@ -22,6 +22,7 @@ export const GET: RequestHandler = async (event) => {
 
 	const dateValidaton = validateStringsAsISODateRange(fromDateParam, toDateParam, 'TODAY');
 	if (!dateValidaton.isValid) {
+		console.log('📊 🆕', `INVALID DATES! ${fromDateParam} -> ${toDateParam}`);
 		throw error(dateValidaton.errorCode, dateValidaton.errorMessage);
 	}
 	const { fromDate, toDate, hourDiff } = dateValidaton;

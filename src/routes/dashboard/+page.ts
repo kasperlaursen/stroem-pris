@@ -6,6 +6,7 @@ import type { InternalApiResponse } from '$lib/types/api';
 import type { PriceAreas } from '$lib/energidataservice/types';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { redirect } from '@sveltejs/kit';
+import type { FeeKeys } from '$lib/types/fees';
 
 type Fetch = (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
 
@@ -28,7 +29,13 @@ export const load: PageLoad = async (event) => {
 
 	const { data: settingData, error } = await supabaseClient
 		.from('user_settings')
-		.select('price_area');
+		.select('price_area, show_vat, show_fees, show_tariff');
+
+	const { show_vat, show_fees, show_tariff } = settingData?.[0] ?? {
+		show_vat: true,
+		show_feesshow_vat: true,
+		show_tariffshow_vat: true
+	};
 
 	const priceArea: PriceAreas =
 		url.searchParams.get('area') === 'DK1'
@@ -42,18 +49,31 @@ export const load: PageLoad = async (event) => {
 	const month = url.searchParams.get('month')
 		? Number(url.searchParams.get('month'))
 		: DateTime.now().month;
-	const monthFrom = DateTime.fromObject({ day: 1, month, year: DateTime.now().year }).toISODate();
+	const year = url.searchParams.get('year')
+		? Number(url.searchParams.get('year'))
+		: DateTime.now().year;
+	const monthFrom = DateTime.fromObject({ day: 1, month, year }).toISODate();
 	const monthTo = DateTime.fromObject({
 		day: 1,
-		month: month + 1,
-		year: DateTime.now().year
-	}).toISODate();
+		month,
+		year
+	})
+		.plus({ month: 1 })
+		.toISODate();
+
+	const { data: monthSettingData, error: monthSettingError } = await supabaseClient
+		.from('user_monthly_settings')
+		.select('fixed_price, flex_fee')
+		.eq('month', DateTime.fromObject({ month, year }).toISODate());
+
+	if (monthSettingError) console.log(monthSettingError);
 
 	const { data: usageMeterData, errors: usageMeterErrors } = await getusageMeterForMonth(
 		fetch,
 		monthFrom,
 		monthTo
 	);
+	console.log({ monthTo });
 	errors.concat(usageMeterErrors);
 
 	const { data: spotData, errors: spotErrors } = await getSpotForMonth(
@@ -64,12 +84,26 @@ export const load: PageLoad = async (event) => {
 	);
 	errors.concat(spotErrors);
 
+	const feesResponse = await fetch(`/api/fees`);
+	const feesData = (await feesResponse.json()) as {
+		from: string;
+		key: FeeKeys;
+		value: number;
+	}[];
+
 	return {
 		usageMeterData,
+		feesData,
 		spotData,
 		priceArea,
 		month,
-		errors
+		year,
+		errors,
+		elafgift: show_fees,
+		tariffer: show_tariff,
+		fixedPrice: monthSettingData?.[0]?.fixed_price,
+		flexFee: monthSettingData?.[0]?.flex_fee,
+		moms: show_vat
 	};
 };
 

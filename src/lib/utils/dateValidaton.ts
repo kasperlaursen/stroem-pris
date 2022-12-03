@@ -30,7 +30,6 @@ export const validateStringsAsISODateRange = (
 	if (!fromDateString || !toDateString) {
 		return { isValid: false, errorCode: 400, errorMessage: 'Missing required parameters' };
 	}
-
 	// Split date param to array
 	const fromDateSplit = fromDateString.split('-');
 	const toDateSplit = toDateString.split('-');
