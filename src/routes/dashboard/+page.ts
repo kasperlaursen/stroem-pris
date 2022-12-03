@@ -59,6 +59,13 @@ export const load: PageLoad = async (event) => {
 		year
 	}).toISODate();
 
+	const { data: monthSettingData, error: monthSettingError } = await supabaseClient
+		.from('user_monthly_settings')
+		.select('fixed_price, flex_fee')
+		.eq('month', DateTime.fromObject({ month, year }).toISODate());
+
+	if (monthSettingError) console.log(monthSettingError);
+
 	const { data: usageMeterData, errors: usageMeterErrors } = await getusageMeterForMonth(
 		fetch,
 		monthFrom,
@@ -80,7 +87,7 @@ export const load: PageLoad = async (event) => {
 		key: FeeKeys;
 		value: number;
 	}[];
-
+	console.log('returning', { show_fees });
 	return {
 		usageMeterData,
 		feesData,
@@ -90,7 +97,9 @@ export const load: PageLoad = async (event) => {
 		year,
 		errors,
 		elafgift: show_fees,
-		tariffer: show_fees,
+		tariffer: show_tariff,
+		fixedPrice: monthSettingData?.[0]?.fixed_price,
+		flexFee: monthSettingData?.[0]?.flex_fee,
 		moms: show_vat
 	};
 };

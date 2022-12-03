@@ -37,13 +37,15 @@
 		feesData,
 		elafgift,
 		tariffer,
+		fixedPrice,
+		flexFee,
 		moms
 	} = data;
 
-	let compareFixedKwhPrice =
-		typeof localStorage !== 'undefined' ? Number(localStorage.settingCompareFixedKwhPrice) : 0;
-	let compareSpotFeeKwh =
-		typeof localStorage !== 'undefined' ? Number(localStorage.settingCompareSpotFeeKwh) : 0;
+	console.log('HER!', { fixedPrice, flexFee });
+
+	let compareFixedKwhPrice = fixedPrice ?? 0;
+	let compareSpotFeeKwh = flexFee ?? 0;
 
 	const hours = [...Array(24).keys()] as const;
 

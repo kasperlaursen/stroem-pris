@@ -46,6 +46,8 @@ export const actions: Actions = {
 		const month = formData.get('month') ? Number(formData.get('month')) : DateTime.now().month;
 		const year = formData.get('year') ? Number(formData.get('year')) : DateTime.now().year;
 
+		console.log({ fixedPrice, feePrice, month, year, formMonth: formData.get('month') });
+
 		const data: { user_id: string; month: string; fixed_price?: number; flex_fee?: number } = {
 			user_id: session.user.id,
 			month: DateTime.fromObject({ month, year }).toISODate()
