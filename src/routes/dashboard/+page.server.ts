@@ -16,6 +16,7 @@ export const actions: Actions = {
 		const moms: boolean = formData.get('moms') === 'moms';
 		const elafgift: boolean = formData.get('elafgift') === 'elafgift';
 		const tariffer: boolean = formData.get('tariffer') === 'tariffer';
+		const month = formData.get('month') ? Number(formData.get('month')) : DateTime.now().month;
 
 		const { error: setSettingsError } = await supabaseClient.from('user_settings').upsert({
 			user_id: session.user.id,
@@ -30,7 +31,7 @@ export const actions: Actions = {
 				supabaseErrorMessage: setSettingsError.message
 			});
 		}
-		return;
+		throw redirect(303, `/dashboard?month=${month}`);
 	},
 	updateMonthlySettings: async (event) => {
 		const { request } = event;
@@ -88,6 +89,6 @@ export const actions: Actions = {
 				supabaseErrorMessage: setSettingsError.message
 			});
 		}
-		return;
+		throw redirect(303, `/dashboard?month=${month}`);
 	}
 };

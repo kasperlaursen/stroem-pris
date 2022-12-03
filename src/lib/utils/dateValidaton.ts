@@ -30,7 +30,6 @@ export const validateStringsAsISODateRange = (
 	if (!fromDateString || !toDateString) {
 		return { isValid: false, errorCode: 400, errorMessage: 'Missing required parameters' };
 	}
-	console.log('[DateValidation]', { fromDateString, toDateString, max });
 	// Split date param to array
 	const fromDateSplit = fromDateString.split('-');
 	const toDateSplit = toDateString.split('-');
@@ -62,8 +61,6 @@ export const validateStringsAsISODateRange = (
 		},
 		{ zone: 'Europe/Copenhagen' }
 	);
-
-	console.log({ toDate: toDate.toISODate() });
 
 	// Validate dates are valid
 	if (!fromDate.isValid) {
@@ -118,8 +115,6 @@ export const validateStringsAsISODateRange = (
 			errorMessage: '🤦‍♂️ The "to" date must be later than the "from" date'
 		};
 	}
-
-	// console.log('[DateValidation]', { fromDate, toDate: safeToDate, hourDiff });
 
 	return { isValid: true, fromDate, toDate: safeToDate, hourDiff };
 };
