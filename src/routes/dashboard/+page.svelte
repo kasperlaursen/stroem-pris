@@ -42,8 +42,6 @@
 		moms
 	} = data;
 
-	console.log('HER!', { fixedPrice, flexFee });
-
 	let compareFixedKwhPrice = fixedPrice ?? 0;
 	let compareSpotFeeKwh = flexFee ?? 0;
 

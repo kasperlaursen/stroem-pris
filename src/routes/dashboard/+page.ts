@@ -55,9 +55,11 @@ export const load: PageLoad = async (event) => {
 	const monthFrom = DateTime.fromObject({ day: 1, month, year }).toISODate();
 	const monthTo = DateTime.fromObject({
 		day: 1,
-		month: month + 1,
+		month,
 		year
-	}).toISODate();
+	})
+		.plus({ month: 1 })
+		.toISODate();
 
 	const { data: monthSettingData, error: monthSettingError } = await supabaseClient
 		.from('user_monthly_settings')
@@ -71,6 +73,7 @@ export const load: PageLoad = async (event) => {
 		monthFrom,
 		monthTo
 	);
+	console.log({ monthTo });
 	errors.concat(usageMeterErrors);
 
 	const { data: spotData, errors: spotErrors } = await getSpotForMonth(
@@ -87,7 +90,7 @@ export const load: PageLoad = async (event) => {
 		key: FeeKeys;
 		value: number;
 	}[];
-	console.log('returning', { show_fees });
+
 	return {
 		usageMeterData,
 		feesData,
