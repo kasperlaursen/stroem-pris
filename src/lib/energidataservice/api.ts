@@ -25,13 +25,13 @@ export const getSpotDataFromDataService = async (
 		`${APIBase}?start=${start}&end=${end}&filter={"PriceArea":"${area}"}`
 	);
 	const data: SpotResponse = await request.json();
-
 	// It should never be possible to get a response with less that 24 hours of data.
 	// If we get less, the data is not useable, and we return and error.
 	if (!data.total || data.total < 24 || (data.statusCode && data.statusCode !== 200)) {
 		return {
 			success: false,
 			error: {
+				code: 0,
 				message:
 					'Der findes desværre ikke data for den givne periode i energidataservice. Prøv en anden dato.'
 			}

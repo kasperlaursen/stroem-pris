@@ -83,5 +83,12 @@ export const load: PageLoad = async ({ fetch, url }) => {
 		)
 	};
 
-	return { spotToday, priceArea, feesToday, date: todayFrom, errors };
+	return {
+		spotToday,
+		priceArea,
+		feesToday,
+		date: todayFrom,
+		errors,
+		message: todayData.success ? todayData.message : null
+	};
 };

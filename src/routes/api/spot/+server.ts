@@ -57,6 +57,26 @@ export const GET: RequestHandler = async (event) => {
 		const apiData = await getSpotDataFromDataService(fromDate, toDate, priceArea);
 
 		if (apiData.success === false) {
+			if (apiData.error.code === 0) {
+				const { data: backupData } = await supabaseClient
+					.from('spot_manual')
+					.select('price_dkk, price_area, hour_utc')
+					.eq('price_area', priceArea)
+					.gte('hour_utc', fromDate.toUTC())
+					.lt('hour_utc', toDate.toUTC());
+
+				if (backupData && backupData.length === hourDiff) {
+					console.log('💸 ✅', `Returning ${backupData.length} data point from BACKUP database`);
+					return json({
+						success: true,
+						data: backupData,
+						message:
+							'OBS! Data for den valgte dato er ikke tilgængelig fra Energinet. Alternative kilder bruges og præcision kan variere.'
+					});
+				}
+			}
+
+			console.log('💸 🌍', apiData.error.message);
 			// If the api call returned an error, surface it to the users.
 			return json(apiData);
 		}

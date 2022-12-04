@@ -2,7 +2,7 @@
 export type InternalError = { message: string; code?: number | string };
 
 /** Internal API response structure for successful external fetch calls */
-type InternalApiResponseSuccess<Data> = { success: true; data: Data };
+type InternalApiResponseSuccess<Data> = { success: true; data: Data; message?: string };
 /** Internal API response structure for UNsuccessful external fetch calls */
 type InternalApiResponseError = { success: false; error: InternalError };
 

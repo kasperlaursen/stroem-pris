@@ -37,6 +37,10 @@
 		<Alert color="red">{error.message}</Alert>
 	{/each}
 
+	{#if data.message}
+		<Alert>{data.message}</Alert>
+	{/if}
+
 	<Card class="!max-w-full gap-4">
 		<form method="get" action="/" class="grid md:grid-cols-2 gap-4 justify-center">
 			<Heading customSize="text-xl" class="font-medium text-lg text-center md:text-start">
