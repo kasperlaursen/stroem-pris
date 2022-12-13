@@ -71,40 +71,29 @@ export const load: PageLoad = async (event) => {
 		.plus({ month: 1 })
 		.toISODate();
 
-	const { data: monthSettingData, error: monthSettingError } = await supabaseClient
+	const userMonthlySettings = supabaseClient
 		.from('user_monthly_settings')
 		.select('fixed_price, flex_fee')
 		.eq('month', DateTime.fromObject({ month, year }).toISODate());
+	const usageMeterForMonth = getusageMeterForMonth(fetch, monthFrom, monthTo);
+	const spotForMonth = getSpotForMonth(fetch, monthFrom, monthTo, priceArea);
+	const fees = await fetch(`/api/fees`);
 
-	logger(startTime, 'Got Month Setting');
+	const results = await Promise.all([userMonthlySettings, usageMeterForMonth, spotForMonth, fees]);
 
-	if (monthSettingError) console.log(monthSettingError);
-
-	const { data: usageMeterData, errors: usageMeterErrors } = await getusageMeterForMonth(
-		fetch,
-		monthFrom,
-		monthTo
-	);
-	errors.concat(usageMeterErrors);
-
-	logger(startTime, 'Got Meter data');
-
-	const { data: spotData, errors: spotErrors } = await getSpotForMonth(
-		fetch,
-		monthFrom,
-		monthTo,
-		priceArea
-	);
-	errors.concat(spotErrors);
-
-	logger(startTime, 'Got Spot');
-
-	const feesResponse = await fetch(`/api/fees`);
-	const feesData = (await feesResponse.json()) as {
+	const { data: monthSettingData, error: monthSettingError } = results[0];
+	const { data: usageMeterData, errors: usageMeterErrors } = results[1];
+	const { data: spotData, errors: spotErrors } = results[2];
+	const feesData = (await results[3].json()) as {
 		from: string;
 		key: FeeKeys;
 		value: number;
 	}[];
+
+	if (monthSettingError) console.log(monthSettingError);
+
+	errors.concat(usageMeterErrors);
+	errors.concat(spotErrors);
 
 	logger(startTime, 'Got Fees');
 
