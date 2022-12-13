@@ -10,7 +10,13 @@ import type { FeeKeys } from '$lib/types/fees';
 
 type Fetch = (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
 
+const logger = (startTime: DateTime, label: string) =>
+	console.log('⏱️ ', '🐞', (startTime.diffNow().milliseconds * -1) / 1000, 'Dashboard', label);
+
 export const load: PageLoad = async (event) => {
+	const startTime = DateTime.now();
+	logger(startTime, 'Start');
+
 	const { fetch, url } = event;
 	const { session, supabaseClient } = await getSupabase(event);
 	if (!session) {
@@ -21,6 +27,8 @@ export const load: PageLoad = async (event) => {
 		.from('datahub_tokens')
 		.select('refresh_token, usage_meter_id');
 
+	logger(startTime, 'Got Token');
+
 	if (!tokenData || !tokenData?.[0]?.refresh_token || !tokenData?.[0]?.usage_meter_id) {
 		throw redirect(303, '/settings');
 	}
@@ -30,6 +38,8 @@ export const load: PageLoad = async (event) => {
 	const { data: settingData, error } = await supabaseClient
 		.from('user_settings')
 		.select('price_area, show_vat, show_fees, show_tariff');
+
+	logger(startTime, 'Got Setting');
 
 	const { show_vat, show_fees, show_tariff } = settingData?.[0] ?? {
 		show_vat: true,
@@ -66,6 +76,8 @@ export const load: PageLoad = async (event) => {
 		.select('fixed_price, flex_fee')
 		.eq('month', DateTime.fromObject({ month, year }).toISODate());
 
+	logger(startTime, 'Got Month Setting');
+
 	if (monthSettingError) console.log(monthSettingError);
 
 	const { data: usageMeterData, errors: usageMeterErrors } = await getusageMeterForMonth(
@@ -73,8 +85,9 @@ export const load: PageLoad = async (event) => {
 		monthFrom,
 		monthTo
 	);
-	console.log({ monthTo });
 	errors.concat(usageMeterErrors);
+
+	logger(startTime, 'Got Meter data');
 
 	const { data: spotData, errors: spotErrors } = await getSpotForMonth(
 		fetch,
@@ -84,12 +97,16 @@ export const load: PageLoad = async (event) => {
 	);
 	errors.concat(spotErrors);
 
+	logger(startTime, 'Got Spot');
+
 	const feesResponse = await fetch(`/api/fees`);
 	const feesData = (await feesResponse.json()) as {
 		from: string;
 		key: FeeKeys;
 		value: number;
 	}[];
+
+	logger(startTime, 'Got Fees');
 
 	return {
 		usageMeterData,
@@ -101,9 +118,9 @@ export const load: PageLoad = async (event) => {
 		errors,
 		elafgift: show_fees,
 		tariffer: show_tariff,
+		moms: show_vat,
 		fixedPrice: monthSettingData?.[0]?.fixed_price,
-		flexFee: monthSettingData?.[0]?.flex_fee,
-		moms: show_vat
+		flexFee: monthSettingData?.[0]?.flex_fee
 	};
 };
 

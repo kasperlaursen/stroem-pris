@@ -6,6 +6,8 @@
 	export let data: { price: number | null; usage: number | null; label: string }[];
 	export let avgPrice: number | undefined = undefined;
 	export let avgUsage: number | undefined = undefined;
+	export let maxPrice: number | undefined = undefined;
+	export let maxUsage: number | undefined = undefined;
 
 	let options: ApexOptions;
 	$: {
@@ -36,6 +38,9 @@
 				height: 500,
 				type: 'line',
 				background: 'transparent',
+				animations: {
+					enabled: false
+				},
 				toolbar: {
 					tools: {
 						download: true,
@@ -67,6 +72,7 @@
 			},
 			yaxis: [
 				{
+					max: maxPrice,
 					title: {
 						text: 'Pris'
 					},
@@ -75,6 +81,7 @@
 					}
 				},
 				{
+					max: maxUsage,
 					opposite: true,
 					title: {
 						text: 'Forbrug'

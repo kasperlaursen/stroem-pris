@@ -10,13 +10,21 @@ export const actions: Actions = {
 			// the user is not signed in
 			throw error(403, { message: 'Unauthorized' });
 		}
+
 		// we are save, let the user create the post
 		const formData = await request.formData();
+		const moms: boolean = formData.get('moms') === 'moms';
+		const elafgift: boolean = formData.get('elafgift') === 'elafgift';
+		const tariffer: boolean = formData.get('tariffer') === 'tariffer';
 		const area = formData.get('area') === 'DK2' ? 'DK2' : 'DK1';
 
-		const { error: setSettingsError } = await supabaseClient
-			.from('user_settings')
-			.upsert({ user_id: session.user.id, price_area: area });
+		const { error: setSettingsError } = await supabaseClient.from('user_settings').upsert({
+			user_id: session.user.id,
+			price_area: area,
+			show_vat: moms,
+			show_fees: elafgift,
+			show_tariff: tariffer
+		});
 
 		if (setSettingsError) {
 			console.log(setSettingsError);

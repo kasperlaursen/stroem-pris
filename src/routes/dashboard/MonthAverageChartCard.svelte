@@ -1,6 +1,5 @@
 <script lang="ts">
 	import PriceUsageChart from '$lib/components/charts/PriceUsageChart.svelte';
-	import { priceAreas } from '$lib/energidataservice/types';
 	import { Card, Heading } from 'flowbite-svelte';
 	import type { DateTime } from 'luxon';
 

@@ -2,22 +2,13 @@
 	import Widget from '$lib/components/widget/Widget.svelte';
 	import type { PageData } from '.svelte-kit/types/src/routes/dashboard/$types';
 	import { DateTime } from 'luxon';
-	import {
-		Heading,
-		Select,
-		Card,
-		Alert,
-		Button,
-		Drawer,
-		Toggle,
-		Input,
-		Label
-	} from 'flowbite-svelte';
+	import { Heading, Select, Alert, Button, Drawer, Toggle, Input, Label } from 'flowbite-svelte';
 	import { sineIn } from 'svelte/easing';
 	import { getCurrentFeeByDateAndKey } from '$lib/utils/fees';
 	import DailyUsageChartCard from './DailyUsageChartCard.svelte';
 	import MonthAverageChartCard from './MonthAverageChartCard.svelte';
 	import FullMonthUsageCard from './FullMonthUsageCard.svelte';
+	import Link from '$lib/components/base/Link.svelte';
 
 	let drawerHidden = true;
 	let transitionParams = {
@@ -43,12 +34,12 @@
 	} = data;
 
 	let compareFixedKwhPrice = fixedPrice ?? 0;
-	let compareSpotFeeKwh = flexFee ?? 0;
+	let compareVariableFeeKwh = flexFee ?? 0;
 
 	const hours = [...Array(24).keys()] as const;
 
 	$: compareFixedKwhPriceKR = compareFixedKwhPrice ? compareFixedKwhPrice / 100 : 0;
-	$: compareSpotFeeKwhKR = compareSpotFeeKwh ? compareSpotFeeKwh / 100 : 0;
+	$: compareVariableFeeKwhKR = compareVariableFeeKwh ? compareVariableFeeKwh / 100 : 0;
 
 	$: withVat = (value: number): number => value * (moms ? 1.25 : 1);
 
@@ -81,24 +72,34 @@
 		return fees;
 	};
 
-	$: spotAveragePrice = withVat(
-		spotData?.reduce((acc, { priceDKK, hourUTC }) => acc + (priceDKK + feesAtTime(hourUTC)), 0) /
-			spotData?.length
+	$: usagePriceHourAndCalcualtions = usageMeterData.map(
+		({ hourUTC: meterHourUTC, measurement }) => {
+			const priceAtHour = spotData.find(
+				({ hourUTC: spotHourUTC }) => spotHourUTC.toMillis() === meterHourUTC.toMillis()
+			)?.priceDKK;
+			const fees = feesAtTime(meterHourUTC);
+			const variablePrice = priceAtHour
+				? priceAtHour + fees + (compareVariableFeeKwhKR || 0)
+				: null;
+			const fixedPrice = compareFixedKwhPriceKR + fees;
+			return {
+				hour: meterHourUTC,
+				usage: measurement,
+				price: variablePrice && withVat(variablePrice),
+				fixedPrice: withVat(fixedPrice),
+				hourTotal: withVat((variablePrice ?? 0) * measurement)
+			};
+		}
 	);
 
-	$: totalUsage = usageMeterData.reduce((acc, { measurement }) => acc + measurement, 0);
+	$: spotAveragePrice =
+		usagePriceHourAndCalcualtions.reduce((acc, { price }) => acc + (price ?? 0), 0) /
+		usagePriceHourAndCalcualtions?.length;
 
-	$: usageSpotAveragePrice = () => {
-		const hourlyUsageDKK = usageMeterData
-			.map(({ hourUTC: meterHourUTC, measurement }) => {
-				const priceAtHour = spotData.find(
-					({ hourUTC: spotHourUTC }) => spotHourUTC.toMillis() === meterHourUTC.toMillis()
-				)?.priceDKK;
-				return priceAtHour ? (priceAtHour + feesAtTime(meterHourUTC)) * measurement : null;
-			})
-			.filter((value) => Boolean(value)) as number[];
-		return withVat(hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0) / totalUsage);
-	};
+	$: totalUsage = usagePriceHourAndCalcualtions.reduce((acc, { usage }) => acc + usage, 0);
+
+	$: usageSpotAveragePrice = () =>
+		usagePriceHourAndCalcualtions.reduce((acc, { hourTotal }) => acc + hourTotal, 0) / totalUsage;
 
 	$: spotDataCount = spotData.length;
 	$: spotDataLatestDate = DateTime.fromMillis(
@@ -110,7 +111,7 @@
 		Math.max(...usageMeterData.map(({ hourUTC }) => hourUTC.toMillis()))
 	).toLocaleString(DateTime.DATETIME_MED, { locale: 'da-DK' });
 
-	$: lowestUsageMeterData =
+	const lowestUsageMeterData =
 		usageMeterData
 			.map(({ measurement }) => measurement)
 			.filter(Boolean)
@@ -119,7 +120,7 @@
 			.reduce((acc, measurement) => acc + measurement, 0) /
 		(usageMeterData.length / 24);
 
-	$: highestUsageMeterData =
+	const highestUsageMeterData =
 		usageMeterData
 			.map(({ measurement }) => measurement)
 			.filter(Boolean)
@@ -129,29 +130,14 @@
 			.reduce((acc, measurement) => acc + measurement, 0) /
 		(usageMeterData.length / 24);
 
-	$: totalUsageSpotPrice = () => {
-		const hourlyUsageDKK = usageMeterData
-			.map(({ hourUTC: meterHourUTC, measurement }) => {
-				const priceAtHour = spotData.find(
-					({ hourUTC: spotHourUTC }) => spotHourUTC.toMillis() === meterHourUTC.toMillis()
-				)?.priceDKK;
-				return priceAtHour
-					? (priceAtHour + feesAtTime(meterHourUTC) + (compareSpotFeeKwhKR || 0)) * measurement
-					: null;
-			})
-			.filter((value) => Boolean(value)) as number[];
-		return withVat(hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0));
-	};
+	$: totalUsageSpotPrice = () =>
+		usagePriceHourAndCalcualtions.reduce((acc, { hourTotal }) => acc + hourTotal, 0);
 
-	$: totalUsageFixedPrice = () => {
-		const hourlyUsageDKK = usageMeterData
-			.map(
-				({ hourUTC: meterHourUTC, measurement }) =>
-					(compareFixedKwhPriceKR + feesAtTime(meterHourUTC)) * measurement
-			)
-			.filter((value) => Boolean(value)) as number[];
-		return withVat(hourlyUsageDKK.reduce((acc, usageDKK) => acc + usageDKK, 0));
-	};
+	$: totalUsageFixedPrice = () =>
+		usagePriceHourAndCalcualtions.reduce(
+			(acc, { fixedPrice, usage }) => acc + fixedPrice * usage,
+			0
+		);
 
 	const handleChange = (event: any) => {
 		event.target.form.submit();
@@ -170,13 +156,6 @@
 		{ value: 'DK2', name: 'Øst for storebælt' }
 	];
 
-	const handleSettingsChange = () => {
-		console.log('handleSettingsChange', compareFixedKwhPrice);
-		if (typeof localStorage !== 'undefined') {
-			localStorage.settingCompareFixedKwhPrice = compareFixedKwhPrice;
-			localStorage.settingCompareSpotFeeKwh = compareSpotFeeKwh;
-		}
-	};
 	$: getMessage = () => {
 		const parts = [];
 		if (moms) parts.push('Moms');
@@ -237,18 +216,6 @@
 				X
 			</Button>
 		</div>
-		<form class="grid gap-4" method="POST" action="?/updateSettings">
-			<Heading tag="h6">Moms & Afgifter</Heading>
-			<Toggle name="moms" value="moms" bind:checked={moms}>Vis data inklusiv Moms</Toggle>
-			<Toggle name="elafgift" value="elafgift" bind:checked={elafgift}
-				>Vis data inklusiv ElAfgift</Toggle
-			>
-			<Toggle name="tariffer" value="tariffer" bind:checked={tariffer}
-				>Vis data inklusiv Tariffer</Toggle
-			>
-
-			<Button type="submit" class="w-max place-self-end">Gem valg</Button>
-		</form>
 		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings">
 			<input type="hidden" bind:value={month} name="month" />
 			<input type="hidden" bind:value={year} name="year" />
@@ -273,7 +240,7 @@
 				id="feePrice"
 				name="feePrice"
 				placeholder="Gebyr pr. kwh"
-				bind:value={compareSpotFeeKwh}
+				bind:value={compareVariableFeeKwh}
 				type="number"
 			/>
 			<Button type="submit" class="w-max place-self-end">Gem gebyr</Button>
@@ -282,7 +249,12 @@
 	</Drawer>
 
 	{#if moms || elafgift || tariffer}
-		<Alert color="dark">{getMessage()}</Alert>
+		<Alert color="dark" class="flex items-between w-full">
+			<div class="flex gap-2">
+				{getMessage()}
+				<Link href="/settings">Rediger indstillinger</Link>
+			</div>
+		</Alert>
 	{/if}
 	<section
 		class=" widget-grid grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 max-w-full"
@@ -298,7 +270,7 @@
 
 		<Widget
 			data={{
-				title: 'Total spot pris',
+				title: 'Total variabel pris',
 				value: totalUsageSpotPrice().toFixed(2),
 				unit: `kr `
 			}}
@@ -307,7 +279,7 @@
 
 		<Widget
 			data={{
-				title: 'Dit spot gennemsnit kr/kwh',
+				title: 'Dit variabel gennemsnit kr/kwh',
 				value: usageSpotAveragePrice().toFixed(2),
 				unit: 'kr/kwh'
 			}}
@@ -316,7 +288,7 @@
 
 		<Widget
 			data={{
-				title: 'Gennemsnit spot kr/kwh',
+				title: 'Gennemsnit variabel kr/kwh',
 				value: spotAveragePrice.toFixed(2),
 				unit: 'kr/kwh'
 			}}
@@ -351,7 +323,7 @@
 					unit: compareFixedKwhPrice ? 'kr' : ''
 				},
 				{
-					title: 'Total pris (spot)',
+					title: 'Total pris (variabel)',
 					value: totalUsageSpotPrice().toFixed(2),
 					unit: 'kr'
 				},
@@ -401,42 +373,25 @@
 	<section class="grid gap-4 lg:grid-cols-2">
 		<MonthAverageChartCard
 			data={hours.map((_, index) => {
-				const relevantPrices = spotData.filter(
-					({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index
-				);
-				const relevantUsage = usageMeterData.filter(
-					({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').hour === index
+				const relevantData = usagePriceHourAndCalcualtions.filter(
+					({ hour }) => hour.setZone('Europe/Copenhagen').hour === index
 				);
 				return {
-					price:
-						relevantPrices.reduce(
-							(a, { priceDKK, hourUTC }) => a + withVat(priceDKK + feesAtTime(hourUTC)),
-							0
-						) / relevantPrices.length,
+					price: relevantData.reduce((a, { price }) => a + (price ?? 0), 0) / relevantData.length,
 					hour: DateTime.fromObject({ hour: index }),
-					usage:
-						relevantUsage.reduce((a, { measurement }) => a + measurement, 0) / relevantUsage.length
+					usage: relevantData.reduce((a, { usage }) => a + usage, 0) / relevantData.length
 				};
 			})}
 		/>
 
 		<FullMonthUsageCard
 			data={[...Array(DateTime.fromObject({ month }).daysInMonth).keys()].map((key) => {
-				const relevantPrices = spotData.filter(
-					({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').day === key + 1
+				const relevantData = usagePriceHourAndCalcualtions.filter(
+					({ hour }) => hour.setZone('Europe/Copenhagen').day === key + 1
 				);
-
-				const relevantUsage = usageMeterData.filter(
-					({ hourUTC }) => hourUTC.setZone('Europe/Copenhagen').day === key + 1
-				);
-
 				return {
-					price:
-						relevantPrices.reduce(
-							(a, { priceDKK, hourUTC }) => a + withVat(priceDKK + feesAtTime(hourUTC)),
-							0
-						) / relevantPrices.length,
-					usage: relevantUsage.reduce((a, { measurement }) => a + measurement, 0),
+					price: relevantData.reduce((a, { price }) => a + (price ?? 0), 0) / relevantData.length,
+					usage: relevantData.reduce((a, { usage }) => a + usage, 0),
 					hour: DateTime.fromObject({ month, day: key + 1 })
 				};
 			})}
@@ -444,16 +399,10 @@
 	</section>
 
 	<DailyUsageChartCard
-		data={usageMeterData.map(({ measurement, hourUTC }) => {
-			const spot = spotData.find(
-				({ hourUTC: spotHourUTC }) => hourUTC.toMillis() === spotHourUTC.toMillis()
-			)?.priceDKK;
-			const price = spot ? withVat(spot + feesAtTime(hourUTC)) : null;
-			return {
-				price,
-				hour: hourUTC.setZone('Europe/Copenhagen'),
-				usage: measurement
-			};
-		})}
+		data={usagePriceHourAndCalcualtions.map(({ usage, hour, price }) => ({
+			hour: hour.setZone('Europe/Copenhagen'),
+			usage,
+			price
+		}))}
 	/>
 </div>

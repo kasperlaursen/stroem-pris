@@ -25,7 +25,7 @@ export const GET: RequestHandler = async (event) => {
 		console.log('📊 🆕', `INVALID DATES! ${fromDateParam} -> ${toDateParam}`);
 		throw error(dateValidaton.errorCode, dateValidaton.errorMessage);
 	}
-	const { fromDate, toDate, hourDiff } = dateValidaton;
+	let { fromDate, toDate, hourDiff } = dateValidaton;
 
 	console.log('📊 🆕', `Meter api request from ${fromDate.toISODate()} to ${toDate.toISODate()}`);
 

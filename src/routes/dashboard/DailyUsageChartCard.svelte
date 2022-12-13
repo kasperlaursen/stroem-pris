@@ -20,6 +20,9 @@
 		DateTime.now().toUTC().minus({ days: 1 });
 
 	let date: string = lastDate.toISODate();
+
+	const maxPrice = Math.max(...data.map(({ price }) => price ?? 0)) + 0.5;
+	const maxUsage = Math.max(...data.map(({ usage }) => usage ?? 0)) + 0.5;
 </script>
 
 <Card class="min-w-full gap-4" padding="none">
@@ -62,6 +65,8 @@
 	<PriceUsageChart
 		{avgPrice}
 		{avgUsage}
+		{maxPrice}
+		{maxUsage}
 		data={data
 			.filter(({ hour }) => date === hour.toISODate())
 			.map(({ hour, price, usage }) => ({

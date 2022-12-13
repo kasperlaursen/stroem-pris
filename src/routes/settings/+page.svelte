@@ -1,10 +1,22 @@
 <!-- src/routes/settings/+page.svelte -->
 <script lang="ts">
 	import Link from '$lib/components/base/Link.svelte';
-	import { Button, Card, Heading, Helper, Hr, Input, Label, P, Select } from 'flowbite-svelte';
-	import type { PageData } from './$types';
+	import {
+		Button,
+		Card,
+		Heading,
+		Helper,
+		Hr,
+		Input,
+		Label,
+		P,
+		Select,
+		Toggle
+	} from 'flowbite-svelte';
+	import type { PageData } from '.svelte-kit/types/src/routes/settings/$types';
+
 	export let data: PageData;
-	$: ({ user, hasToken, priceArea } = data);
+	let { user, hasToken, priceArea, moms, elafgift, tariffer } = data;
 
 	const areaOptions = [
 		{ value: 'DK1', name: 'Vest for storebælt' },
@@ -48,6 +60,16 @@
 				El priserne er forskellige om du bor øst eller vest for storebælt. <br />
 				Vælg din lokation for at få korrekt data.
 			</Helper>
+
+			<Heading tag="h6">Moms & Afgifter</Heading>
+			<Toggle name="moms" value="moms" bind:checked={moms}>Vis data inklusiv Moms</Toggle>
+			<Toggle name="elafgift" value="elafgift" bind:checked={elafgift}>
+				Vis data inklusiv ElAfgift
+			</Toggle>
+			<Toggle name="tariffer" value="tariffer" bind:checked={tariffer}>
+				Vis data inklusiv Tariffer
+			</Toggle>
+			<Helper>Alle priser vil blive vist inklusiv de valgte gebyer.</Helper>
 			<Button type="submit" class="self-end">Gem Indstillinger</Button>
 		</form>
 	</Card>

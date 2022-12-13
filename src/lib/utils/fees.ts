@@ -10,11 +10,15 @@ export const getCurrentFeeByDateAndKey = (
 	feeKey: FeeKeys,
 	date: DateTime
 ): number => {
-	return feesData
-		.filter(({ key, from }) => key === feeKey && DateTime.fromISO(from, { zone: 'utc' }) <= date)
-		.reduce(function (r, a) {
+	const filteredFees = feesData.filter(
+		({ key, from }) => key === feeKey && DateTime.fromISO(from, { zone: 'utc' }) <= date
+	);
+	if (filteredFees.length) {
+		return filteredFees.reduce((r, a) => {
 			return DateTime.fromISO(r.from, { zone: 'utc' }) > DateTime.fromISO(a.from, { zone: 'utc' })
 				? r
 				: a;
 		}).value;
+	}
+	return 0;
 };
