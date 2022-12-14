@@ -4,14 +4,14 @@ import { error, invalid, redirect } from '@sveltejs/kit';
 
 import type { InternalError } from '$lib/types/api';
 import { DateTime } from 'luxon';
-import type { PageLoad } from './$types';
 import type { InternalApiResponse } from '$lib/types/api';
 import type { PriceAreas } from '$lib/energidataservice/types';
 
 import type { FeeKeys } from '$lib/types/fees';
 import type { Session } from '@supabase/supabase-js';
-import { getMeterDataForPeriod } from '$lib/datasources/meter';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit/dist/types';
+import { getMeterDataForPeriod } from '$lib/datasources/meter/getMeterData';
+import type { PageLoad } from '.svelte-kit/types/src/routes/$types';
 
 export const actions: Actions = {
 	updateSettings: async (event) => {

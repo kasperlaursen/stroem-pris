@@ -1,4 +1,4 @@
-import { getMeterDataForPeriod } from '$lib/datasources/meter';
+import { getMeterDataForPeriod } from '$lib/datasources/meter/getMeterData';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 

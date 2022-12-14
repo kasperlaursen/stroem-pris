@@ -1,15 +1,15 @@
 import type { Session } from '@supabase/supabase-js';
-import { LIMIT } from '$lib/supabaseClient';
-import type { InternalApiResponse } from '$lib/types/api';
-import { validateStringsAsISODateRange } from '$lib/utils/dateValidaton';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit/dist/types';
 import { getMeterDataFromDatabase } from './getMeterDataFromDatabase';
 import { getMeterDataFromExternalSource } from './getMeterDataFromExternalSource';
 import { getTokensFromDatabase } from './getTokensFromDatabase';
 import { saveMeterDataToDatabase } from './saveMeterDatatoDatabase';
-import { convertResponseToMeterTableData, type MeterTableData } from '$lib/eloverblik/utils';
 import { removeExistingMeterData } from './removeExistingMeterData';
 import { handleInvalidDates, handleLimitExceeded } from './errorHandlers';
+import { type MeterTableData, convertResponseToMeterTableData } from '$lib/eloverblik/utils';
+import { LIMIT } from '$lib/supabaseClient';
+import type { InternalApiResponse } from '$lib/types/api';
+import { validateStringsAsISODateRange } from '$lib/utils/dateValidaton';
 
 interface Params {
 	fromDateString: string | null;
