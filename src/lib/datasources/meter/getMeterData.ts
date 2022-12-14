@@ -90,7 +90,6 @@ export const getMeterDataForPeriod = async ({
 		oldMeterData: savedMeterData
 	});
 
-	// Save Data to DB
 	const newMeterDatabaseResponse = await saveMeterDataToDatabase({
 		newMeterData,
 		supabaseClient,
