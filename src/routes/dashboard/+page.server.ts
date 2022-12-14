@@ -105,12 +105,8 @@ export const actions: Actions = {
 
 type Fetch = (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
 
-const logger = (startTime: DateTime, label: string) =>
-	console.log('⏱️ 🐞', (startTime.diffNow().milliseconds * -1) / 1000, 'Dashboard', label);
-
 export const load: PageLoad = async (event) => {
 	const startTime = DateTime.now();
-	logger(startTime, 'Start');
 
 	const { fetch, url } = event;
 	const { session, supabaseClient } = await getSupabase(event);
@@ -122,8 +118,6 @@ export const load: PageLoad = async (event) => {
 		.from('datahub_tokens')
 		.select('refresh_token, usage_meter_id');
 
-	logger(startTime, 'Got Token');
-
 	if (!tokenData || !tokenData?.[0]?.refresh_token || !tokenData?.[0]?.usage_meter_id) {
 		throw redirect(303, '/settings');
 	}
@@ -133,8 +127,6 @@ export const load: PageLoad = async (event) => {
 	const { data: settingData, error } = await supabaseClient
 		.from('user_settings')
 		.select('price_area, show_vat, show_fees, show_tariff');
-
-	logger(startTime, 'Got Setting');
 
 	const { show_vat, show_fees, show_tariff } = settingData?.[0] ?? {
 		show_vat: true,
@@ -190,8 +182,6 @@ export const load: PageLoad = async (event) => {
 	errors.concat(usageMeterErrors);
 	errors.concat(spotErrors);
 
-	logger(startTime, 'Got Fees');
-
 	return {
 		usageMeterData,
 		feesData,
@@ -214,13 +204,7 @@ const getusageMeterForMonth = async (
 	session: Session,
 	supabaseClient: TypedSupabaseClient
 ) => {
-	console.log('getusageMeterForMonth');
 	const errors: InternalError[] = [];
-	// const usageMeterRequest = await fetch(`/api/meter/?from=${monthFrom}&to=${monthTo}`);
-	// if (usageMeterRequest.status !== 200) {
-	// 	errors.push({ message: usageMeterRequest.statusText, code: usageMeterRequest.status });
-	// 	return { errors, data: [] };
-	// }
 
 	const usageMeterResponse = await getMeterDataForPeriod({
 		fromDateString: monthFrom,
@@ -228,15 +212,6 @@ const getusageMeterForMonth = async (
 		session,
 		supabaseClient
 	});
-	console.log('usageMeterResponse');
-
-	// const usageMeterResponse = (await usageMeterRequest.json()) as InternalApiResponse<
-	// 	{
-	// 		hour_utc: string;
-	// 		meter_id: string;
-	// 		measurement: number;
-	// 	}[]
-	// >;
 
 	if (usageMeterResponse.success === false) {
 		console.log('errors');
@@ -250,14 +225,12 @@ const getusageMeterForMonth = async (
 	}[] = [];
 
 	if (usageMeterResponse.success === true) {
-		console.log('success');
 		usageMeterData = usageMeterResponse.data.map(({ measurement, hour_utc, meter_id }) => ({
 			measurement,
 			meterId: meter_id,
 			hourUTC: hour_utc
 		}));
 	}
-	console.log('return');
 
 	return { errors, data: usageMeterData };
 };
