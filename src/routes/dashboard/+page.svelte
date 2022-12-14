@@ -31,69 +31,14 @@
 		tariffer,
 		fixedPrice,
 		flexFee,
-		moms
+		moms,
+		usagePriceHourAndCalcualtions
 	} = data;
 
 	let compareFixedKwhPrice = fixedPrice ?? 0;
 	let compareVariableFeeKwh = flexFee ?? 0;
 
 	const hours = [...Array(24).keys()] as const;
-
-	$: compareFixedKwhPriceKR = compareFixedKwhPrice ? compareFixedKwhPrice / 100 : 0;
-	$: compareVariableFeeKwhKR = compareVariableFeeKwh ? compareVariableFeeKwh / 100 : 0;
-
-	$: withVat = (value: number): number => value * (moms ? 1.25 : 1);
-
-	$: feesAtTime = (hourUTC: DateTime): number => {
-		let fees = 0;
-		if (elafgift) {
-			fees +=
-				getCurrentFeeByDateAndKey(
-					feesData,
-					'elafgift',
-					hourUTC.set({ hour: 0, minute: 0, second: 0 })
-				) / 100;
-		}
-
-		if (tariffer) {
-			fees +=
-				getCurrentFeeByDateAndKey(
-					feesData,
-					'systemtarif',
-					hourUTC.set({ hour: 0, minute: 0, second: 0 })
-				) / 100;
-
-			fees +=
-				getCurrentFeeByDateAndKey(
-					feesData,
-					'transmissionstarif',
-					hourUTC.set({ hour: 0, minute: 0, second: 0 })
-				) / 100;
-		}
-		return fees;
-	};
-
-	$: usagePriceHourAndCalcualtions = usageMeterData.map(
-		({ hourUTC: meterHourUTC, measurement }) => {
-			const priceAtHour = spotData.find(
-				({ hourUTC: spotHourUTC }) =>
-					DateTime.fromISO(spotHourUTC, { zone: 'utc' }).toMillis() ===
-					DateTime.fromISO(meterHourUTC, { zone: 'utc' }).toMillis()
-			)?.priceDKK;
-			const fees = feesAtTime(DateTime.fromISO(meterHourUTC, { zone: 'utc' }));
-			const variablePrice = priceAtHour
-				? priceAtHour + fees + (compareVariableFeeKwhKR || 0)
-				: null;
-			const fixedPrice = compareFixedKwhPriceKR + fees;
-			return {
-				hour: DateTime.fromISO(meterHourUTC, { zone: 'utc' }),
-				usage: measurement,
-				price: variablePrice && withVat(variablePrice),
-				fixedPrice: withVat(fixedPrice),
-				hourTotal: withVat((variablePrice ?? 0) * measurement)
-			};
-		}
-	);
 
 	$: spotAveragePrice =
 		usagePriceHourAndCalcualtions.reduce((acc, { price }) => acc + (price ?? 0), 0) /
@@ -381,7 +326,7 @@
 		<MonthAverageChartCard
 			data={hours.map((_, index) => {
 				const relevantData = usagePriceHourAndCalcualtions.filter(
-					({ hour }) => hour.setZone('Europe/Copenhagen').hour === index
+					({ hour }) => DateTime.fromISO(hour).setZone('Europe/Copenhagen').hour === index
 				);
 				return {
 					price: relevantData.reduce((a, { price }) => a + (price ?? 0), 0) / relevantData.length,
@@ -394,7 +339,7 @@
 		<FullMonthUsageCard
 			data={[...Array(DateTime.fromObject({ month }).daysInMonth).keys()].map((key) => {
 				const relevantData = usagePriceHourAndCalcualtions.filter(
-					({ hour }) => hour.setZone('Europe/Copenhagen').day === key + 1
+					({ hour }) => DateTime.fromISO(hour).setZone('Europe/Copenhagen').day === key + 1
 				);
 				return {
 					price: relevantData.reduce((a, { price }) => a + (price ?? 0), 0) / relevantData.length,
@@ -407,7 +352,7 @@
 
 	<DailyUsageChartCard
 		data={usagePriceHourAndCalcualtions.map(({ usage, hour, price }) => ({
-			hour: hour.setZone('Europe/Copenhagen'),
+			hour: DateTime.fromISO(hour).setZone('Europe/Copenhagen'),
 			usage,
 			price
 		}))}
