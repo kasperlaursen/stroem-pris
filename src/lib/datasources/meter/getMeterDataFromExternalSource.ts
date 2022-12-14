@@ -3,7 +3,7 @@ import type { InternalApiResponse } from '$lib/types/api';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit/dist/types';
 import { DateTime } from 'luxon';
 import type { Session } from '@supabase/supabase-js';
-import { saveNewTokenToDatabase } from './saveNewTokenToDatabase';
+import { saveNewTokenToDatabase } from '$lib/datasources/meter/saveNewTokenToDatabase';
 import type { Result } from '$lib/eloverblik/types';
 
 interface Params {

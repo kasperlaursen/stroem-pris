@@ -1,11 +1,11 @@
 import type { Session } from '@supabase/supabase-js';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit/dist/types';
-import { getMeterDataFromDatabase } from './getMeterDataFromDatabase';
-import { getMeterDataFromExternalSource } from './getMeterDataFromExternalSource';
-import { getTokensFromDatabase } from './getTokensFromDatabase';
-import { saveMeterDataToDatabase } from './saveMeterDatatoDatabase';
-import { removeExistingMeterData } from './removeExistingMeterData';
-import { handleInvalidDates, handleLimitExceeded } from './errorHandlers';
+import { getMeterDataFromDatabase } from '$lib/datasources/meter/getMeterDataFromDatabase';
+import { getMeterDataFromExternalSource } from '$lib/datasources/meter/getMeterDataFromExternalSource';
+import { getTokensFromDatabase } from '$lib/datasources/meter/getTokensFromDatabase';
+import { saveMeterDataToDatabase } from '$lib/datasources/meter/saveMeterDatatoDatabase';
+import { removeExistingMeterData } from '$lib/datasources/meter/removeExistingMeterData';
+import { handleInvalidDates, handleLimitExceeded } from '$lib/datasources/meter/errorHandlers';
 import { type MeterTableData, convertResponseToMeterTableData } from '$lib/eloverblik/utils';
 import { LIMIT } from '$lib/supabaseClient';
 import type { InternalApiResponse } from '$lib/types/api';
