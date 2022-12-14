@@ -3,7 +3,7 @@ import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit/dist/
 import { getMeterDataFromDatabase } from '$lib/datasources/meter/getMeterDataFromDatabase';
 import { getMeterDataFromExternalSource } from '$lib/datasources/meter/getMeterDataFromExternalSource';
 import { getTokensFromDatabase } from '$lib/datasources/meter/getTokensFromDatabase';
-import { saveMeterDataToDatabase } from '$lib/datasources/meter/saveMeterDatatoDatabase';
+import { saveMeterDataToDatabase } from '$lib/datasources/meter/saveMeterDataToDatabase';
 import { removeExistingMeterData } from '$lib/datasources/meter/removeExistingMeterData';
 import { handleInvalidDates, handleLimitExceeded } from '$lib/datasources/meter/errorHandlers';
 import { type MeterTableData, convertResponseToMeterTableData } from '$lib/eloverblik/utils';
