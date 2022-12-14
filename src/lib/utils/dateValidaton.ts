@@ -1,19 +1,19 @@
 import { DateTime } from 'luxon';
 
-interface ValidDateReturn {
+export interface ValidDateReturn {
 	isValid: true;
 	fromDate: DateTime;
 	toDate: DateTime;
 	hourDiff: number;
 }
 
-interface InvalidDateReturn {
+export interface InvalidDateReturn {
 	isValid: false;
 	errorCode: number;
 	errorMessage: string;
 }
 
-type DateReturn = ValidDateReturn | InvalidDateReturn;
+export type DateReturn = ValidDateReturn | InvalidDateReturn;
 
 /**
  * Validates a from and to dates from strings and returns them as DateTime or returns an error object.

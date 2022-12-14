@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import type { Result } from './types';
 
-interface MeterTableData {
+export interface MeterTableData {
 	hour_utc: string;
 	meter_id: string;
 	measurement: number;

@@ -1,22 +1,17 @@
-import type { InternalError } from '$lib/types/api';
-
-import { DateTime } from 'luxon';
-import type { PageLoad } from './$types';
-import type { InternalApiResponse } from '$lib/types/api';
+import { getMeterDataForPeriod } from '$lib/datasources/meter/getMeterData';
 import type { PriceAreas } from '$lib/energidataservice/types';
-import { getSupabase } from '@supabase/auth-helpers-sveltekit';
-import { redirect } from '@sveltejs/kit';
+import type { InternalError, InternalApiResponse } from '$lib/types/api';
 import type { FeeKeys } from '$lib/types/fees';
+import type { PageLoad } from '.svelte-kit/types/src/routes/$types';
+import type { Session } from '@supabase/supabase-js';
+import { getSupabase } from '@supabase/auth-helpers-sveltekit';
+import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit/dist/types';
+import { redirect } from '@sveltejs/kit';
+import { DateTime } from 'luxon';
 
 type Fetch = (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
 
-const logger = (startTime: DateTime, label: string) =>
-	console.log('⏱️ ', '🐞', (startTime.diffNow().milliseconds * -1) / 1000, 'Dashboard', label);
-
 export const load: PageLoad = async (event) => {
-	const startTime = DateTime.now();
-	logger(startTime, 'Start');
-
 	const { fetch, url } = event;
 	const { session, supabaseClient } = await getSupabase(event);
 	if (!session) {
@@ -27,8 +22,6 @@ export const load: PageLoad = async (event) => {
 		.from('datahub_tokens')
 		.select('refresh_token, usage_meter_id');
 
-	logger(startTime, 'Got Token');
-
 	if (!tokenData || !tokenData?.[0]?.refresh_token || !tokenData?.[0]?.usage_meter_id) {
 		throw redirect(303, '/settings');
 	}
@@ -38,8 +31,6 @@ export const load: PageLoad = async (event) => {
 	const { data: settingData, error } = await supabaseClient
 		.from('user_settings')
 		.select('price_area, show_vat, show_fees, show_tariff');
-
-	logger(startTime, 'Got Setting');
 
 	const { show_vat, show_fees, show_tariff } = settingData?.[0] ?? {
 		show_vat: true,
@@ -75,7 +66,7 @@ export const load: PageLoad = async (event) => {
 		.from('user_monthly_settings')
 		.select('fixed_price, flex_fee')
 		.eq('month', DateTime.fromObject({ month, year }).toISODate());
-	const usageMeterForMonth = getusageMeterForMonth(fetch, monthFrom, monthTo);
+	const usageMeterForMonth = getusageMeterForMonth(monthFrom, monthTo, session, supabaseClient);
 	const spotForMonth = getSpotForMonth(fetch, monthFrom, monthTo, priceArea);
 	const fees = await fetch(`/api/fees`);
 
@@ -95,8 +86,6 @@ export const load: PageLoad = async (event) => {
 	errors.concat(usageMeterErrors);
 	errors.concat(spotErrors);
 
-	logger(startTime, 'Got Fees');
-
 	return {
 		usageMeterData,
 		feesData,
@@ -113,37 +102,37 @@ export const load: PageLoad = async (event) => {
 	};
 };
 
-const getusageMeterForMonth = async (fetch: Fetch, monthFrom: string, monthTo: string) => {
+const getusageMeterForMonth = async (
+	monthFrom: string,
+	monthTo: string,
+	session: Session,
+	supabaseClient: TypedSupabaseClient
+) => {
 	const errors: InternalError[] = [];
-	const usageMeterRequest = await fetch(`/api/meter/?from=${monthFrom}&to=${monthTo}`);
-	if (usageMeterRequest.status !== 200) {
-		errors.push({ message: usageMeterRequest.statusText, code: usageMeterRequest.status });
-		return { errors, data: [] };
-	}
 
-	const usageMeterResponse = (await usageMeterRequest.json()) as InternalApiResponse<
-		{
-			hour_utc: string;
-			meter_id: string;
-			measurement: number;
-		}[]
-	>;
+	const usageMeterResponse = await getMeterDataForPeriod({
+		fromDateString: monthFrom,
+		toDateString: monthTo,
+		session,
+		supabaseClient
+	});
 
 	if (usageMeterResponse.success === false) {
+		console.log('errors');
 		errors.push(usageMeterResponse.error);
 	}
 
 	let usageMeterData: {
 		measurement: number;
 		meterId: string;
-		hourUTC: DateTime;
+		hourUTC: string;
 	}[] = [];
 
 	if (usageMeterResponse.success === true) {
 		usageMeterData = usageMeterResponse.data.map(({ measurement, hour_utc, meter_id }) => ({
 			measurement,
 			meterId: meter_id,
-			hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
+			hourUTC: hour_utc
 		}));
 	}
 
@@ -176,7 +165,7 @@ const getSpotForMonth = async (
 
 	let spotData: {
 		priceArea: PriceAreas;
-		hourUTC: DateTime;
+		hourUTC: string;
 		priceDKK: number;
 	}[] = [];
 
@@ -184,7 +173,7 @@ const getSpotForMonth = async (
 		spotData = spotResponse.data.map(({ price_area, hour_utc, price_dkk }) => ({
 			priceArea: price_area,
 			priceDKK: price_dkk / 1000,
-			hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
+			hourUTC: hour_utc
 		}));
 	}
 	return { errors, data: spotData };

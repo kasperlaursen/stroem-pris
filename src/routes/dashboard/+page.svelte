@@ -9,6 +9,7 @@
 	import MonthAverageChartCard from './MonthAverageChartCard.svelte';
 	import FullMonthUsageCard from './FullMonthUsageCard.svelte';
 	import Link from '$lib/components/base/Link.svelte';
+	import { enhance } from '$app/forms';
 
 	let drawerHidden = true;
 	let transitionParams = {
@@ -75,15 +76,17 @@
 	$: usagePriceHourAndCalcualtions = usageMeterData.map(
 		({ hourUTC: meterHourUTC, measurement }) => {
 			const priceAtHour = spotData.find(
-				({ hourUTC: spotHourUTC }) => spotHourUTC.toMillis() === meterHourUTC.toMillis()
+				({ hourUTC: spotHourUTC }) =>
+					DateTime.fromISO(spotHourUTC, { zone: 'utc' }).toMillis() ===
+					DateTime.fromISO(meterHourUTC, { zone: 'utc' }).toMillis()
 			)?.priceDKK;
-			const fees = feesAtTime(meterHourUTC);
+			const fees = feesAtTime(DateTime.fromISO(meterHourUTC, { zone: 'utc' }));
 			const variablePrice = priceAtHour
 				? priceAtHour + fees + (compareVariableFeeKwhKR || 0)
 				: null;
 			const fixedPrice = compareFixedKwhPriceKR + fees;
 			return {
-				hour: meterHourUTC,
+				hour: DateTime.fromISO(meterHourUTC, { zone: 'utc' }),
 				usage: measurement,
 				price: variablePrice && withVat(variablePrice),
 				fixedPrice: withVat(fixedPrice),
@@ -103,12 +106,16 @@
 
 	$: spotDataCount = spotData.length;
 	$: spotDataLatestDate = DateTime.fromMillis(
-		Math.max(...spotData.map(({ hourUTC }) => hourUTC.toMillis()))
+		Math.max(
+			...spotData.map(({ hourUTC }) => DateTime.fromISO(hourUTC, { zone: 'utc' }).toMillis())
+		)
 	).toLocaleString(DateTime.DATETIME_MED, { locale: 'da-DK' });
 
 	$: usageMeterDataCount = usageMeterData.length;
 	$: usageMeterDataLatestDate = DateTime.fromMillis(
-		Math.max(...usageMeterData.map(({ hourUTC }) => hourUTC.toMillis()))
+		Math.max(
+			...usageMeterData.map(({ hourUTC }) => DateTime.fromISO(hourUTC, { zone: 'utc' }).toMillis())
+		)
 	).toLocaleString(DateTime.DATETIME_MED, { locale: 'da-DK' });
 
 	const lowestUsageMeterData =
@@ -179,7 +186,7 @@
 				locale: 'da-DK'
 			})}
 		</Heading>
-		<form method="get" action="?/" class="flex gap-4 grow ">
+		<form method="get" action="?/" class="flex gap-4 grow">
 			<Select
 				size="sm"
 				class="pr-8 w-60"
@@ -216,7 +223,7 @@
 				X
 			</Button>
 		</div>
-		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings">
+		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings" use:enhance>
 			<input type="hidden" bind:value={month} name="month" />
 			<input type="hidden" bind:value={year} name="year" />
 			<Heading tag="h6" class="mt-4">Fast pris</Heading>
@@ -230,7 +237,7 @@
 			/>
 			<Button type="submit" class="w-max place-self-end">Gem pris</Button>
 		</form>
-		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings">
+		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings" use:enhance>
 			<input type="hidden" bind:value={month} name="month" />
 			<input type="hidden" bind:value={year} name="year" />
 			<Heading tag="h6" class="mt-4">Variabel med gebyr</Heading>
