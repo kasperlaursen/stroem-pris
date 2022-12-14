@@ -9,6 +9,7 @@
 	import MonthAverageChartCard from './MonthAverageChartCard.svelte';
 	import FullMonthUsageCard from './FullMonthUsageCard.svelte';
 	import Link from '$lib/components/base/Link.svelte';
+	import { enhance } from '$app/forms';
 
 	let drawerHidden = true;
 	let transitionParams = {
@@ -185,7 +186,7 @@
 				locale: 'da-DK'
 			})}
 		</Heading>
-		<form method="get" action="?/" class="flex gap-4 grow ">
+		<form method="get" action="?/" class="flex gap-4 grow">
 			<Select
 				size="sm"
 				class="pr-8 w-60"
@@ -222,7 +223,7 @@
 				X
 			</Button>
 		</div>
-		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings">
+		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings" use:enhance>
 			<input type="hidden" bind:value={month} name="month" />
 			<input type="hidden" bind:value={year} name="year" />
 			<Heading tag="h6" class="mt-4">Fast pris</Heading>
@@ -236,7 +237,7 @@
 			/>
 			<Button type="submit" class="w-max place-self-end">Gem pris</Button>
 		</form>
-		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings">
+		<form class="grid gap-4" method="POST" action="?/updateMonthlySettings" use:enhance>
 			<input type="hidden" bind:value={month} name="month" />
 			<input type="hidden" bind:value={year} name="year" />
 			<Heading tag="h6" class="mt-4">Variabel med gebyr</Heading>
