@@ -1,5 +1,5 @@
 import type { MeterTableData } from '$lib/eloverblik/utils';
-import { DateTime } from 'luxon/src/datetime';
+import { DateTime } from 'luxon';
 
 interface Params {
 	oldMeterData?: MeterTableData[] | null;
