@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Link from '$lib/components/base/Link.svelte';
-	import DailySpot from '$lib/components/charts/DailySpot.svelte';
+	import DailySpot from '$lib/components/charts/HourlyPriceChart/DailySpot.svelte';
 	import type { PageData } from '.svelte-kit/types/src/routes/$types';
 	import { Card, Input, Select, Alert, P, Heading } from 'flowbite-svelte';
 	import { DateTime } from 'luxon';
@@ -41,8 +41,8 @@
 		<Alert>{data.message}</Alert>
 	{/if}
 
-	<Card class="!max-w-full gap-4">
-		<form method="get" action="/" class="grid md:grid-cols-2 gap-4 justify-center">
+	<Card class="!max-w-full gap-4 py-4" padding="none">
+		<form method="get" action="/" class="grid md:grid-cols-2 gap-4 justify-center px-4">
 			<Heading customSize="text-xl" class="font-medium text-lg text-center md:text-start">
 				Spot pris for {relativeDateFormatter.format(dateDiff, 'day')}
 			</Heading>
@@ -68,7 +68,7 @@
 				/>
 			</div>
 		</form>
-		<P class="text-sm">
+		<P class="text-sm px-4">
 			Priserne i grafen er uden Nettarif (også kaldet Transport) da denne varierer mellem
 			netselskaber.
 			<br />

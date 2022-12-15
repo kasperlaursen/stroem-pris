@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ fetch, url }) => {
 	const todayFrom = isValidDate ? dateParam : DateTime.now().toISODate();
 	const todayTo = isValidDate
 		? DateTime.fromISO(dateParam).plus({ days: 1 }).toISODate()
-		: DateTime.now().plus({ days: 1 }).toISODate();
+		: DateTime.now().plus({ days: 2 }).toISODate();
 
 	const todayResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
 	const todayData = (await todayResponse.json()) as InternalApiResponse<

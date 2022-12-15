@@ -270,17 +270,6 @@ export const load: PageLoad = async (event) => {
 
 	const usagePriceHourAndCalcualtions = Object.values(usagePriceHourAndCalcualtionsObj);
 
-	// const fees = 0;
-	// const variablePrice = priceAtHour ? priceAtHour + fees + fixedPrice : null;
-	// const FullfixedPrice = flexFee + fees;
-	// return {
-	// 	hour: meterHourUTC,
-	// 	usage: measurement,
-	// 	price: variablePrice && variablePrice,
-	// 	fixedPrice: FullfixedPrice,
-	// 	hourTotal: (variablePrice ?? 0) * measurement
-	// };
-
 	logger(startTime, 'After');
 
 	return {
