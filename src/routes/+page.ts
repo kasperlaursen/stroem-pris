@@ -8,6 +8,12 @@ import type { InternalApiResponse } from '$lib/types/api';
 import { getCurrentFeeByDateAndKey } from '$lib/utils/fees';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 
+type SpotHour = {
+	priceArea: PriceAreas;
+	hourUTC: DateTime;
+	priceDKK: number;
+};
+
 export const load: PageLoad = async (event) => {
 	const { fetch, url } = event;
 	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
@@ -20,8 +26,8 @@ export const load: PageLoad = async (event) => {
 		? DateTime.fromISO(dateParam).plus({ days: 1 }).toISODate()
 		: DateTime.now().plus({ days: 2 }).toISODate();
 
-	const todayResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
-	const todayData = (await todayResponse.json()) as InternalApiResponse<
+	const spotResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
+	const spotData = (await spotResponse.json()) as InternalApiResponse<
 		{
 			price_area: PriceAreas;
 			hour_utc: string;
@@ -44,20 +50,14 @@ export const load: PageLoad = async (event) => {
 		errors.push({ message: `Data findes ikke senere end ${todayTo}, viser data for i dag.` });
 	}
 
-	if (todayData.success === false) {
-		errors.push(todayData.error);
+	if (spotData.success === false) {
+		errors.push(spotData.error);
 	}
 
-	let spotToday:
-		| null
-		| {
-				priceArea: PriceAreas;
-				hourUTC: DateTime;
-				priceDKK: number;
-		  }[] = null;
+	let spotToday: null | SpotHour[] = null;
 
-	if (todayData.success === true) {
-		spotToday = todayData.data.map(({ price_area, hour_utc, price_dkk }) => ({
+	if (spotData.success === true) {
+		spotToday = spotData.data.map(({ price_area, hour_utc, price_dkk }) => ({
 			priceArea: price_area,
 			priceDKK: price_dkk,
 			hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
@@ -101,6 +101,6 @@ export const load: PageLoad = async (event) => {
 		feesToday,
 		date: todayFrom,
 		errors,
-		message: todayData.success ? todayData.message : null
+		message: spotData.success ? spotData.message : null
 	};
 };
