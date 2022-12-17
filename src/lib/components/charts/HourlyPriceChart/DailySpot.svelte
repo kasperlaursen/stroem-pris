@@ -30,7 +30,7 @@
 
 <div class="text-xs md:text-sm select-none w-full">
 	<div class="uppercase px-4 pt-4 dark:text-white text-black font-medium">
-		{relativeDateFormatter.format(Math.floor(sortedData[1].hourUTC.diffNow('days').days), 'day')}
+		{relativeDateFormatter.format(Math.ceil(sortedData[20].hourUTC.diffNow('days').days), 'day')}
 	</div>
 	{#each sortedData as hour}
 		<Row hour={hour.hourUTC} price={hour.priceDKK} {max} {averageLast30Days} />
