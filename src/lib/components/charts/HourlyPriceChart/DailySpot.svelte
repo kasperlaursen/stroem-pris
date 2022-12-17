@@ -19,10 +19,10 @@
 				1.25
 		}));
 
-	const max = Math.max(...sortedData.map(({ priceDKK }) => priceDKK)) * 1.2;
+	const max = Math.max(...sortedData.map(({ priceDKK }) => priceDKK)) * 1.1;
 </script>
 
-<div class="text-xs md:text-sm">
+<div class="text-xs md:text-sm select-none">
 	{#each sortedData as hour}
 		<Row hour={hour.hourUTC} price={hour.priceDKK} {max} />
 	{/each}

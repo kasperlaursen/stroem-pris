@@ -41,12 +41,10 @@
 		<Alert>{data.message}</Alert>
 	{/if}
 
-	<Card class="!max-w-full gap-4 py-4" padding="none">
-		<form method="get" action="/" class="grid md:grid-cols-2 gap-4 justify-center px-4">
-			<Heading customSize="text-xl" class="font-medium text-lg text-center md:text-start">
-				Spot pris for {relativeDateFormatter.format(dateDiff, 'day')}
-			</Heading>
-			<div class="grid gap-4 grid-cols-2 justify-self-end">
+	<Card class="!max-w-full gap-2 py-4" padding="none">
+		<form method="get" action="/" class="flex gap-4 justify-center px-4">
+			<Heading customSize="text-xl" class="font-medium text-lg ">Variabel strømpris</Heading>
+			<div class="grid gap-4 grid-cols-2 justify-self-end shrink-0">
 				<Input
 					class="!text-base !leading-4"
 					size="sm"
@@ -68,10 +66,8 @@
 				/>
 			</div>
 		</form>
-		<P class="text-sm px-4">
-			Priserne i grafen er uden Nettarif (også kaldet Transport) da denne varierer mellem
-			netselskaber.
-			<br />
+		<P class="!text-xs md:!text-sm px-4">
+			Priserne vises uden Nettarif, som variere mellem netselskaber. <br />
 			Du kan se hvilket netselskab du har på
 			<Link href="https://www.danskenergi.dk/vejledning/nettilslutning/find-netselskab">
 				Danskenergi.dk
