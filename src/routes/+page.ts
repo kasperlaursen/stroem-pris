@@ -6,8 +6,16 @@ import type { PageLoad } from './$types';
 import type { FeeKeys } from '$lib/types/fees';
 import type { InternalApiResponse } from '$lib/types/api';
 import { getCurrentFeeByDateAndKey } from '$lib/utils/fees';
+import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 
-export const load: PageLoad = async ({ fetch, url }) => {
+type SpotHour = {
+	priceArea: PriceAreas;
+	hourUTC: DateTime;
+	priceDKK: number;
+};
+
+export const load: PageLoad = async (event) => {
+	const { fetch, url } = event;
 	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
 	const dateParam = url.searchParams.get('date');
 	const isValidDate =
@@ -16,10 +24,10 @@ export const load: PageLoad = async ({ fetch, url }) => {
 	const todayFrom = isValidDate ? dateParam : DateTime.now().toISODate();
 	const todayTo = isValidDate
 		? DateTime.fromISO(dateParam).plus({ days: 1 }).toISODate()
-		: DateTime.now().plus({ days: 1 }).toISODate();
+		: DateTime.now().plus({ days: 2 }).toISODate();
 
-	const todayResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
-	const todayData = (await todayResponse.json()) as InternalApiResponse<
+	const spotResponse = await fetch(`/api/spot/?from=${todayFrom}&to=${todayTo}&area=${priceArea}`);
+	const spotData = (await spotResponse.json()) as InternalApiResponse<
 		{
 			price_area: PriceAreas;
 			hour_utc: string;
@@ -27,30 +35,45 @@ export const load: PageLoad = async ({ fetch, url }) => {
 		}[]
 	>;
 
+	const { supabaseClient } = await getSupabase(event);
+
+	const spotLast30Days = await supabaseClient
+		.from('spot')
+		.select('price_dkk')
+		.gt('hour_utc', DateTime.fromISO(todayFrom).minus({ days: 30 }).toISODate());
+	const { data } = spotLast30Days;
+	const averageLast30Days = data ? data.reduce((a, b) => a + b.price_dkk, 0) / data.length : null;
+
 	const errors: InternalError[] = [];
 
 	if (dateParam && !isValidDate) {
 		errors.push({ message: `Data findes ikke senere end ${todayTo}, viser data for i dag.` });
 	}
 
-	if (todayData.success === false) {
-		errors.push(todayData.error);
+	if (spotData.success === false) {
+		errors.push(spotData.error);
 	}
 
-	let spotToday:
-		| null
-		| {
-				priceArea: PriceAreas;
-				hourUTC: DateTime;
-				priceDKK: number;
-		  }[] = null;
+	let spotToday: null | SpotHour[] = null;
+	let spotTomorrow: null | SpotHour[] = null;
 
-	if (todayData.success === true) {
-		spotToday = todayData.data.map(({ price_area, hour_utc, price_dkk }) => ({
+	if (spotData.success === true) {
+		const spot = spotData.data.map(({ price_area, hour_utc, price_dkk }) => ({
 			priceArea: price_area,
 			priceDKK: price_dkk,
 			hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
 		}));
+
+		spotToday = spot.filter(
+			({ hourUTC }) =>
+				hourUTC.setZone('Europe/Copenhagen').day ===
+				DateTime.fromISO(todayFrom).setZone('Europe/Copenhagen').day
+		);
+		spotTomorrow = spot.filter(
+			({ hourUTC }) =>
+				hourUTC.setZone('Europe/Copenhagen').day ===
+				DateTime.fromISO(todayFrom).setZone('Europe/Copenhagen').plus({ day: 1 }).day
+		);
 	}
 
 	const feesResponse = await fetch(`/api/fees`);
@@ -84,11 +107,13 @@ export const load: PageLoad = async ({ fetch, url }) => {
 	};
 
 	return {
+		averageLast30Days,
 		spotToday,
+		spotTomorrow,
 		priceArea,
 		feesToday,
 		date: todayFrom,
 		errors,
-		message: todayData.success ? todayData.message : null
+		message: spotData.success ? spotData.message : null
 	};
 };
