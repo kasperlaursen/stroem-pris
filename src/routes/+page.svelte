@@ -74,7 +74,11 @@
 			</Link>
 		</P>
 		{#if data.spotToday}
-			<DailySpot spotData={data.spotToday} feeData={data.feesToday} />
+			<DailySpot
+				spotData={data.spotToday}
+				feeData={data.feesToday}
+				averageLast30Days={data.averageLast30Days}
+			/>
 		{/if}
 	</Card>
 </div>

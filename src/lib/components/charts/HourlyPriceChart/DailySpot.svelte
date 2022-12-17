@@ -6,6 +6,7 @@
 
 	export let spotData: { priceArea: PriceAreas; priceDKK: number; hourUTC: DateTime }[] = [];
 	export let feeData: { [fee in FeeKeys]: number };
+	export let averageLast30Days: number | null;
 
 	const sortedData = spotData
 		.sort((a, b) => a.hourUTC.toMillis() - b.hourUTC.toMillis())
@@ -24,6 +25,6 @@
 
 <div class="text-xs md:text-sm select-none">
 	{#each sortedData as hour}
-		<Row hour={hour.hourUTC} price={hour.priceDKK} {max} />
+		<Row hour={hour.hourUTC} price={hour.priceDKK} {max} {averageLast30Days} />
 	{/each}
 </div>

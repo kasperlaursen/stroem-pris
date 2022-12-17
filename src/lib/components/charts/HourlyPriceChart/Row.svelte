@@ -5,6 +5,7 @@
 	export let hour: DateTime;
 	export let price: number;
 	export let max: number;
+	export let averageLast30Days: number | null;
 
 	const width = ((price / max) * 100).toFixed(0);
 	let now = DateTime.now();
@@ -19,6 +20,28 @@
 		numeric: 'auto',
 		style: 'narrow'
 	});
+
+	const red = 'bg-red-500 bg-opacity-90 dark:bg-red-600 dark:bg-opacity-70';
+	const yellow = 'bg-amber-500 bg-opacity-90 dark:bg-amber-500 dark:bg-opacity-70';
+	const green = 'bg-emerald-500 bg-opacity-90 dark:bg-emerald-500 dark:bg-opacity-70';
+
+	const color = () => {
+		if (!averageLast30Days) {
+			return red;
+		}
+
+		const avg = averageLast30Days / 1000;
+
+		if (price <= avg * 0.9) {
+			return green;
+		}
+
+		if (price >= avg * 1.1) {
+			return red;
+		}
+
+		return yellow;
+	};
 </script>
 
 {#if hour.hour === 23}
@@ -48,7 +71,7 @@
 	<div class={`w-full p-1 ${isNow && 'animate-pulse font-bold'}`}>
 		<div class="w-full h-full rounded-full bg-slate-500 dark:bg-opacity-30 bg-opacity-10">
 			<div
-				class="flex h-full bg-red-500 dark:bg-red-600 dark:bg-opacity-80 rounded-full transition-all w-0"
+				class={`flex h-full ${color()} dark:bg-opacity-80 rounded-full transition-all w-0`}
 				style={`width: ${width}%`}
 			/>
 		</div>

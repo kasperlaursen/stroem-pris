@@ -6,8 +6,10 @@ import type { PageLoad } from './$types';
 import type { FeeKeys } from '$lib/types/fees';
 import type { InternalApiResponse } from '$lib/types/api';
 import { getCurrentFeeByDateAndKey } from '$lib/utils/fees';
+import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 
-export const load: PageLoad = async ({ fetch, url }) => {
+export const load: PageLoad = async (event) => {
+	const { fetch, url } = event;
 	const priceArea = url.searchParams.get('area') == 'DK2' ? 'DK2' : 'DK1';
 	const dateParam = url.searchParams.get('date');
 	const isValidDate =
@@ -26,6 +28,15 @@ export const load: PageLoad = async ({ fetch, url }) => {
 			price_dkk: number;
 		}[]
 	>;
+
+	const { supabaseClient } = await getSupabase(event);
+
+	const spotLast30Days = await supabaseClient
+		.from('spot')
+		.select('price_dkk')
+		.gt('hour_utc', DateTime.fromISO(todayFrom).minus({ days: 30 }).toISODate());
+	const { data } = spotLast30Days;
+	const averageLast30Days = data ? data.reduce((a, b) => a + b.price_dkk, 0) / data.length : null;
 
 	const errors: InternalError[] = [];
 
@@ -84,6 +95,7 @@ export const load: PageLoad = async ({ fetch, url }) => {
 	};
 
 	return {
+		averageLast30Days,
 		spotToday,
 		priceArea,
 		feesToday,
