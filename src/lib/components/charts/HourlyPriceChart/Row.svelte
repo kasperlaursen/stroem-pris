@@ -16,11 +16,6 @@
 		setInterval(() => (now = DateTime.now()), 5 * 60 * 60 * 1000);
 	});
 
-	const relativeDateFormatter = new Intl.RelativeTimeFormat('da-DK', {
-		numeric: 'auto',
-		style: 'narrow'
-	});
-
 	const red = 'bg-red-500 bg-opacity-90 dark:bg-red-600 dark:bg-opacity-70';
 	const yellow = 'bg-amber-500 bg-opacity-90 dark:bg-amber-500 dark:bg-opacity-70';
 	const green = 'bg-emerald-500 bg-opacity-90 dark:bg-emerald-500 dark:bg-opacity-70';
@@ -44,11 +39,6 @@
 	};
 </script>
 
-{#if hour.hour === 23}
-	<div class="uppercase px-4 pt-4 dark:text-white text-black font-medium">
-		{relativeDateFormatter.format(Math.floor(hour.diffNow('days').days), 'day')}
-	</div>
-{/if}
 <div
 	class={`group grid grid-cols-[max-content,auto] gap-1 px-4 hover:bg-slate-300 hover:bg-opacity-10 transition ${
 		isNow && 'bg-slate-300 bg-opacity-20 py-2 '

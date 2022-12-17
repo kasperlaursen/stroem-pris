@@ -8,7 +8,6 @@
 	import { DateTime } from 'luxon';
 
 	export let data: PageData;
-	const spot = data.spotToday;
 
 	const selectedDate = data.date;
 	$: date = selectedDate;
@@ -81,13 +80,22 @@
 				/>
 			</div>
 		</form>
+		<div class="flex gap-4 flex-col sm:flex-row-reverse">
+			{#if data.spotTomorrow}
+				<DailySpot
+					spotData={data.spotTomorrow}
+					feeData={data.feesToday}
+					averageLast30Days={data.averageLast30Days}
+				/>
+			{/if}
 
-		{#if data.spotToday}
-			<DailySpot
-				spotData={data.spotToday}
-				feeData={data.feesToday}
-				averageLast30Days={data.averageLast30Days}
-			/>
-		{/if}
+			{#if data.spotToday}
+				<DailySpot
+					spotData={data.spotToday}
+					feeData={data.feesToday}
+					averageLast30Days={data.averageLast30Days}
+				/>
+			{/if}
+		</div>
 	</Card>
 </div>

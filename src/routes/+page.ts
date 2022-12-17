@@ -55,13 +55,25 @@ export const load: PageLoad = async (event) => {
 	}
 
 	let spotToday: null | SpotHour[] = null;
+	let spotTomorrow: null | SpotHour[] = null;
 
 	if (spotData.success === true) {
-		spotToday = spotData.data.map(({ price_area, hour_utc, price_dkk }) => ({
+		const spot = spotData.data.map(({ price_area, hour_utc, price_dkk }) => ({
 			priceArea: price_area,
 			priceDKK: price_dkk,
 			hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' })
 		}));
+
+		spotToday = spot.filter(
+			({ hourUTC }) =>
+				hourUTC.setZone('Europe/Copenhagen').day ===
+				DateTime.fromISO(todayFrom).setZone('Europe/Copenhagen').day
+		);
+		spotTomorrow = spot.filter(
+			({ hourUTC }) =>
+				hourUTC.setZone('Europe/Copenhagen').day ===
+				DateTime.fromISO(todayFrom).setZone('Europe/Copenhagen').plus({ day: 1 }).day
+		);
 	}
 
 	const feesResponse = await fetch(`/api/fees`);
@@ -97,6 +109,7 @@ export const load: PageLoad = async (event) => {
 	return {
 		averageLast30Days,
 		spotToday,
+		spotTomorrow,
 		priceArea,
 		feesToday,
 		date: todayFrom,

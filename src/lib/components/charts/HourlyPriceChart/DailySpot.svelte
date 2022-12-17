@@ -20,10 +20,18 @@
 				1.25
 		}));
 
+	const relativeDateFormatter = new Intl.RelativeTimeFormat('da-DK', {
+		numeric: 'auto',
+		style: 'narrow'
+	});
+
 	const max = Math.max(...sortedData.map(({ priceDKK }) => priceDKK)) * 1.1;
 </script>
 
-<div class="text-xs md:text-sm select-none">
+<div class="text-xs md:text-sm select-none w-full">
+	<div class="uppercase px-4 pt-4 dark:text-white text-black font-medium">
+		{relativeDateFormatter.format(Math.floor(sortedData[1].hourUTC.diffNow('days').days), 'day')}
+	</div>
 	{#each sortedData as hour}
 		<Row hour={hour.hourUTC} price={hour.priceDKK} {max} {averageLast30Days} />
 	{/each}
