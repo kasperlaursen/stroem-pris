@@ -81,7 +81,7 @@
 			</div>
 		</form>
 		<div class="flex gap-4 flex-col sm:flex-row-reverse">
-			{#if data.spotTomorrow}
+			{#if data.spotTomorrow && data.spotTomorrow.length > 0}
 				<DailySpot
 					spotData={data.spotTomorrow}
 					feeData={data.feesToday}
@@ -89,7 +89,7 @@
 				/>
 			{/if}
 
-			{#if data.spotToday}
+			{#if data.spotToday && data.spotToday.length > 0}
 				<DailySpot
 					spotData={data.spotToday}
 					feeData={data.feesToday}
