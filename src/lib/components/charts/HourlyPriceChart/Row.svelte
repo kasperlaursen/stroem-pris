@@ -25,13 +25,13 @@
 			return red;
 		}
 
-		const avg = averageLast30Days / 1000;
+		console.log(averageLast30Days);
 
-		if (price <= avg * 0.9) {
+		if (price <= averageLast30Days * 0.8) {
 			return green;
 		}
 
-		if (price >= avg * 1.1) {
+		if (price >= averageLast30Days * 1.1) {
 			return red;
 		}
 

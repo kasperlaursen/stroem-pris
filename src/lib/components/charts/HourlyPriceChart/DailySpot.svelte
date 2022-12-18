@@ -8,17 +8,21 @@
 	export let feeData: { [fee in FeeKeys]: number };
 	export let averageLast30Days: number | null;
 
+	const totalFees = (feeData.elafgift + feeData.transmissionstarif + feeData.systemtarif) / 100;
+	const vatMultiplyer = 1.25;
+
 	const sortedData = spotData
 		.sort((a, b) => a.hourUTC.toMillis() - b.hourUTC.toMillis())
 		.reverse()
 		.map(({ hourUTC, priceArea, priceDKK }) => ({
 			hourUTC: hourUTC.setZone('Europe/Copenhagen'),
 			priceArea,
-			priceDKK:
-				(priceDKK / 1000 +
-					(feeData.elafgift + feeData.transmissionstarif + feeData.systemtarif) / 100) *
-				1.25
+			priceDKK: (priceDKK / 1000 + totalFees) * vatMultiplyer
 		}));
+
+	averageLast30Days = averageLast30Days
+		? (averageLast30Days / 1000 + totalFees) * vatMultiplyer
+		: null;
 
 	const relativeDateFormatter = new Intl.RelativeTimeFormat('da-DK', {
 		numeric: 'auto',
