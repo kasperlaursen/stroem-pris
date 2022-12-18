@@ -2,7 +2,7 @@
  * An array of available price areas in the energidataservice.
  * _Use this for runtime validation of strings as price areas._
  */
-export const priceAreas = ['DK1', 'DK2', 'NO2', 'SYSTEM', 'SE3', 'SE4', 'DE'] as const;
+export const priceAreas = ['DK1', 'DK2'] as const;
 
 /**
  * Type for available price areas in the energidataservice.
