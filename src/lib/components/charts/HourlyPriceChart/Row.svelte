@@ -9,11 +9,11 @@
 
 	const width = ((price / max) * 100).toFixed(0);
 	let now = DateTime.now();
-	const isNow = hour.day === now.day && hour.hour === now.hour;
-	const isPast = hour.day === now.day && hour.hour < now.hour;
+	$: isNow = hour.day === now.day && hour.hour === now.hour;
+	$: isPast = hour.day === now.day && hour.hour < now.hour;
 
 	onMount(() => {
-		setInterval(() => (now = DateTime.now()), 5 * 60 * 60 * 1000);
+		setInterval(() => (now = DateTime.now()), 60 * 1000);
 	});
 
 	const red = 'bg-red-500 bg-opacity-90 dark:bg-red-600 dark:bg-opacity-70';
