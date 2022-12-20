@@ -103,23 +103,17 @@ export const actions: Actions = {
 
 type Fetch = (input: URL | RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
 
-const logger = (startTime: DateTime, label: string) =>
-	console.log('⏱️ ', '🐞', (startTime.diffNow().milliseconds * -1) / 1000, 'Dashboard', label);
-
 export const load: PageLoad = async (event) => {
 	const startTime = DateTime.now();
-	logger(startTime, 'Start');
 	const { fetch, url } = event;
 	const { session, supabaseClient } = await getSupabase(event);
 	if (!session) {
 		throw redirect(303, '/');
 	}
-	logger(startTime, 'Session');
 
 	const { data: tokenData } = await supabaseClient
 		.from('datahub_tokens')
 		.select('refresh_token, usage_meter_id');
-	logger(startTime, 'tokenData');
 
 	if (!tokenData || !tokenData?.[0]?.refresh_token || !tokenData?.[0]?.usage_meter_id) {
 		throw redirect(303, '/settings');
@@ -130,7 +124,6 @@ export const load: PageLoad = async (event) => {
 	const { data: settingData, error } = await supabaseClient
 		.from('user_settings')
 		.select('price_area, show_vat, show_fees, show_tariff');
-	logger(startTime, 'settingData');
 
 	const { show_vat, show_fees, show_tariff } = settingData?.[0] ?? {
 		show_vat: true,
@@ -167,14 +160,11 @@ export const load: PageLoad = async (event) => {
 		.select('fixed_price, flex_fee')
 		.eq('month', DateTime.fromObject({ month, year }).toISODate());
 
-	logger(startTime, 'userMonthlySettings');
 	const usageMeterForMonth = getusageMeterForMonth(monthFrom, monthTo, session, supabaseClient);
 	const spotForMonth = getSpotForMonth(fetch, monthFrom, monthTo, priceArea);
 	const fees = await fetch(`/api/fees`);
-	logger(startTime, 'fees');
 
 	const results = await Promise.all([userMonthlySettings, usageMeterForMonth, spotForMonth, fees]);
-	logger(startTime, 'results');
 
 	const { data: monthSettingData, error: monthSettingError } = results[0];
 	const { data: usageMeterData, errors: usageMeterErrors } = results[1];
@@ -184,7 +174,6 @@ export const load: PageLoad = async (event) => {
 		key: FeeKeys;
 		value: number;
 	}[];
-	logger(startTime, 'feesData');
 
 	if (monthSettingError) console.log(monthSettingError);
 
@@ -194,7 +183,6 @@ export const load: PageLoad = async (event) => {
 	const fixedPrice = monthSettingData?.[0]?.fixed_price / 100 || 0;
 	const flexFee = monthSettingData?.[0]?.flex_fee / 100 || 0;
 
-	logger(startTime, 'Before');
 	const usagePriceHourAndCalcualtionsObj: {
 		[hour: string]: {
 			hour: string;
@@ -269,8 +257,6 @@ export const load: PageLoad = async (event) => {
 	});
 
 	const usagePriceHourAndCalcualtions = Object.values(usagePriceHourAndCalcualtionsObj);
-
-	logger(startTime, 'After');
 
 	return {
 		usagePriceHourAndCalcualtions,
