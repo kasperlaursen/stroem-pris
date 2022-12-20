@@ -25,8 +25,6 @@
 			return red;
 		}
 
-		console.log(averageLast30Days);
-
 		if (price <= averageLast30Days * 0.8) {
 			return green;
 		}
