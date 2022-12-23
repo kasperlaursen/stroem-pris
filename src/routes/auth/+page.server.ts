@@ -48,19 +48,5 @@ export const actions: Actions = {
 		const { supabaseClient } = await getSupabase(event);
 		await supabaseClient.auth.signOut();
 		throw redirect(303, '/');
-	},
-	reset: async (event) => {
-		const { request } = event;
-		const { supabaseClient } = await getSupabase(event);
-
-		const formData = await request.formData();
-		const email = formData.get('email') as string;
-
-		if (typeof email !== 'string') {
-			return InvalidCredentialsResponse;
-		}
-
-		await supabaseClient.auth.resetPasswordForEmail(email);
-		throw redirect(303, '/');
 	}
 };

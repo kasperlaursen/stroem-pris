@@ -6,7 +6,7 @@ export const actions: Actions = {
 		const setPasswordResult = await setPassword(event);
 
 		if (setPasswordResult.success === false) {
-			return setPasswordResult.error;
+			return setPasswordResult;
 		}
 
 		throw redirect(303, '/guide');
