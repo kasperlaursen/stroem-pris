@@ -53,6 +53,7 @@ export const getMeterDataFromExternalSource = async ({
 	]);
 
 	const results = await Promise.all([meterDataResponse, saveToken]);
+	console.log('🐞', 'Got Datahub response.');
 	const meterResponse = results[0];
 
 	return meterResponse;

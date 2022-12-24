@@ -82,12 +82,15 @@ export const getData = async (
 
 	if (response.status === 200) {
 		const data = ((await response.json()) as APIResponse).result;
+		console.log(`📊 🌍`, `Got response.`);
 
 		if (data) {
+			console.log(`📊 🌍`, `Got success response.`);
 			return { success: true, data };
 		}
 	}
 
+	console.log(`📊 🌍`, `Got FAILED response.`);
 	return {
 		success: false,
 		error: {
