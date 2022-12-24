@@ -24,7 +24,7 @@ export const actions: Actions = {
 		const moms: boolean = formData.get('moms') === 'moms';
 		const elafgift: boolean = formData.get('elafgift') === 'elafgift';
 		const tariffer: boolean = formData.get('tariffer') === 'tariffer';
-		const month = formData.get('month') ? Number(formData.get('month')) : DateTime.now().month;
+		const month = monthParamValidation(formData.get('month'));
 
 		const { error: setSettingsError } = await supabaseClient.from('user_settings').upsert({
 			user_id: session.user.id,
@@ -52,14 +52,13 @@ export const actions: Actions = {
 		const formData = await request.formData();
 		const fixedPrice = formData.get('fixedPrice');
 		const feePrice = formData.get('feePrice');
-		const month = formData.get('month') ? Number(formData.get('month')) : DateTime.now().month;
-		const year = formData.get('year') ? Number(formData.get('year')) : DateTime.now().year;
+		const month = monthParamValidation(formData.get('month'));
 
-		console.log({ fixedPrice, feePrice, month, year, formMonth: formData.get('month') });
+		console.log({ fixedPrice, feePrice, month, formMonth: formData.get('month') });
 
 		const data: { user_id: string; month: string; fixed_price?: number; flex_fee?: number } = {
 			user_id: session.user.id,
-			month: DateTime.fromObject({ month, year }).toISODate()
+			month: month
 		};
 
 		if (fixedPrice) {
@@ -140,25 +139,17 @@ export const load: PageLoad = async (event) => {
 			? 'DK2'
 			: 'DK1';
 
-	const month = url.searchParams.get('month')
-		? Number(url.searchParams.get('month'))
-		: DateTime.now().month;
+	const month = monthParamValidation(url.searchParams.get('month'));
 	const year = url.searchParams.get('year')
 		? Number(url.searchParams.get('year'))
 		: DateTime.now().year;
-	const monthFrom = DateTime.fromObject({ day: 1, month, year }).toISODate();
-	const monthTo = DateTime.fromObject({
-		day: 1,
-		month,
-		year
-	})
-		.plus({ month: 1 })
-		.toISODate();
+	const monthFrom = DateTime.fromISO(month).toISODate();
+	const monthTo = DateTime.fromISO(month).plus({ month: 1 }).toISODate();
 
 	const userMonthlySettings = supabaseClient
 		.from('user_monthly_settings')
 		.select('fixed_price, flex_fee')
-		.eq('month', DateTime.fromObject({ month, year }).toISODate());
+		.eq('month', month);
 
 	const usageMeterForMonth = getusageMeterForMonth(monthFrom, monthTo, session, supabaseClient);
 	const spotForMonth = getSpotForMonth(fetch, monthFrom, monthTo, priceArea);
@@ -350,4 +341,12 @@ const getSpotForMonth = async (
 		}));
 	}
 	return { errors, data: spotData };
+};
+
+const monthParamValidation = (param?: unknown): string => {
+	const monthParam = typeof param === 'string' ? String(param) : null;
+	const month = monthParam
+		? DateTime.fromISO(monthParam).toISODate()
+		: DateTime.now().set({ day: 1 }).toISODate();
+	return month;
 };

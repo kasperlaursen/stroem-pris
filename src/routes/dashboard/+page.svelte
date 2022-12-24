@@ -35,8 +35,8 @@
 		usagePriceHourAndCalcualtions
 	} = data;
 
-	let compareFixedKwhPrice = fixedPrice ?? 0;
-	let compareVariableFeeKwh = flexFee ?? 0;
+	let compareFixedKwhPrice = fixedPrice ? Math.round(fixedPrice * 100) : 0;
+	let compareVariableFeeKwh = flexFee ? flexFee * 100 : 0;
 
 	const hours = [...Array(24).keys()] as const;
 
@@ -95,13 +95,21 @@
 		event.target.form.submit();
 	};
 
-	const months = [...Array(DateTime.now().month).keys()].map((index) =>
-		DateTime.fromObject({ month: index + 1 }).toFormat('MMMM', {
-			locale: 'da-DK'
-		})
+	const firstMonthObject = { year: 2022, month: 1 };
+	const numberOfMonths = Math.ceil(
+		DateTime.fromObject(firstMonthObject).diffNow('months').months * -1
+	);
+
+	const months = [...Array(numberOfMonths).keys()].map((index) =>
+		DateTime.fromObject({ year: 2022, month: 1 }).plus({ months: index })
 	);
 	let monthNumber = String(month);
-	const monthOptions = months.map((name, index) => ({ value: String(index + 1), name }));
+	const monthOptions = months.map((month) => ({
+		value: month.toISODate(),
+		name: month.toFormat('MMMM y', {
+			locale: 'da-DK'
+		})
+	}));
 
 	const areaOptions = [
 		{ value: 'DK1', name: 'Vest for storebælt' },
@@ -127,7 +135,7 @@
 	{/each}
 	<section class="flex justify-between flex-col sm:flex-row gap-4">
 		<Heading customSize="text-2xl font-bold" class="capitalize">
-			🗓️ {DateTime.fromObject({ month: month }).toFormat('MMMM y', {
+			🗓️ {DateTime.fromISO(month).toFormat('MMMM y', {
 				locale: 'da-DK'
 			})}
 		</Heading>
@@ -337,14 +345,14 @@
 		/>
 
 		<FullMonthUsageCard
-			data={[...Array(DateTime.fromObject({ month }).daysInMonth).keys()].map((key) => {
+			data={[...Array(DateTime.fromISO(month).daysInMonth).keys()].map((key) => {
 				const relevantData = usagePriceHourAndCalcualtions.filter(
 					({ hour }) => DateTime.fromISO(hour).setZone('Europe/Copenhagen').day === key + 1
 				);
 				return {
 					price: relevantData.reduce((a, { price }) => a + (price ?? 0), 0) / relevantData.length,
 					usage: relevantData.reduce((a, { usage }) => a + usage, 0),
-					hour: DateTime.fromObject({ month, day: key + 1 })
+					hour: DateTime.fromISO(month).set({ day: key + 1 })
 				};
 			})}
 		/>
