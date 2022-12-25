@@ -118,7 +118,7 @@ export const load: PageLoad = async (event) => {
 		throw redirect(303, '/settings');
 	}
 
-	const errors: InternalError[] = [];
+	let errors: InternalError[] = [];
 
 	const { data: settingData, error } = await supabaseClient
 		.from('user_settings')
@@ -168,8 +168,7 @@ export const load: PageLoad = async (event) => {
 
 	if (monthSettingError) console.log(monthSettingError);
 
-	errors.concat(usageMeterErrors);
-	errors.concat(spotErrors);
+	errors = [...errors, ...usageMeterErrors, ...spotErrors];
 
 	const fixedPrice = monthSettingData?.[0]?.fixed_price / 100 || 0;
 	const flexFee = monthSettingData?.[0]?.flex_fee / 100 || 0;
@@ -283,7 +282,6 @@ const getusageMeterForMonth = async (
 
 	if (usageMeterResponse.success === false) {
 		errors.push(usageMeterResponse.error);
-		console.log('🐞', 'errors', errors);
 	}
 
 	let usageMeterData: {
