@@ -1,9 +1,10 @@
 <script lang="ts">
 	import Card from './Card.svelte';
 	import type { Hst } from '@histoire/plugin-svelte';
+	import type { Spacing } from './types';
 	export let Hst: Hst;
 
-	let spacing: 'base' | 'none' = 'base';
+	let spacing: Spacing = 'base';
 </script>
 
 <Hst.Story>

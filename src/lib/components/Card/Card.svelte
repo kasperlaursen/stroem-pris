@@ -1,6 +1,9 @@
 <script lang="ts">
-	export let spacing: 'base' | 'none' = 'base';
+	import type { Spacing } from './types';
+
 	const customClasses = $$restProps.class;
+
+	export let spacing: Spacing = 'base';
 </script>
 
 <div

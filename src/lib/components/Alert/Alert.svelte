@@ -1,5 +1,7 @@
 <script lang="ts">
-	type Vairants = 'info' | 'warning' | 'danger' | 'neutral';
+	import type { Vairants } from './types';
+
+	const customClasses = $$restProps.class;
 
 	export let title: string | null = null;
 	export let variant: Vairants = 'danger';
@@ -10,7 +12,6 @@
 		info: 'border-sky-500 bg-sky-50 text-sky-700',
 		neutral: 'border-slate-500 bg-slate-50 text-slate-700'
 	};
-	const customClasses = $$restProps.class;
 </script>
 
 <div
