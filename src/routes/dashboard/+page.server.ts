@@ -282,8 +282,8 @@ const getusageMeterForMonth = async (
 	});
 
 	if (usageMeterResponse.success === false) {
-		console.log('🐞', 'errors', errors);
 		errors.push(usageMeterResponse.error);
+		console.log('🐞', 'errors', errors);
 	}
 
 	let usageMeterData: {

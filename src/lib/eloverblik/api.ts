@@ -90,11 +90,12 @@ export const getData = async (
 		}
 	}
 
-	console.log(`📊 🌍`, `Got FAILED response.`);
+	console.log(`📊 🚫`, `Got FAILED response.`, response.status, response.statusText);
 	return {
 		success: false,
 		error: {
-			message: 'Der er sket en uventet fejl i forsøget på at hente data fra Eloverblik.dk',
+			message:
+				'Der er sket en uventet fejl i forsøget på at hente data fra Eloverblik.dk. Prøv at genindlæs siden.',
 			code: response.status
 		}
 	};

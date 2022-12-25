@@ -56,6 +56,11 @@ export const getMeterDataFromExternalSource = async ({
 	console.log('🐞', 'Got Datahub response.');
 	const meterResponse = results[0];
 
+	if (meterResponse.success === false && meterResponse.error.code === 401) {
+		console.log(`📊 🚫`, `Got INVALID response from Datahub.`);
+		invalidateSavedToken({ supabaseClient, session });
+	}
+
 	return meterResponse;
 };
 
@@ -68,7 +73,9 @@ const getValidDataToken = async ({
 > => {
 	const hasDataToken = dataToken;
 	const dataTokenIsValid = DateTime.fromISO(dataTokenExpireUTC).diffNow('minutes').minutes > 10;
+	console.log('📊 🔑', 'Validate Token', { hasDataToken: Boolean(hasDataToken), dataTokenIsValid });
 	if (hasDataToken && dataTokenIsValid) {
+		console.log('📊 🔑', 'Existing token is valid');
 		return { success: true, data: dataToken };
 	}
 	const tokenResponse = await getToken(refreshToken);
@@ -76,4 +83,20 @@ const getValidDataToken = async ({
 		return tokenResponse;
 	}
 	return { success: true, data: tokenResponse.data.token };
+};
+
+interface InvalidateParams {
+	supabaseClient: TypedSupabaseClient;
+	session: Session;
+}
+
+const invalidateSavedToken = async ({ supabaseClient, session }: InvalidateParams) => {
+	console.log(`📊 🚫`, `Invalidate saved Token`);
+	await supabaseClient
+		.from('datahub_tokens')
+		.update({
+			data_token: '',
+			data_token_expire_utc: ''
+		})
+		.eq('user_id', session.user.id);
 };

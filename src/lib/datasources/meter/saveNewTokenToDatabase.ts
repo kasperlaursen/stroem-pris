@@ -13,13 +13,18 @@ export const saveNewTokenToDatabase: (params: Params) => Promise<void> = async (
 	supabaseClient,
 	session
 }) => {
-	console.log('📊 🗄 ', `Saving token`);
-	await supabaseClient
+	console.log('📊 🗄', `Saving token`);
+	const { data, error } = await supabaseClient
 		.from('datahub_tokens')
 		.update({
 			data_token: token,
 			data_token_expire_utc: DateTime.now().plus({ hours: 24 }).toISO()
 		})
 		.eq('user_id', session.user.id);
+
+	if (error) {
+		console.log('📊 🚫', `Token save failed!`, error);
+	}
+	console.log('📊 ✅', `Token save OK!`);
 	return;
 };
