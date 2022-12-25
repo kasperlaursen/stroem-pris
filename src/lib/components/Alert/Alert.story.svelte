@@ -2,25 +2,31 @@
 	import Alert from './Alert.svelte';
 	import type { Hst } from '@histoire/plugin-svelte';
 	export let Hst: Hst;
+
+	let title = 'Alert title';
+	let content =
+		'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt assumenda quia ad cupiditate culpa recusandae provident aperiam aliquam vero! Dolorem.';
+	let variant: 'info' | 'warning' | 'danger' | 'neutral' = 'danger';
 </script>
 
 <Hst.Story>
 	<div class="grid gap-4">
-		<Alert title="Danger Variant" variant="danger">
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. <br />
-			Nesciunt assumenda quia ad cupiditate culpa recusandae provident aperiam aliquam vero! Dolorem.
-		</Alert>
-		<Alert title="Warning Variant" variant="warning">
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. <br />
-			Nesciunt assumenda quia ad cupiditate culpa recusandae provident aperiam aliquam vero! Dolorem.
-		</Alert>
-		<Alert title="Info Variant" variant="info">
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. <br />
-			Nesciunt assumenda quia ad cupiditate culpa recusandae provident aperiam aliquam vero! Dolorem.
-		</Alert>
-		<Alert title="Neutral Variant" variant="neutral">
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. <br />
-			Nesciunt assumenda quia ad cupiditate culpa recusandae provident aperiam aliquam vero! Dolorem.
+		<Alert {title} {variant}>
+			{content}
 		</Alert>
 	</div>
+	<svelte:fragment slot="controls">
+		<Hst.Text bind:value={title} title="Title" />
+		<Hst.Text bind:value={content} title="Content" />
+		<Hst.Select
+			options={[
+				{ label: 'info', value: 'info' },
+				{ label: 'warning', value: 'warning' },
+				{ label: 'danger', value: 'danger' },
+				{ label: 'neutral', value: 'neutral' }
+			]}
+			bind:value={variant}
+			title="Variant"
+		/>
+	</svelte:fragment>
 </Hst.Story>
