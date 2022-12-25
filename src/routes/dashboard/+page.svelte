@@ -10,6 +10,7 @@
 	import FullMonthUsageCard from './FullMonthUsageCard.svelte';
 	import Link from '$lib/components/base/Link.svelte';
 	import { enhance } from '$app/forms';
+	import DailyPriceWidget from '$lib/components/widget/DailyPriceWidget.svelte';
 
 	let drawerHidden = true;
 	let transitionParams = {
@@ -262,6 +263,15 @@
 				unit: 'kwh'
 			}}
 			icon="💤"
+		/>
+
+		<DailyPriceWidget
+			data={usagePriceHourAndCalcualtions.map(({ usage, hour, price, hourTotal }) => ({
+				hour: DateTime.fromISO(hour).setZone('Europe/Copenhagen'),
+				hourTotal,
+				usage,
+				price
+			}))}
 		/>
 
 		<Widget
