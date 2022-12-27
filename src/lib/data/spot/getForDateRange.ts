@@ -9,7 +9,7 @@ import { DateTime } from 'luxon';
 import { filterSpotData } from './filterSpotData';
 import { saveSpotDataToDatabasse } from './saveSpotDataToDatabasse';
 
-interface Params extends SpotBaseParams, SupabaseBaseParams {}
+export interface Params extends SpotBaseParams, SupabaseBaseParams {}
 
 /**
  * Gets spot data for a given date range.
@@ -20,8 +20,6 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 	const { from, to, supabaseClient } = params;
 	const area = params.area ?? 'DK1';
 	const hourDiff = to.diff(from, 'hours').toObject().hours;
-
-	console.log({ hourDiff });
 
 	const dateRangeIsValid = hourDiff && hourDiff > 0;
 	if (!dateRangeIsValid) {
