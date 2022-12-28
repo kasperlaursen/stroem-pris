@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { DateTime } from 'luxon';
+	import { onMount } from 'svelte';
 	import { getColor, getState, getWidth } from './helpers';
 	import SpotChartBar from './SpotChartBar.svelte';
 	import SpotChartLabel from './SpotChartLabel.svelte';
@@ -11,6 +12,9 @@
 	export let data: SpotChartData;
 
 	let now = DateTime.now();
+	onMount(() => {
+		setInterval(() => (now = DateTime.now()), 60 * 1000);
+	});
 </script>
 
 <div
