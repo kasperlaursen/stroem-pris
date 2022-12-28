@@ -11,9 +11,9 @@
 	const customClasses = $$restProps.class;
 	export let data: SpotChartData;
 
-	let now = DateTime.now();
+	let now = DateTime.now().setZone('Europe/Copenhagen');
 	onMount(() => {
-		setInterval(() => (now = DateTime.now()), 60 * 1000);
+		setInterval(() => (now = DateTime.now().setZone('Europe/Copenhagen')), 60 * 1000);
 	});
 </script>
 
