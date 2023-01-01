@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { DateTime } from 'luxon';
 	import { onMount } from 'svelte';
-	import { getColor, getState, getWidth } from './helpers';
+	import { getColor, getPriceLabel, getState, getTimeLabel, getWidth } from './helpers';
 	import SpotChartBar from './SpotChartBar.svelte';
 	import SpotChartLabel from './SpotChartLabel.svelte';
 	import SpotChartRow from './SpotChartRow.svelte';
@@ -22,13 +22,13 @@
 	class={`${customClasses} grid text-xs md:text-sm select-none w-full p-4 font-mono cursor-default`}
 >
 	{#each data.entries as entry}
-		<SpotChartRow state={getState({ now, time: entry.time })}>
-			<SpotChartLabel>{entry.time.toFormat('kl. HH')}</SpotChartLabel>
+		<SpotChartRow
+			state={getState({ now, time: entry.time })}
+			title={`${getTimeLabel({ time: entry.time })} - ${entry.price} kr`}
+		>
+			<SpotChartLabel>{getTimeLabel({ time: entry.time })}</SpotChartLabel>
 			<SpotChartValue>
-				{entry.price.toLocaleString('da-DK', {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2
-				})} kr
+				{getPriceLabel({ price: entry.price })}
 			</SpotChartValue>
 			<SpotChartBar
 				width={getWidth({ current: entry.price, max: data.max })}

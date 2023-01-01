@@ -14,7 +14,11 @@ export const load: Load = async (event) => {
 	if (spotData.success === false) {
 		return spotData;
 	}
-	return spotData;
+
+	return {
+		success: true,
+		spotData: spotData.data
+	};
 };
 
 const getDefaultRange = () => {

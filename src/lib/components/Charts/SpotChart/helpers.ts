@@ -21,7 +21,23 @@ interface GetWidthParams {
 	max: number;
 }
 
-export const getWidth = ({ current, max }: GetWidthParams): number => current / max;
+export const getWidth = ({ current, max }: GetWidthParams): number => Math.max(current / max, 0);
+
+interface GetTimeLabelParams {
+	time: DateTime;
+}
+
+export const getTimeLabel = ({ time }: GetTimeLabelParams): string => time.toFormat('kl. HH');
+
+interface GetPriceLabelParams {
+	price: number;
+}
+
+export const getPriceLabel = ({ price }: GetPriceLabelParams): string =>
+	`${price < 0 ? '' : ' '}${price.toLocaleString('da-DK', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+	})}`;
 
 interface GetStateParams {
 	time: DateTime;

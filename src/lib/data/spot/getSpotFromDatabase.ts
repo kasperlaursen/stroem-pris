@@ -33,7 +33,7 @@ export const getSpotFromDatabase = async ({
 	}
 
 	const spotData: SpotData[] = tableData.map(({ price_area, price_dkk, hour_utc }) => ({
-		hourUTC: DateTime.fromISO(hour_utc).toJSDate(),
+		hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' }).toJSDate(),
 		priceArea: price_area === 'DK2' ? 'DK2' : 'DK1',
 		priceDKK: price_dkk
 	}));
