@@ -1,23 +1,54 @@
 import { spot } from '$lib/data/spot';
+import type { SpotData } from '$lib/data/spot/types';
+import type { InternalError, InternalResponse } from '$lib/types/InternalResponse';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import type { Load } from '@sveltejs/kit';
-import { DateTime } from 'luxon';
+import { DateTime, type NumberingSystem } from 'luxon';
 
-export const load: Load = async (event) => {
+interface PageData {
+	/** Spot data for the given range */
+	spotData?: SpotData[];
+	/** Spot average for the last 30 days */
+	spotAverage?: number;
+	/** Max spot value of the returned spotData */
+	spotMax?: number;
+}
+
+interface PageResponse {
+	data: PageData;
+	errors?: InternalError[];
+}
+
+export const load: Load = async (event): Promise<PageResponse> => {
 	const { supabaseClient } = await getSupabase(event);
 	const { from: defualtFrom, to: defaultTo } = getDefaultRange();
 	const from = defualtFrom;
 	const to = defaultTo;
 
-	const spotData = await spot.getForDateRange({ from, to, area: 'DK1', supabaseClient });
+	let errors: InternalError[] = [];
+	let data: PageData = {};
+
+	const spotDataRequest = spot.getForDateRange({ from, to, area: 'DK1', supabaseClient });
+	const spotAverageRequest = spot.getAverage({ days: 30, area: 'DK1', supabaseClient });
+
+	const [spotData, spotAverage] = await Promise.all([spotDataRequest, spotAverageRequest]);
 
 	if (spotData.success === false) {
-		return spotData;
+		errors.push(spotData.error);
+	} else {
+		data.spotData = spotData.data;
+		data.spotMax = Math.max(...spotData.data.map(({ priceDKK }) => priceDKK));
+	}
+
+	if (spotAverage.success === false) {
+		errors.push(spotAverage.error);
+	} else {
+		data.spotAverage = spotAverage.data;
 	}
 
 	return {
-		success: true,
-		spotData: spotData.data
+		errors,
+		data
 	};
 };
 

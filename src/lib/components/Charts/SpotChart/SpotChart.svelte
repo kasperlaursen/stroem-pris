@@ -24,7 +24,7 @@
 	{#each data.entries as entry}
 		<SpotChartRow
 			state={getState({ now, time: entry.time })}
-			title={`${getTimeLabel({ time: entry.time })} - ${entry.price} kr`}
+			title={`${getTimeLabel({ time: entry.time })}: ${entry.price} kr`}
 		>
 			<SpotChartLabel>{getTimeLabel({ time: entry.time })}</SpotChartLabel>
 			<SpotChartValue>

@@ -34,10 +34,10 @@ interface GetPriceLabelParams {
 }
 
 export const getPriceLabel = ({ price }: GetPriceLabelParams): string =>
-	`${price < 0 ? '' : ' '}${price.toLocaleString('da-DK', {
+	price.toLocaleString('da-DK', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-	})}`;
+	});
 
 interface GetStateParams {
 	time: DateTime;
