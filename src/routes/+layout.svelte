@@ -21,4 +21,6 @@
 	<title>Strømpris</title>
 </svelte:head>
 
-<slot />
+<main class="container mx-auto">
+	<slot />
+</main>
