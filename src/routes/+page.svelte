@@ -6,7 +6,7 @@
 	import type { SpotChartData } from '$lib/components/Charts/SpotChart/types';
 	import { spotDataToSpotChartEntries } from '$lib/utils/spotDataToSpotChartEntries';
 	import { PRICE_MULTIPLIER } from '$lib/utils/constants';
-	import Logo from '$lib/ui/Logo.svelte';
+	import Logo from '$lib/ui/Logo/Logo.svelte';
 	import Option from '$lib/components/Select/Option.svelte';
 	import Select from '$lib/components/Select/Select.svelte';
 

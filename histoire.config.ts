@@ -11,6 +11,10 @@ export default defineConfig({
 				include: (file) => true
 			},
 			{
+				id: 'ui',
+				title: 'UI Elements'
+			},
+			{
 				id: 'SpotChart',
 				title: 'SpotChart'
 			}
