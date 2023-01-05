@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { responsiveSpacingClasses } from '../utils/spacingClasses';
 	import type { Spacing } from './types';
 
 	const customClasses = $$restProps.class;
@@ -9,8 +10,10 @@
 <div
 	{...$$restProps}
 	class={`
-        ${customClasses}
-        ${spacing === 'base' ? 'p-4' : ''}
+        ${customClasses ?? ''}
+        ${spacing === 'base' ? 'p-4 gap-4' : ''}
+        ${responsiveSpacingClasses}
+        grid
         rounded-md
         border-2
         bg-white

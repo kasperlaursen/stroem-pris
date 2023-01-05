@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { responsiveSpacingClasses } from '../utils/spacingClasses';
 	import type { Vairants } from './types';
 
 	const customClasses = $$restProps.class;
@@ -18,8 +19,9 @@
 	{...$$restProps}
 	role="alert"
 	class={`
-        ${customClasses}
+        ${customClasses ?? ''}
         ${variantClasses[variant]}
+        ${responsiveSpacingClasses}
         grid
         rounded
         border-l-4
