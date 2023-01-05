@@ -21,7 +21,6 @@
 	class={`
         ${customClasses ?? ''}
         ${variantClasses[variant]}
-        ${responsiveSpacingClasses}
         grid
         rounded
         border-l-4

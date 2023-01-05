@@ -11,8 +11,7 @@
 	{...$$restProps}
 	class={`
         ${customClasses ?? ''}
-        ${spacing === 'base' ? 'p-4 gap-4' : ''}
-        ${responsiveSpacingClasses}
+        ${spacing === 'base' ? responsiveSpacingClasses : ''}
         grid
         rounded-md
         border-2
