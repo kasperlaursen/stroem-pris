@@ -1,4 +1,5 @@
 import { spot } from '$lib/data/spot';
+import type { PriceAreas } from '$lib/data/spot/energidataservice/types';
 import type { SpotData } from '$lib/data/spot/types';
 import type { InternalError } from '$lib/types/InternalResponse';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
@@ -17,6 +18,7 @@ interface PageData {
 interface PageResponse {
 	data: PageData;
 	errors?: InternalError[];
+	area: PriceAreas;
 }
 
 export const load: Load = async (event): Promise<PageResponse> => {
@@ -25,6 +27,7 @@ export const load: Load = async (event): Promise<PageResponse> => {
 	const dateParam = event.url.searchParams.get('date');
 
 	const area = event.url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
+	console.log({ area });
 	const from = dateParam ? DateTime.fromISO(dateParam) : defualtFrom;
 	const to = dateParam ? DateTime.fromISO(dateParam).plus({ days: 1 }) : defaultTo;
 
@@ -51,7 +54,8 @@ export const load: Load = async (event): Promise<PageResponse> => {
 	console.log(errors);
 	return {
 		errors,
-		data
+		data,
+		area
 	};
 };
 

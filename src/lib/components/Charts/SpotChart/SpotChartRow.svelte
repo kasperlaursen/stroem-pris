@@ -12,11 +12,11 @@
 
 <div
 	{...$$restProps}
-	class={`${
-		customClasses ?? ''
-	} group grid grid-cols-[max-content,max-content,auto] gap-4 px-4 items-center rounded ${
-		stateClasses[state]
-	}`}
+	class={`
+		${customClasses ?? ''}
+		${stateClasses[state]}
+		group grid grid-cols-[max-content,max-content,auto] gap-4 px-2 items-center rounded 
+	`}
 >
 	<slot />
 </div>

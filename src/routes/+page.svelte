@@ -6,9 +6,12 @@
 	import type { SpotChartData } from '$lib/components/Charts/SpotChart/types';
 	import { spotDataToSpotChartEntries } from '$lib/utils/spotDataToSpotChartEntries';
 	import { PRICE_MULTIPLIER } from '$lib/utils/constants';
+	import Logo from '$lib/ui/Logo.svelte';
+	import Option from '$lib/components/Select/Option.svelte';
+	import Select from '$lib/components/Select/Select.svelte';
 
 	export let data: PageData;
-	let { data: pageData, errors, session } = data;
+	let { data: pageData, errors, session, area } = data;
 	let { spotAverage, spotData, spotMax } = pageData;
 
 	let spotChartData: SpotChartData | null = null;
@@ -20,9 +23,14 @@
 			entries: spotDataToSpotChartEntries({ spotData })
 		};
 	}
+
+	const handleChange = (event: any) => {
+		console.log(event);
+		event.target.form.submit();
+	};
 </script>
 
-<h1 class="text-3xl font-bold uppercase">Welcome to Strømpris</h1>
+<Logo />
 
 {#each errors ?? [] as error}
 	<Alert>{error.message}</Alert>
@@ -37,8 +45,14 @@
 {/if}
 
 <Card spacing="base">
-	<div class="flex justify-between">
-		<h1>Variabel strømpris i dag</h1>
+	<div class="flex justify-between items-center">
+		<h1>Variabel strømpris</h1>
+		<form method="get" action="/" data-sveltekit-reload>
+			<Select id="area" name="area" bind:value={area} on:change={handleChange}>
+				<Option value="DK1">Vest for storebælt</Option>
+				<Option value="DK2">Øst for storebælt</Option>
+			</Select>
+		</form>
 	</div>
 	{#if spotChartData}
 		<SpotChart data={spotChartData} />

@@ -8,6 +8,14 @@
 <input
 	{...$$restProps}
 	{type}
+	on:change
+	on:input
+	on:keydown
+	on:keypress
+	on:keyup
+	on:click
+	on:focus
+	on:blur
 	class={`
         ${customClasses ?? ''}
         text-sm
