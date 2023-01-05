@@ -19,7 +19,9 @@
 
 <div
 	{...$$restProps}
-	class={`${customClasses} grid text-xs md:text-sm select-none w-full p-4 font-mono cursor-default`}
+	class={`${
+		customClasses ?? ''
+	} grid text-xs md:text-sm select-none w-full font-mono cursor-default`}
 >
 	{#each data.entries as entry}
 		<SpotChartRow
