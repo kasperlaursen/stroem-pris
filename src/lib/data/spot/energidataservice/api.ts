@@ -35,7 +35,7 @@ export const getSpotData = async ({
 	const response = await fetch(`${baseURl}?${queryString}`);
 	const data: SpotResponse = await response.json();
 
-	if (data?.statusCode !== 200) {
+	if (data?.statusCode && data?.statusCode !== 200) {
 		console.log(`💸 🚫`, `Energidataservice Elspotprices call failed`);
 		return {
 			success: false,
