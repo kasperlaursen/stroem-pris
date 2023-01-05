@@ -8,6 +8,8 @@ import type { SpotDataRaw, SpotResponse } from './energidataservice/types';
 import { DateTime } from 'luxon';
 import { filterSpotData } from './filterSpotData';
 import { saveSpotDataToDatabasse } from './saveSpotDataToDatabasse';
+import { convertDatesToFullDays } from '$lib/utils/convertDatesToFullDays';
+import { filterSpotDataToInterval } from './filterSpotDataToInterval';
 
 export interface Params extends SpotBaseParams, SupabaseBaseParams {}
 
@@ -17,8 +19,7 @@ export interface Params extends SpotBaseParams, SupabaseBaseParams {}
  * Saves new datapoints to the database after calling the API.
  */
 export const getForDateRange = async (params: Params): Promise<InternalResponse<SpotData[]>> => {
-	const { from, to, supabaseClient } = params;
-	const area = params.area ?? 'DK1';
+	const { area, from, to, supabaseClient } = params;
 	const hourDiff = to.diff(from, 'hours').toObject().hours;
 
 	const dateRangeIsValid = hourDiff && hourDiff > 0;
@@ -26,14 +27,22 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 		return returnError(400, '🤦‍♂️ The "to" date must be later than the "from" date');
 	}
 
-	const dateRangeIsWithinDBLimits = hourDiff < LIMIT;
+	const {
+		fullDayFrom: dataFrom,
+		fullDayTo: dataTo,
+		fullHourDiff: dataHourDiff
+	} = convertDatesToFullDays({ to, from });
+
+	const dateRangeIsWithinDBLimits = dataHourDiff && dataHourDiff < LIMIT;
 	if (!dateRangeIsWithinDBLimits) {
-		return returnError(400, `😞 Period is too long. Requested: ${hourDiff}. Max: ${LIMIT}.`);
+		return returnError(400, `😞 Period is too long. Requested: ${dataHourDiff}. Max: ${LIMIT}.`);
 	}
 
 	const dbSpotResponse = await getSpotFromDatabase({
 		...params,
-		hourDiff
+		to: dataTo,
+		from: dataFrom,
+		hourDiff: dataHourDiff
 	});
 
 	if (dbSpotResponse.success === false) {
@@ -42,12 +51,13 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 
 	const dbSpotData = dbSpotResponse.data;
 
-	const gotExpectedData = dbSpotData.length === hourDiff;
+	const gotExpectedData = dbSpotData.length === dataHourDiff;
 	if (gotExpectedData) {
-		return dbSpotResponse;
+		const requestedDatapoints = filterSpotDataToInterval({ from, to, data: dbSpotResponse.data });
+		return { success: true, data: requestedDatapoints };
 	}
 
-	const apiSpotResponse = await energidataservice.getSpotData({ from, to, area });
+	const apiSpotResponse = await energidataservice.getSpotData({ from: dataFrom, to: dataTo, area });
 	if (apiSpotResponse.success === false) {
 		return dbSpotResponse;
 	}
@@ -58,6 +68,7 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 	}
 
 	const newDataPoints = filterSpotData({ newEntries: apiSpotData, existingEntries: dbSpotData });
+	console.log({ newDataPoints, dbSpotData });
 	const saveSpotResponse = await saveSpotDataToDatabasse({
 		newDataPoints,
 		supabaseClient
@@ -67,7 +78,10 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 		console.log('🚫', 'Spot Data Save Failed!');
 	}
 
-	return { success: true, data: [...newDataPoints, ...dbSpotData] };
+	const allDatapoints = [...newDataPoints, ...dbSpotData];
+	const requestedDatapoints = filterSpotDataToInterval({ from, to, data: allDatapoints });
+
+	return { success: true, data: requestedDatapoints };
 };
 
 /** Converts a SpotResponse from the API to a SpotData array */
