@@ -12,7 +12,9 @@
 	};
 </script>
 
-<div class="w-full h-2 rounded-full bg-slate-500 dark:bg-opacity-30 bg-opacity-10 relative">
+<div
+	class="w-full h-2 rounded-full bg-slate-500 dark:bg-opacity-30 bg-opacity-10 relative overflow-hidden"
+>
 	<div
 		style={`width: ${100 * width}%`}
 		class={`${colorClasses[color]} ${opacityClasses} h-full rounded-full`}
