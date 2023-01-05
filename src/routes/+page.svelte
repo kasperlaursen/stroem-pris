@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import SpotChart from '$lib/components/Charts/SpotChart/SpotChart.svelte';
 	import Card from '$lib/components/Card/Card.svelte';
 	import type { PageData } from './$types';
 	import Alert from '$lib/components/Alert/Alert.svelte';
 	import type { SpotChartData } from '$lib/components/Charts/SpotChart/types';
 	import { spotDataToSpotChartEntries } from '$lib/utils/spotDataToSpotChartEntries';
+	import { PRICE_MULTIPLIER } from '$lib/utils/constants';
 
 	export let data: PageData;
 	let { data: pageData, errors, session } = data;
@@ -15,8 +15,8 @@
 
 	if (spotAverage && spotMax && spotData) {
 		spotChartData = {
-			average: spotAverage / 1000,
-			max: (spotMax / 1000) * 1.1,
+			average: spotAverage * PRICE_MULTIPLIER,
+			max: spotMax * PRICE_MULTIPLIER * 1.1,
 			entries: spotDataToSpotChartEntries({ spotData })
 		};
 	}
@@ -36,8 +36,11 @@
 	<a href="/auth">Log ind</a>
 {/if}
 
-{#if spotChartData}
-	<Card>
+<Card spacing="base">
+	<div class="flex justify-between">
+		<h1>Variabel strømpris i dag</h1>
+	</div>
+	{#if spotChartData}
 		<SpotChart data={spotChartData} />
-	</Card>
-{/if}
+	{/if}
+</Card>
