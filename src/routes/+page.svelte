@@ -30,8 +30,6 @@
 	};
 </script>
 
-<Logo />
-
 {#each errors ?? [] as error}
 	<Alert>{error.message}</Alert>
 {/each}
