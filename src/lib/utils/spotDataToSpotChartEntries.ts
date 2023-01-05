@@ -14,7 +14,7 @@ export const spotDataToSpotChartEntries = ({
 }: Params): SpotChartDataEntry[] => {
 	return spotData
 		.map(({ hourUTC, priceDKK }) => ({
-			price: priceDKK / PRICE_MULTIPLIER,
+			price: priceDKK * PRICE_MULTIPLIER,
 			time: DateTime.fromJSDate(hourUTC)
 		}))
 		.sort((a, b) => (order === 'DESC' ? sporASC(a, b) : sporDESC(a, b)));
