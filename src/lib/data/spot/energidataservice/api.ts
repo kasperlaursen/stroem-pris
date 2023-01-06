@@ -15,10 +15,13 @@ interface GetSpotDataParams extends SpotBaseParams {}
 export const getSpotData = async ({
 	from,
 	to,
-	area
+	area,
+	customFetch
 }: GetSpotDataParams): Promise<InternalResponse<SpotResponse>> => {
 	const start = from.toISODate();
 	const end = to.toISODate();
+
+	const fetchClient = customFetch ?? fetch;
 
 	console.log(
 		`💸 🌍`,
@@ -32,7 +35,7 @@ export const getSpotData = async ({
 		filter: JSON.stringify({ PriceArea: area })
 	};
 	const queryString = new URLSearchParams(requestParameters);
-	const response = await fetch(`${baseURl}?${queryString}`);
+	const response = await fetchClient(`${baseURl}?${queryString}`);
 	const data: SpotResponse = await response.json();
 
 	if (data?.statusCode && data?.statusCode !== 200) {

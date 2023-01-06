@@ -1,4 +1,5 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit/dist/types';
+import type { LoadEvent } from '@sveltejs/kit';
 import type { DateTime } from 'luxon';
 import type { PriceAreas } from './energidataservice/types';
 
@@ -9,6 +10,11 @@ export interface SpotBaseParams {
 	to: DateTime;
 	/** The area to get data from. */
 	area: PriceAreas;
+	/**
+	 * The custom fetch from Svelte event.
+	 * If passed it will be used, if not "normal" fetch will be used.
+	 */
+	customFetch?: LoadEvent['fetch'];
 }
 
 export interface SupabaseBaseParams {

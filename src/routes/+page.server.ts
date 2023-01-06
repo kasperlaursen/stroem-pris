@@ -27,14 +27,19 @@ export const load: Load = async (event): Promise<PageResponse> => {
 	const dateParam = event.url.searchParams.get('date');
 
 	const area = event.url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
-	console.log({ area });
 	const from = dateParam ? DateTime.fromISO(dateParam) : defualtFrom;
 	const to = dateParam ? DateTime.fromISO(dateParam).plus({ days: 1 }) : defaultTo;
 
 	let errors: InternalError[] = [];
 	let data: PageData = {};
 
-	const spotDataRequest = spot.getForDateRange({ from, to, area, supabaseClient });
+	const spotDataRequest = spot.getForDateRange({
+		from,
+		to,
+		area,
+		supabaseClient,
+		customFetch: event.fetch
+	});
 	const spotAverageRequest = spot.getAverage({ days: 30, area, supabaseClient });
 
 	const [spotData, spotAverage] = await Promise.all([spotDataRequest, spotAverageRequest]);
@@ -51,7 +56,7 @@ export const load: Load = async (event): Promise<PageResponse> => {
 	} else {
 		data.spotAverage = spotAverage.data;
 	}
-	console.log(errors);
+
 	return {
 		errors,
 		data,

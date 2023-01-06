@@ -25,7 +25,6 @@
 	}
 
 	const handleChange = (event: any) => {
-		console.log(event);
 		event.target.form.submit();
 	};
 </script>
@@ -34,24 +33,17 @@
 	<Alert>{error.message}</Alert>
 {/each}
 
-{#if session}
-	<form method="POST" action="/auth?/signout" class="grid gap-4">
-		<button type="submit">Log ud</button>
+<div class="flex justify-between items-center p-2">
+	<h1 class="font-medium text-gray-800">Variabel Strømpris</h1>
+	<form method="get" action="/" data-sveltekit-reload>
+		<Select id="area" name="area" bind:value={area} on:change={handleChange}>
+			<Option value="DK1">Vest for storebælt</Option>
+			<Option value="DK2">Øst for storebælt</Option>
+		</Select>
 	</form>
-{:else}
-	<a href="/auth">Log ind</a>
-{/if}
+</div>
 
 <Card spacing="base">
-	<div class="flex justify-between items-center">
-		<h1>Variabel strømpris</h1>
-		<form method="get" action="/" data-sveltekit-reload>
-			<Select id="area" name="area" bind:value={area} on:change={handleChange}>
-				<Option value="DK1">Vest for storebælt</Option>
-				<Option value="DK2">Øst for storebælt</Option>
-			</Select>
-		</form>
-	</div>
 	{#if spotChartData}
 		<SpotChart data={spotChartData} />
 	{/if}

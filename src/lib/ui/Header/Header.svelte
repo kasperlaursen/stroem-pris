@@ -20,7 +20,13 @@
 		sm:px-4
 		sm:gap-4
 
-		bg-gray-50
+		border-t
+		sm:border-t-0
+		sm:border-b
+		border-gray-200
+
+
+		bg-white
 		dark:bg-neutral-800
 	`}
 >

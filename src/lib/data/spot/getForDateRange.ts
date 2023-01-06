@@ -19,7 +19,7 @@ export interface Params extends SpotBaseParams, SupabaseBaseParams {}
  * Saves new datapoints to the database after calling the API.
  */
 export const getForDateRange = async (params: Params): Promise<InternalResponse<SpotData[]>> => {
-	const { area, from, to, supabaseClient } = params;
+	const { area, from, to, customFetch, supabaseClient } = params;
 	const hourDiff = to.diff(from, 'hours').toObject().hours;
 
 	const dateRangeIsValid = hourDiff && hourDiff > 0;
@@ -57,7 +57,12 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 		return { success: true, data: requestedDatapoints };
 	}
 
-	const apiSpotResponse = await energidataservice.getSpotData({ from: dataFrom, to: dataTo, area });
+	const apiSpotResponse = await energidataservice.getSpotData({
+		from: dataFrom,
+		to: dataTo,
+		area,
+		customFetch
+	});
 	if (apiSpotResponse.success === false) {
 		return dbSpotResponse;
 	}
@@ -68,7 +73,6 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 	}
 
 	const newDataPoints = filterSpotData({ newEntries: apiSpotData, existingEntries: dbSpotData });
-	console.log({ newDataPoints, dbSpotData });
 	const saveSpotResponse = await saveSpotDataToDatabasse({
 		newDataPoints,
 		supabaseClient
