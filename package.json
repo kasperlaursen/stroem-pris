@@ -47,7 +47,7 @@
 		"apexcharts": "^3.36.3",
 		"chart.js": "^3.9.1",
 		"chartjs-plugin-datalabels": "^2.1.0",
-		"luxon": "^3.0.4",
+		"luxon": "^3.2.1",
 		"svelte-chartjs": "^3.0.1"
 	}
 }
