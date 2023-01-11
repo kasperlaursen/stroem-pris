@@ -46,7 +46,7 @@ interface GetStateParams {
 
 export const getState = ({ time, now }: GetStateParams): RowState => {
 	const isNow = time.day === now.day && time.hour === now.hour;
-	const isPast = time.day === now.day && time.hour < now.hour;
+	const isPast = time.diffNow('hours').hours <= 0;
 
 	if (isNow) return 'active';
 	if (isPast) return 'inactive';
