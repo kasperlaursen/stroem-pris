@@ -3,6 +3,7 @@
 	import { supabase } from '$lib/data/supabase/client';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { theme } from '$lib/stores/theme';
 	import '../app.css';
 	import Header from '$lib/ui/Header/Header.svelte';
 

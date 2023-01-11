@@ -3,6 +3,7 @@
 	import { Squares2x2, UserCircle, InformationCircle, Home } from '@steeze-ui/heroicons';
 	import Logo from '../Logo/Logo.svelte';
 	import NavItem from './NavItem.svelte';
+	import ThemeToggle from '../ThemeToggle/ThemeToggle.svelte';
 
 	const customClasses = $$restProps.class;
 	export let isOnline: boolean = false;
@@ -28,7 +29,7 @@
 		sm:border-b
 		sm:relative
 		border-gray-200
-		dark:border-neutral-700
+        dark:border-neutral-900
 
 		bg-white
 		dark:bg-neutral-800

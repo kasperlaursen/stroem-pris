@@ -18,7 +18,7 @@
         bg-white
         dark:bg-neutral-800
         border-gray-100
-        dark:border-neutral-600
+        dark:border-neutral-900
     `}
 >
 	<slot />
