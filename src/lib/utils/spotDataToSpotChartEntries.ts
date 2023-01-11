@@ -15,7 +15,7 @@ export const spotDataToSpotChartEntries = ({
 	return spotData
 		.map(({ hourUTC, priceDKK }) => ({
 			price: priceDKK * PRICE_MULTIPLIER,
-			time: DateTime.fromJSDate(hourUTC)
+			time: DateTime.fromJSDate(hourUTC).setZone('Europe/Copenhagen')
 		}))
 		.sort((a, b) => (order === 'DESC' ? sporASC(a, b) : sporDESC(a, b)));
 };
