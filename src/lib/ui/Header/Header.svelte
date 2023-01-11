@@ -23,6 +23,8 @@
 		border-t
 		sm:border-t-0
 		sm:border-b
+		sm:fixed
+		sm:bottom-0
 		border-gray-200
 
 
