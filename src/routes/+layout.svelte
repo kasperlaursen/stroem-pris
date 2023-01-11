@@ -23,9 +23,16 @@
 	<title>Strømpris</title>
 </svelte:head>
 
-<main class="h-screen grid grid-rows-[1fr_auto] sm:grid-rows-[auto_1fr]">
+<main class="ios-full-height grid grid-rows-[1fr_auto] sm:grid-rows-[auto_1fr]">
 	<Header isOnline={$page.data.session} class="row-start-2 sm:row-start-1 z-10" />
 	<div class="container mx-auto overflow-y-auto">
 		<slot />
 	</div>
 </main>
+
+<style>
+	.ios-full-height {
+		height: 100%;
+		height: -webkit-fill-available;
+	}
+</style>
