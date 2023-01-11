@@ -12,6 +12,9 @@
 	{...$$restProps}
 	class={`
 	${customClasses ?? ''}
+		fixed
+		w-full
+		bottom-0
 		flex
 		justify-between
 		p-2
@@ -23,8 +26,7 @@
 		border-t
 		sm:border-t-0
 		sm:border-b
-		sm:fixed
-		sm:bottom-0
+		sm:relative
 		border-gray-200
 
 
