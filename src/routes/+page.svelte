@@ -34,7 +34,7 @@
 {/each}
 
 <div class="flex justify-between items-center p-2">
-	<h1 class="font-medium text-gray-800">Variabel Strømpris</h1>
+	<h1 class="font-medium text-gray-800 dark:text-gray-200">Variabel Strømpris</h1>
 	<form method="get" action="/" data-sveltekit-reload>
 		<Select id="area" name="area" bind:value={area} on:change={handleChange}>
 			<Option value="DK1">Vest for storebælt</Option>
