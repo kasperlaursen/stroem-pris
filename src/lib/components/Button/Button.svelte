@@ -2,14 +2,17 @@
 	import type { ButtonTypes } from './types';
 
 	const customClasses = $$restProps.class;
-	const type: ButtonTypes = 'button';
+	export let type: ButtonTypes = 'button';
 </script>
 
 <button
+	on:click
+	on:mouseover
+	on:mouseenter
+	on:mouseleave
+	on:focus
 	{...$$restProps}
 	{type}
-	on:click
-	on:keydown
 	class={`
         ${customClasses ?? ''}
         text-sm
