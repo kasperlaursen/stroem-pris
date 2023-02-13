@@ -43,7 +43,7 @@
 			<Icon slot="icon" src={Home} theme="solid" class="h-4 w-4" />
 			Forside
 		</NavItem>
-		<NavItem href="/" class="col-start-3 row-start-1 sm:col-auto">
+		<NavItem href="/info" class="col-start-3 row-start-1 sm:col-auto">
 			<Icon slot="icon" src={InformationCircle} theme="solid" class="h-4 w-4" />
 			Info
 		</NavItem>
@@ -53,11 +53,11 @@
 				Log ind
 			</NavItem>
 		{:else}
-			<NavItem href="/" class="col-start-2 row-start-1 sm:col-auto">
+			<NavItem href="/overblik" class="col-start-2 row-start-1 sm:col-auto">
 				<Icon slot="icon" src={Squares2x2} theme="solid" class="h-4 w-4" />
 				Overblik
 			</NavItem>
-			<NavItem href="/" class="col-start-4 row-start-1 sm:col-auto">
+			<NavItem href="/profil" class="col-start-4 row-start-1 sm:col-auto">
 				<Icon slot="icon" src={UserCircle} theme="solid" class="h-4 w-4" />
 				Profil
 			</NavItem>
