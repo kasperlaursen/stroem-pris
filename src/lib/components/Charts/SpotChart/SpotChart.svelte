@@ -13,7 +13,17 @@
 
 	let now = DateTime.now().setZone('Europe/Copenhagen');
 	onMount(() => {
-		setInterval(() => (now = DateTime.now().setZone('Europe/Copenhagen')), 60 * 1000);
+		const msToNextHour =
+			DateTime.fromObject({
+				year: now.year,
+				month: now.month,
+				day: now.day,
+				hour: now.hour + 1
+			}).diffNow('milliseconds').milliseconds + 5;
+		setTimeout(() => {
+			now = DateTime.now().setZone('Europe/Copenhagen');
+			setInterval(() => (now = DateTime.now().setZone('Europe/Copenhagen')), 60 * 60 * 1000);
+		}, msToNextHour);
 	});
 </script>
 
