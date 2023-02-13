@@ -100,7 +100,7 @@ const spotResponseToSpotDataArray = (input: SpotResponse): SpotData[] => {
 /** Converts a raw spot data entry from the API to spot data */
 const spotDataRawToSpotData = ({ HourUTC, PriceArea, SpotPriceDKK }: SpotDataRaw): SpotData => {
 	return {
-		hourUTC: DateTime.fromISO(HourUTC).setZone('UTC').toJSDate(),
+		hourUTC: DateTime.fromISO(HourUTC, { zone: 'UTC' }).toJSDate(),
 		priceArea: PriceArea,
 		priceDKK: SpotPriceDKK
 	};
