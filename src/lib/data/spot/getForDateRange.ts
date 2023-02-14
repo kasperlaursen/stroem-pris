@@ -9,7 +9,7 @@ import { DateTime } from 'luxon';
 import { filterSpotData } from './filterSpotData';
 import { saveSpotDataToDatabasse } from './saveSpotDataToDatabasse';
 import { convertDatesToFullDays } from '$lib/utils/convertDatesToFullDays';
-import { filterSpotDataToInterval } from './filterSpotDataToInterval';
+import { filterDataToInterval } from './filterDataToInterval';
 
 export interface Params extends SpotBaseParams, SupabaseBaseParams {}
 
@@ -53,7 +53,7 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 
 	const gotExpectedData = dbSpotData.length === dataHourDiff;
 	if (gotExpectedData) {
-		const requestedDatapoints = filterSpotDataToInterval({ from, to, data: dbSpotResponse.data });
+		const requestedDatapoints = filterDataToInterval({ from, to, data: dbSpotResponse.data });
 		return { success: true, data: requestedDatapoints };
 	}
 
@@ -83,7 +83,7 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 	}
 
 	const allDatapoints = [...newDataPoints, ...dbSpotData];
-	const requestedDatapoints = filterSpotDataToInterval({ from, to, data: allDatapoints });
+	const requestedDatapoints = filterDataToInterval({ from, to, data: allDatapoints });
 
 	return { success: true, data: requestedDatapoints };
 };

@@ -4,17 +4,20 @@ interface DataWithHourUTC {
 	hourUTC: Date;
 }
 
-interface FilterSpotDataToIntervalParams<DataType extends DataWithHourUTC> {
+interface filterDataToIntervalParams<DataType extends DataWithHourUTC> {
 	from: DateTime;
 	to: DateTime;
 	data: DataType[];
 }
 
-export const filterSpotDataToInterval = <DataType extends DataWithHourUTC>({
+/**
+ * Filters a list of Data to only contain data within the from and to date.
+ */
+export const filterDataToInterval = <DataType extends DataWithHourUTC>({
 	from,
 	to,
 	data
-}: FilterSpotDataToIntervalParams<DataType>) => {
+}: filterDataToIntervalParams<DataType>) => {
 	const requestedInterval = Interval.fromDateTimes(from, to);
 	const requestedDatapoints = data.filter(({ hourUTC }) =>
 		requestedInterval.contains(DateTime.fromJSDate(hourUTC))
