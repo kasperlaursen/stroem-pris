@@ -16,7 +16,7 @@ export interface Params extends SpotBaseParams, SupabaseBaseParams {}
 /**
  * Gets spot data for a given date range.
  * Uses the Supabase cache to get the data if possible.
- * Saves new datapoints to the database after calling the API.
+ * Saves new datapoints to the database after calling the API
  */
 export const getForDateRange = async (params: Params): Promise<InternalResponse<SpotData[]>> => {
 	const { area, from, to, customFetch, supabaseClient } = params;
@@ -50,7 +50,6 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 	}
 
 	const dbSpotData = dbSpotResponse.data;
-
 	const gotExpectedData = dbSpotData.length === dataHourDiff;
 	if (gotExpectedData) {
 		const requestedDatapoints = filterDataToInterval({ from, to, data: dbSpotResponse.data });

@@ -5,6 +5,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { getForDateRange, type Params } from './getForDateRange';
 import { getSpotFromDatabase } from './getSpotFromDatabase';
 import { saveSpotDataToDatabasse } from './saveSpotDataToDatabasse';
+import { energidataservice } from './energidataservice';
 import type { SpotData } from './types';
 
 const mockHour: SpotData = {
@@ -12,6 +13,11 @@ const mockHour: SpotData = {
 	priceArea: 'DK1',
 	priceDKK: 100.0
 };
+
+const mockDay: SpotData[] = Array.apply(null, Array(24)).map((_, index) => ({
+	...mockHour,
+	hourUTC: new Date(`2022-01-01T${`0${index}`.slice(-2)}:00:00.000Z`)
+}));
 
 const mockParams = {
 	from: DateTime.fromISO('2022-01-01T00:00:00.000Z'),
@@ -26,6 +32,10 @@ vi.mock('./getSpotFromDatabase', () => ({
 
 vi.mock('./saveSpotDataToDatabasse', () => ({
 	saveSpotDataToDatabasse: vi.fn()
+}));
+
+vi.mock('./energidataservice', () => ({
+	energidataservice: { getSpotData: vi.fn() }
 }));
 
 describe('getForDateRange', () => {
@@ -48,12 +58,7 @@ describe('getForDateRange', () => {
 	it('getForDateRange returns data if it is in database', async () => {
 		vi.mocked(getSpotFromDatabase).mockResolvedValueOnce({
 			success: true,
-			data: [mockHour]
-		});
-
-		vi.mocked(saveSpotDataToDatabasse).mockResolvedValueOnce({
-			success: true,
-			data: [mockHour]
+			data: mockDay // The getSpotFromDatabase function always returns a full day of data, which is filtered before return
 		});
 
 		const params = { ...mockParams };
@@ -81,5 +86,51 @@ describe('getForDateRange', () => {
 			success: false,
 			error: { message: 'Error message' }
 		});
+	});
+
+	it('getForDateRange returns data even if it could not be saved to database', async () => {
+		vi.mocked(getSpotFromDatabase).mockResolvedValueOnce({
+			success: true,
+			data: mockDay // The getSpotFromDatabase function always returns a full day of data, which is filtered before return
+		});
+
+		vi.mocked(saveSpotDataToDatabasse).mockResolvedValueOnce({
+			success: false,
+			error: { message: 'Error message' }
+		});
+
+		const params = { ...mockParams };
+
+		const expectedData: SpotData[] = [mockHour];
+		const expectedResponse: InternalResponse<SpotData[]> = {
+			success: true,
+			data: expectedData
+		};
+
+		const response = await getForDateRange(params);
+		expect(response).toEqual(expectedResponse);
+	});
+
+	it('getForDateRange should call energidataservice if databasse is missing entries', async () => {
+		vi.mocked(getSpotFromDatabase).mockResolvedValueOnce({
+			success: true,
+			data: [mockHour]
+		});
+
+		vi.mocked(energidataservice.getSpotData).mockResolvedValueOnce({
+			success: true,
+			data: {}
+		});
+
+		vi.mocked(saveSpotDataToDatabasse).mockResolvedValueOnce({
+			success: false,
+			error: { message: 'Error message' }
+		});
+
+		const getSpotData = vi.mocked(energidataservice).getSpotData;
+
+		const params = { ...mockParams };
+		await getForDateRange(params);
+		expect(getSpotData).toHaveBeenCalledOnce();
 	});
 });
