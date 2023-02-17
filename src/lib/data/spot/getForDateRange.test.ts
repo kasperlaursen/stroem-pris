@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { getForDateRange, type Params } from './getForDateRange';
 import { getSpotFromDatabase } from './getSpotFromDatabase';
+import { saveSpotDataToDatabasse } from './saveSpotDataToDatabasse';
 import type { SpotData } from './types';
 
 const mockHour: SpotData = {
@@ -21,6 +22,10 @@ const mockParams = {
 
 vi.mock('./getSpotFromDatabase', () => ({
 	getSpotFromDatabase: vi.fn()
+}));
+
+vi.mock('./saveSpotDataToDatabasse', () => ({
+	saveSpotDataToDatabasse: vi.fn()
 }));
 
 describe('getForDateRange', () => {
@@ -42,6 +47,11 @@ describe('getForDateRange', () => {
 
 	it('getForDateRange returns data if it is in database', async () => {
 		vi.mocked(getSpotFromDatabase).mockResolvedValueOnce({
+			success: true,
+			data: [mockHour]
+		});
+
+		vi.mocked(saveSpotDataToDatabasse).mockResolvedValueOnce({
 			success: true,
 			data: [mockHour]
 		});
