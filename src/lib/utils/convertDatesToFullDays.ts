@@ -12,14 +12,20 @@ export interface ConvertDatesToFullDaysParams {
  * This is nessecary when an api only
  */
 export const convertDatesToFullDays = ({ from, to }: ConvertDatesToFullDaysParams) => {
-	const fullDayFrom = DateTime.fromObject({ year: from.year, month: from.month, day: from.day });
+	const fullDayFrom = DateTime.fromObject(
+		{ year: from.year, month: from.month, day: from.day },
+		{ zone: 'UTC' }
+	);
 
 	const nextToDay = to.hour > 0 ? to.plus({ days: 1 }) : to;
-	const fullDayTo = DateTime.fromObject({
-		year: nextToDay.year,
-		month: nextToDay.month,
-		day: nextToDay.day
-	});
+	const fullDayTo = DateTime.fromObject(
+		{
+			year: nextToDay.year,
+			month: nextToDay.month,
+			day: nextToDay.day
+		},
+		{ zone: 'UTC' }
+	);
 
 	const fullHourDiff = fullDayTo.diff(fullDayFrom, 'hours').toObject().hours;
 
