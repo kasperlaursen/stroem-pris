@@ -17,15 +17,15 @@ export const spotDataToSpotChartEntries = ({
 			price: priceDKK * PRICE_MULTIPLIER,
 			time: DateTime.fromJSDate(hourUTC).setZone('Europe/Copenhagen')
 		}))
-		.sort((a, b) => (order === 'DESC' ? sporASC(a, b) : sporDESC(a, b)));
+		.sort((a, b) => (order === 'DESC' ? sortASC(a, b) : sortDESC(a, b)));
 };
 
-const sporASC = (
+const sortASC = (
 	{ time: timeA }: SpotChartDataEntry,
 	{ time: timeB }: SpotChartDataEntry
 ): number => timeA.toMillis() - timeB.toMillis();
 
-const sporDESC = (
+const sortDESC = (
 	{ time: timeA }: SpotChartDataEntry,
 	{ time: timeB }: SpotChartDataEntry
 ): number => timeB.toMillis() - timeA.toMillis();
