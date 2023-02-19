@@ -16,7 +16,7 @@ export const saveSpotDataToDatabasse = async ({
 			newDataPoints.map(({ priceDKK, priceArea, hourUTC }) => ({
 				price_dkk: priceDKK,
 				price_area: priceArea,
-				hour_utc: hourUTC
+				hour_utc: hourUTC.toISOString()
 			}))
 		)
 		.select('price_dkk, price_area, hour_utc');

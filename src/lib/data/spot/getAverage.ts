@@ -34,8 +34,17 @@ export const getAverage = async ({
 		};
 	}
 
+	const relevantSpotItems = data.filter(hasPrice);
+
 	const averageSpot =
-		data.reduce((accumulator, current) => accumulator + current.price_dkk, 0) / data.length;
+		relevantSpotItems.reduce((accumulator, current) => accumulator + current.price_dkk, 0) /
+		relevantSpotItems.length;
 
 	return { success: true, data: averageSpot };
 };
+
+type Datapoint = { price_dkk: number | null };
+type ValidDatapoint = { price_dkk: number };
+
+const hasPrice = (dataPoint: Datapoint): dataPoint is ValidDatapoint =>
+	dataPoint.price_dkk !== null;

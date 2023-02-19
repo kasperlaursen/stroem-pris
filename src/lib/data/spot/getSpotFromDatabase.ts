@@ -32,7 +32,32 @@ export const getSpotFromDatabase = async ({
 		return returnError(404, '0️⃣ No data found in table');
 	}
 
-	const spotData: SpotData[] = tableData.map(({ price_area, price_dkk, hour_utc }) => ({
+	return dbDataToSpotData(tableData);
+};
+
+const dbDataToSpotData = (
+	data: {
+		hour_utc: string;
+		price_area: PriceAreas | null;
+		price_dkk: number | null;
+	}[]
+): InternalResponse<SpotData[]> => {
+	const dataNotValid = data.some(({ price_dkk }) => price_dkk === null);
+	if (dataNotValid) {
+		return {
+			success: false,
+			error: { code: 500, message: '☠️ Got Invalid Spot data from Database!' }
+		};
+	}
+
+	// TODO: Update Database schema to not accept NULL prices and get rid of this validation.
+	const validData = data as {
+		hour_utc: string;
+		price_area: PriceAreas | null;
+		price_dkk: number;
+	}[];
+
+	const spotData: SpotData[] = validData.map(({ price_area, price_dkk, hour_utc }) => ({
 		hourUTC: DateTime.fromISO(hour_utc, { zone: 'utc' }).toJSDate(),
 		priceArea: price_area === 'DK2' ? 'DK2' : 'DK1',
 		priceDKK: price_dkk

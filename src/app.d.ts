@@ -4,6 +4,12 @@
 declare namespace App {
 	// interface Error {}
 	// interface Locals {}
-	// interface PageData {}
+	interface PageData {
+		session: import('@supabase/supabase-js').Session | null;
+	}
 	// interface Platform {}
+	interface Supabase {
+		Database: import('./lib/data/supabase/types').Database;
+		SchemaName: 'public';
+	}
 }
