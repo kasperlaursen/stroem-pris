@@ -1,4 +1,5 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
+import { returnError } from '$lib/utils/returnError';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import type { RequestEvent } from '@sveltejs/kit';
 
@@ -10,10 +11,7 @@ export const setPassword = async (event: RequestEvent<any>): Promise<InternalRes
 	const password = formData.get('password');
 
 	if (typeof password !== 'string') {
-		return {
-			success: false,
-			error: { code: 400, message: 'Det indtastede kodeoed er ikke validt.' }
-		};
+		return returnError(400, 'Det indtastede kodeoed er ikke validt.');
 	}
 
 	const { error: setPasswordError } = await supabaseClient.auth.updateUser({
@@ -21,10 +19,7 @@ export const setPassword = async (event: RequestEvent<any>): Promise<InternalRes
 	});
 
 	if (setPasswordError) {
-		return {
-			success: false,
-			error: { code: 400, message: setPasswordError.message }
-		};
+		return returnError(400, setPasswordError.message);
 	}
 
 	return { success: true, data: null };

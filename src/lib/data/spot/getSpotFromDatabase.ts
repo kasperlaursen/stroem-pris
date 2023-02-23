@@ -44,10 +44,7 @@ const dbDataToSpotData = (
 ): InternalResponse<SpotData[]> => {
 	const dataNotValid = data.some(({ price_dkk }) => price_dkk === null);
 	if (dataNotValid) {
-		return {
-			success: false,
-			error: { code: 500, message: '☠️ Got Invalid Spot data from Database!' }
-		};
+		return returnError(500, '☠️ Got Invalid Spot data from Database!');
 	}
 
 	// TODO: Update Database schema to not accept NULL prices and get rid of this validation.

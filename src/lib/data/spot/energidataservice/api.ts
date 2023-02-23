@@ -1,4 +1,5 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
+import { returnError } from '$lib/utils/returnError';
 import type { SpotBaseParams } from '../types';
 import type { SpotResponse } from './types';
 
@@ -40,27 +41,17 @@ export const getSpotData = async ({
 
 	if (data?.statusCode && data?.statusCode !== 200) {
 		console.log(`💸 🚫`, `Energidataservice Elspotprices call failed`);
-		return {
-			success: false,
-			error: {
-				code: data.statusCode,
-				message: 'Der skete en fejl under kaldet til Energidataservice'
-			}
-		};
+		return returnError(data.statusCode, 'Der skete en fejl under kaldet til Energidataservice');
 	}
 
 	// It should never be possible to get a response with less that 24 hours of data.
 	// If we get less, the data is not useable, and we return and error.
 	if (!data.total || data.total < 24) {
 		console.log(`💸 ⚠️`, `Energidataservice Elspotprices returned less data than expected.`);
-		return {
-			success: false,
-			error: {
-				code: 0,
-				message:
-					'Der findes desværre ikke data for den givne periode i energidataservice. Prøv en anden dato.'
-			}
-		};
+		return returnError(
+			0,
+			'Der findes desværre ikke data for den givne periode i energidataservice. Prøv en anden dato.'
+		);
 	}
 
 	console.log(`💸 ✅`, `Energidataservice Elspotprices returned valid data.`);

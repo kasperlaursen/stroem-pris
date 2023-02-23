@@ -1,4 +1,5 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
+import { returnError } from '$lib/utils/returnError';
 import { DateTime } from 'luxon';
 import type { SpotBaseParams, SupabaseBaseParams } from './types';
 
@@ -25,13 +26,7 @@ export const getAverage = async ({
 	const { data, error } = pastSpot;
 
 	if (!data || error) {
-		return {
-			success: false,
-			error: {
-				code: error.code ?? 404,
-				message: error.message ?? 'No past spot data found...'
-			}
-		};
+		return returnError(error?.code ?? 404, error?.message ?? 'No past spot data found...');
 	}
 
 	const relevantSpotItems = data.filter(hasPrice);
