@@ -65,6 +65,7 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 		area,
 		customFetch
 	});
+
 	if (apiSpotResponse.success === false) {
 		return dbSpotResponse;
 	}

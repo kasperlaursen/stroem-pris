@@ -7,6 +7,7 @@ import { getSpotFromDatabase } from './getSpotFromDatabase';
 import { saveSpotDataToDatabasse } from './saveSpotDataToDatabasse';
 import { energidataservice } from './energidataservice';
 import type { SpotData } from './types';
+import { LIMIT } from '../supabase/client';
 
 const mockHour: SpotData = {
 	hourUTC: new Date('2022-01-01T00:00:00.000Z'),
@@ -43,7 +44,7 @@ describe('getForDateRange', () => {
 		vi.restoreAllMocks();
 	});
 
-	it('getForDateRange handels invalid date Ranges', async () => {
+	it('Sandels invalid date Ranges', async () => {
 		const params = {
 			...mockParams,
 			from: DateTime.fromISO('2022-01-01T02:00:00.000Z'), // From date is after to date...
@@ -55,7 +56,7 @@ describe('getForDateRange', () => {
 		expect((response as InternalResponseError).error.code).toEqual(400);
 	});
 
-	it('getForDateRange returns data if it is in database', async () => {
+	it('Returns data if it is in database', async () => {
 		vi.mocked(getSpotFromDatabase).mockResolvedValueOnce({
 			success: true,
 			data: mockDay // The getSpotFromDatabase function always returns a full day of data, which is filtered before return
@@ -73,7 +74,7 @@ describe('getForDateRange', () => {
 		expect(response).toEqual(expectedResponse);
 	});
 
-	it('getForDateRange Returns an error on getSpotFromDatabase error', async () => {
+	it('Returns an error on getSpotFromDatabase error', async () => {
 		vi.mocked(getSpotFromDatabase).mockResolvedValueOnce({
 			success: false,
 			error: { message: 'Error message' }
@@ -88,7 +89,7 @@ describe('getForDateRange', () => {
 		});
 	});
 
-	it('getForDateRange returns data even if it could not be saved to database', async () => {
+	it('Returns data even if it could not be saved to database', async () => {
 		vi.mocked(getSpotFromDatabase).mockResolvedValueOnce({
 			success: true,
 			data: mockDay // The getSpotFromDatabase function always returns a full day of data, which is filtered before return
@@ -111,7 +112,7 @@ describe('getForDateRange', () => {
 		expect(response).toEqual(expectedResponse);
 	});
 
-	it('getForDateRange should call energidataservice if databasse is missing entries', async () => {
+	it('Should call energidataservice if databasse is missing entries', async () => {
 		vi.mocked(getSpotFromDatabase).mockResolvedValueOnce({
 			success: true,
 			data: [mockHour]
@@ -132,5 +133,17 @@ describe('getForDateRange', () => {
 		const params = { ...mockParams };
 		await getForDateRange(params);
 		expect(getSpotData).toHaveBeenCalledOnce();
+	});
+
+	it('Returns error on dates greater than DB limit', async () => {
+		const params = {
+			...mockParams,
+			from: DateTime.fromISO('2022-01-01T02:00:00.000Z'),
+			to: DateTime.fromISO('2022-01-01T02:00:00.000Z').plus({ hours: LIMIT + 1 })
+		};
+
+		const response = await getForDateRange(params);
+		expect(response.success).toEqual(false);
+		expect((response as InternalResponseError).error.code).toEqual(400);
 	});
 });
