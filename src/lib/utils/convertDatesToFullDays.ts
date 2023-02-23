@@ -14,7 +14,7 @@ export interface ConvertDatesToFullDaysParams {
 export const convertDatesToFullDays = ({ from, to }: ConvertDatesToFullDaysParams) => {
 	const fullDayFrom = DateTime.fromObject(
 		{ year: from.year, month: from.month, day: from.day },
-		{ zone: 'UTC' }
+		{ zone: 'Europe/Copenhagen' }
 	);
 
 	const nextToDay = to.hour > 0 ? to.plus({ days: 1 }) : to;
@@ -24,10 +24,13 @@ export const convertDatesToFullDays = ({ from, to }: ConvertDatesToFullDaysParam
 			month: nextToDay.month,
 			day: nextToDay.day
 		},
-		{ zone: 'UTC' }
+		{ zone: 'Europe/Copenhagen' }
 	);
 
 	const fullHourDiff = fullDayTo.diff(fullDayFrom, 'hours').toObject().hours;
 
-	return { fullDayFrom, fullDayTo, fullHourDiff };
+	const fullDayFromUTC = fullDayFrom.setZone('UTC');
+	const fullDayToUTC = fullDayTo.setZone('UTC');
+
+	return { fullDayFrom, fullDayTo, fullDayFromUTC, fullDayToUTC, fullHourDiff };
 };

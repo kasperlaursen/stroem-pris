@@ -29,7 +29,9 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 
 	const {
 		fullDayFrom: dataFrom,
+		fullDayFromUTC: dateFromUTC,
 		fullDayTo: dataTo,
+		fullDayToUTC: dateToUTC,
 		fullHourDiff: dataHourDiff
 	} = convertDatesToFullDays({ to, from });
 
@@ -40,8 +42,8 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 
 	const dbSpotResponse = await getSpotFromDatabase({
 		...params,
-		to: dataTo,
-		from: dataFrom,
+		to: dateToUTC,
+		from: dateFromUTC,
 		hourDiff: dataHourDiff
 	});
 
@@ -66,7 +68,7 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 		return dbSpotResponse;
 	}
 
-	const apiSpotData: SpotData[] = spotResponseToSpotDataArray(apiSpotResponse.data);
+	const apiSpotData: SpotData[] = spotResponseToSpotData(apiSpotResponse.data);
 	if (apiSpotData.length === 0) {
 		return dbSpotResponse;
 	}
@@ -79,6 +81,7 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 
 	if (saveSpotResponse.success === false) {
 		console.log('🚫', 'Spot Data Save Failed!');
+		console.log('🚫', `[${saveSpotResponse.error.code}] ${saveSpotResponse.error.message}`);
 	}
 
 	const allDatapoints = [...newDataPoints, ...dbSpotData];
@@ -88,7 +91,7 @@ export const getForDateRange = async (params: Params): Promise<InternalResponse<
 };
 
 /** Converts a SpotResponse from the API to a SpotData array */
-const spotResponseToSpotDataArray = (input: SpotResponse): SpotData[] => {
+const spotResponseToSpotData = (input: SpotResponse): SpotData[] => {
 	if (!input.records || !input.total) {
 		return [];
 	}

@@ -27,8 +27,10 @@ export const load: Load = async (event): Promise<PageResponse> => {
 	const dateParam = event.url.searchParams.get('date');
 
 	const area = event.url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
-	const from = dateParam ? DateTime.fromISO(dateParam) : defualtFrom;
-	const to = dateParam ? DateTime.fromISO(dateParam).plus({ days: 1 }) : defaultTo;
+	const from = dateParam ? DateTime.fromISO(dateParam, { zone: 'Europe/Copenhagen' }) : defualtFrom;
+	const to = dateParam
+		? DateTime.fromISO(dateParam, { zone: 'Europe/Copenhagen' }).plus({ days: 1 })
+		: defaultTo;
 
 	let errors: InternalError[] = [];
 	let data: PageData = {};
@@ -65,7 +67,7 @@ export const load: Load = async (event): Promise<PageResponse> => {
 };
 
 const getDefaultRange = () => {
-	const { year, month, day, hour } = DateTime.now().setZone('UTC');
+	const { year, month, day, hour } = DateTime.now().setZone('Europe/Copenhagen');
 	const from = DateTime.fromObject({ year, month, day, hour }).minus({ hours: 11 });
 	const to = from.plus({ days: 1 });
 	return { from, to };
