@@ -1,7 +1,7 @@
 <script lang="ts">
-	const customClasses = $$restProps.class;
+	import { classFromProps } from '$lib/utils/classFromProps';
+
+	const customClasses: string = classFromProps($$restProps);
 </script>
 
-<span {...$$restProps} class={`${customClasses ?? ''} dark:text-gray-400 text-gray-500`}
-	><slot /></span
->
+<span {...$$restProps} class={`${customClasses} dark:text-gray-400 text-gray-500`}><slot /></span>

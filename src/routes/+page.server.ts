@@ -32,8 +32,8 @@ export const load: Load = async (event): Promise<PageResponse> => {
 		? DateTime.fromISO(dateParam, { zone: 'Europe/Copenhagen' }).plus({ days: 1 })
 		: defaultTo;
 
-	let errors: InternalError[] = [];
-	let data: PageData = {};
+	const errors: InternalError[] = [];
+	const data: PageData = {};
 
 	const spotDataRequest = spot.getForDateRange({
 		from,

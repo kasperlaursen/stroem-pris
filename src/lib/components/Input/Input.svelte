@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { classFromProps } from '$lib/utils/classFromProps';
 	import type { InputTypes } from './types';
 
-	const customClasses = $$restProps.class;
+	const customClasses: string = classFromProps($$restProps);
 	export let type: InputTypes;
 </script>
 
@@ -17,7 +18,7 @@
 	on:focus
 	on:blur
 	class={`
-        ${customClasses ?? ''}
+        ${customClasses}
         text-sm
         py-1
         px-2

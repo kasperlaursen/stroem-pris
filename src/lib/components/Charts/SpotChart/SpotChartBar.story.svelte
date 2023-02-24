@@ -1,10 +1,10 @@
 <script lang="ts">
 	import SpotChartBar from './SpotChartBar.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
 	import type { Colors } from './types';
-	export let Hst: Hst;
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	export let Hst: HstType;
 
-	let width: number = 0.5;
+	let width = 0.5;
 	let color: Colors = 'neutral';
 </script>
 

@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { Hst } from '@histoire/plugin-svelte';
 	import SpotChartRow from './SpotChartRow.svelte';
 	import SpotChartLabel from './SpotChartLabel.svelte';
 	import SpotChartValue from './SpotChartValue.svelte';
 	import SpotChartBar from './SpotChartBar.svelte';
 	import type { RowState } from './types';
-	export let Hst: Hst;
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	export let Hst: HstType;
 
-	let content: string = 'Add components here';
+	let content = 'Add components here';
 	let state: RowState = 'none';
 </script>
 

@@ -1,11 +1,13 @@
 <script lang="ts">
-	const customClasses = $$restProps.class;
+	import { classFromProps } from '$lib/utils/classFromProps';
+
+	const customClasses: string = classFromProps($$restProps);
 </script>
 
 <div
 	{...$$restProps}
 	class={`
-        ${customClasses ?? ''}
+        ${customClasses}
         grid
     `}
 >

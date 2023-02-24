@@ -4,9 +4,9 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	//! DO NOT REMOVE!
+	// Needed for theming to work...
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	import { theme } from '$lib/stores/theme';
-	//! DO NOT REMOVE!
 
 	import '../app.css';
 	import Header from '$lib/ui/Header/Header.svelte';
@@ -15,7 +15,7 @@
 		const {
 			data: { subscription }
 		} = supabase.auth.onAuthStateChange(() => {
-			invalidate('supabase:auth');
+			invalidate('supabase:auth').catch((e) => console.error(e));
 		});
 
 		// Set a height used as a fallback for browsers not suppoting the "dvh" unit

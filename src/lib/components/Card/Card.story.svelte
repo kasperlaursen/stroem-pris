@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Card from './Card.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
 	import type { Spacing } from './types';
-	export let Hst: Hst;
+	export let Hst: HstType;
 
 	let spacing: Spacing = 'base';
 </script>

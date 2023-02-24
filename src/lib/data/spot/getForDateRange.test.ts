@@ -15,6 +15,7 @@ const mockHour: SpotData = {
 	priceDKK: 100.0
 };
 
+// eslint-disable-next-line prefer-spread
 const mockDay: SpotData[] = Array.apply(null, Array(24)).map((_, index) => ({
 	...mockHour,
 	hourUTC: new Date(`2022-01-01T${`0${index}`.slice(-2)}:00:00.000Z`)
@@ -24,6 +25,7 @@ const mockParams = {
 	from: DateTime.fromISO('2022-01-01T00:00:00.000Z'),
 	to: DateTime.fromISO('2022-01-01T01:00:00.000Z'),
 	area: 'DK1',
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	supabaseClient: {} as SupabaseClient
 } as Params;
 

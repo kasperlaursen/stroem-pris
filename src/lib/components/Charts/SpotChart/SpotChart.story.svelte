@@ -1,9 +1,9 @@
 <script lang="ts">
 	import SpotChart from './SpotChart.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
 	import type { SpotChartData } from './types';
 	import { DateTime } from 'luxon';
-	export let Hst: Hst;
+	export let Hst: HstType;
 
 	let data: SpotChartData = {
 		average: 2,

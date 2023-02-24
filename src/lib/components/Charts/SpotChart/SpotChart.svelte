@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { classFromProps } from '$lib/utils/classFromProps';
 	import { DateTime } from 'luxon';
 	import { onMount } from 'svelte';
 	import { getColor, getPriceLabel, getState, getTimeLabel, getWidth } from './helpers';
@@ -8,7 +9,7 @@
 	import SpotChartValue from './SpotChartValue.svelte';
 	import type { SpotChartData } from './types';
 
-	const customClasses = $$restProps.class;
+	const customClasses: string = classFromProps($$restProps);
 	export let data: SpotChartData;
 
 	let now = DateTime.now().setZone('Europe/Copenhagen');
@@ -29,9 +30,7 @@
 
 <div
 	{...$$restProps}
-	class={`${
-		customClasses ?? ''
-	} grid text-xs md:text-sm select-none w-full font-mono cursor-default`}
+	class={`${customClasses} grid text-xs md:text-sm select-none w-full font-mono cursor-default`}
 >
 	{#each data.entries as entry}
 		<SpotChartRow

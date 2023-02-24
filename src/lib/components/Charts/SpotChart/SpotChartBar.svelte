@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Colors } from './types';
 
-	export let width: number = 0;
+	export let width = 0;
 	export let color: Colors = 'neutral';
 	const opacityClasses = 'bg-opacity-90 dark:bg-opacity-70';
 	const colorClasses: { [key in Colors]: string } = {

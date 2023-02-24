@@ -3,16 +3,17 @@
 	import { Squares2x2, UserCircle, InformationCircle, Home } from '@steeze-ui/heroicons';
 	import Logo from '../Logo/Logo.svelte';
 	import NavItem from './NavItem.svelte';
-	import ThemeToggle from '../ThemeToggle/ThemeToggle.svelte';
+	import { classFromProps } from '$lib/utils/classFromProps';
 
-	const customClasses = $$restProps.class;
-	export let isOnline: boolean = false;
+	const customClasses: string = classFromProps($$restProps);
+
+	export let isOnline = false;
 </script>
 
 <header
 	{...$$restProps}
 	class={`
-	${customClasses ?? ''}
+	${customClasses}
 		fixed
 		w-full
 		bottom-0

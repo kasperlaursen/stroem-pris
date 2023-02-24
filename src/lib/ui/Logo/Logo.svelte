@@ -2,8 +2,9 @@
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { Bolt } from '@steeze-ui/heroicons';
 	import type { LogoVariant } from './types';
+	import { classFromProps } from '$lib/utils/classFromProps';
 
-	const customClasses = $$restProps.class;
+	const customClasses: string = classFromProps($$restProps);
 
 	export let variant: LogoVariant = 'full';
 	$: text = variant === 'full' ? 'Strømpris' : 'S';
@@ -12,7 +13,7 @@
 <h1
 	{...$$restProps}
 	class={`
-		${customClasses ?? ''}
+		${customClasses}
 		relative
 		text-2xl
 		uppercase

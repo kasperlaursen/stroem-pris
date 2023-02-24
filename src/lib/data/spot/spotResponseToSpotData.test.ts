@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon';
 import { describe, it, expect } from 'vitest';
 import type { SpotResponse } from './energidataservice/types';
 import { spotResponseToSpotData } from './spotResponseToSpotData';

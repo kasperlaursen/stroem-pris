@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { classFromProps } from '$lib/utils/classFromProps';
 	import type { RowState } from './types';
 
-	const customClasses = $$restProps.class;
+	const customClasses: string = classFromProps($$restProps);
 	export let state: RowState = 'none';
 	const stateClasses: { [key in RowState]: string } = {
 		none: '',
@@ -13,7 +14,7 @@
 <div
 	{...$$restProps}
 	class={`
-		${customClasses ?? ''}
+		${customClasses}
 		${stateClasses[state]}
 		group grid grid-cols-[max-content,max-content,auto] gap-4 px-2 items-center rounded 
 	`}

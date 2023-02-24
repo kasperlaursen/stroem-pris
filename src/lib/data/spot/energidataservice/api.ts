@@ -5,7 +5,7 @@ import type { SpotResponse } from './types';
 
 const BASE_API = 'https://api.energidataservice.dk/dataset';
 
-interface GetSpotDataParams extends SpotBaseParams {}
+type GetSpotDataParams = SpotBaseParams;
 
 /**
  * Function to call the energidataservice api to get spot data for a given day range, and area.
@@ -36,8 +36,9 @@ export const getSpotData = async ({
 		filter: JSON.stringify({ PriceArea: area })
 	};
 	const queryString = new URLSearchParams(requestParameters);
-	const response = await fetchClient(`${baseURl}?${queryString}`);
-	const data: SpotResponse = await response.json();
+	const response = await fetchClient(`${baseURl}?${queryString.toString()}`);
+	// TODO Look into ZOD for data validation
+	const data: SpotResponse = (await response.json()) as SpotResponse;
 
 	if (data?.statusCode && data?.statusCode !== 200) {
 		console.log(`💸 🚫`, `Energidataservice Elspotprices call failed`);

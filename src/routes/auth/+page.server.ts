@@ -33,8 +33,7 @@ export const actions: Actions = {
 		});
 
 		if (signinError) {
-			// For some reason the status is not on the defualt type from supabaseClient...
-			if ((signinError as any).status === 400) {
+			if (signinError.status === 400) {
 				return InvalidCredentialsResponse;
 			}
 			throw error(500, {

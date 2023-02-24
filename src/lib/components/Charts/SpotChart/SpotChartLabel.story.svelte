@@ -1,9 +1,9 @@
 <script lang="ts">
 	import SpotChartLabel from './SpotChartLabel.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
-	export let Hst: Hst;
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	export let Hst: HstType;
 
-	let content: string = 'kl. 23';
+	let content = 'kl. 23';
 </script>
 
 <Hst.Story title="SpotChartLabel" group="SpotChart">

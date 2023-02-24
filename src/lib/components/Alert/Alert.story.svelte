@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Alert from './Alert.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
-	export let Hst: Hst;
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	export let Hst: HstType;
 
 	let title = 'Alert title';
 	let content =

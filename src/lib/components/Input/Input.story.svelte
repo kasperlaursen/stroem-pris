@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Input from './Input.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
 	import type { InputTypes } from './types';
-	export let Hst: Hst;
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	export let Hst: HstType;
 
 	let type: InputTypes = 'text';
 	const typeOptions: { label: InputTypes; value: InputTypes }[] = [

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Logo from './Logo.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
 	import type { LogoVariant } from './types';
-	export let Hst: Hst;
+	export let Hst: HstType;
 
 	let variant: LogoVariant = 'full';
 </script>

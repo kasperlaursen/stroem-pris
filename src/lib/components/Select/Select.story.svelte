@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Select from './Select.svelte';
 	import Option from './Option.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
-	export let Hst: Hst;
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	export let Hst: HstType;
 
-	let selected: string = '';
+	let selected = '';
 </script>
 
 <Hst.Story>

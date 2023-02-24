@@ -1,8 +1,9 @@
 <script lang="ts">
+	import { classFromProps } from '$lib/utils/classFromProps';
 	import { responsiveSpacingClasses } from '../utils/spacingClasses';
 	import type { Spacing } from './types';
 
-	const customClasses = $$restProps.class;
+	const customClasses: string = classFromProps($$restProps);
 
 	export let spacing: Spacing = 'base';
 </script>
@@ -10,7 +11,7 @@
 <div
 	{...$$restProps}
 	class={`
-        ${customClasses ?? ''}
+        ${customClasses}
         ${spacing === 'base' ? responsiveSpacingClasses : ''}
         grid
         rounded-md

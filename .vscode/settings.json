@@ -3,5 +3,6 @@
 	"explorer.fileNesting.patterns": {
 		"*.ts": "${capture}.ts, ${capture}.test.ts, ${capture}.d.ts",
 		"app.html": "app.css, app.d.ts"
-	}
+	},
+	"eslint.validate": ["typescript", "svelte"]
 }

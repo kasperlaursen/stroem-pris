@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Header from './Header.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
-	export let Hst: Hst;
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	export let Hst: HstType;
 
-	let isOnline: boolean = false;
+	let isOnline = false;
 </script>
 
 <Hst.Story group="ui">

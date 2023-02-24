@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { responsiveSpacingClasses } from '../utils/spacingClasses';
+	import { classFromProps } from '$lib/utils/classFromProps';
 	import type { Vairants } from './types';
 
-	const customClasses = $$restProps.class;
+	const customClasses: string = classFromProps($$restProps);
 
 	export let title: string | null = null;
 	export let variant: Vairants = 'danger';
@@ -19,7 +19,7 @@
 	{...$$restProps}
 	role="alert"
 	class={`
-        ${customClasses ?? ''}
+        ${customClasses}
         ${variantClasses[variant]}
         grid
         rounded

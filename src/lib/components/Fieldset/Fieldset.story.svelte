@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Fieldset from './Fieldset.svelte';
-	import type { Hst } from '@histoire/plugin-svelte';
 	import Label from '../Label/Label.svelte';
 	import Input from '../Input/Input.svelte';
-	export let Hst: Hst;
+	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	export let Hst: HstType;
 </script>
 
 <Hst.Story>

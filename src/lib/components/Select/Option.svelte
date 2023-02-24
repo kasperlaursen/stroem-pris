@@ -1,5 +1,7 @@
 <script lang="ts">
-	const customClasses = $$restProps.class;
+	import { classFromProps } from '$lib/utils/classFromProps';
+
+	const customClasses: string = classFromProps($$restProps);
 	export let value: string;
 </script>
 
@@ -7,7 +9,7 @@
 	{...$$restProps}
 	{value}
 	class={`
-        ${customClasses ?? ''}
+        ${customClasses}
         text-sm
         py-1
         px-2

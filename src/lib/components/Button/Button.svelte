@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { classFromProps } from '$lib/utils/classFromProps';
 	import type { ButtonTypes } from './types';
 
-	const customClasses = $$restProps.class;
+	const customClasses: string = classFromProps($$restProps);
 	export let type: ButtonTypes = 'button';
 </script>
 
@@ -14,7 +15,7 @@
 	{...$$restProps}
 	{type}
 	class={`
-        ${customClasses ?? ''}
+        ${customClasses}
         text-sm
 		rounded
 		p-1

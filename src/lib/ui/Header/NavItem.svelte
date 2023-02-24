@@ -1,5 +1,7 @@
 <script lang="ts">
-	const customClasses = $$restProps.class;
+	import { classFromProps } from '$lib/utils/classFromProps';
+
+	const customClasses: string = classFromProps($$restProps);
 	export let href: string;
 </script>
 
@@ -7,7 +9,7 @@
 	{...$$restProps}
 	{href}
 	class={`
-	${customClasses ?? ''}
+	${customClasses}
 		flex
         flex-col
         sm:flex-row

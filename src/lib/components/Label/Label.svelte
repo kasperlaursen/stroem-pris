@@ -1,13 +1,15 @@
 <script lang="ts">
-	const customClasses = $$restProps.class;
-	export let htmlFor: string = '';
+	import { classFromProps } from '$lib/utils/classFromProps';
+
+	const customClasses: string = classFromProps($$restProps);
+	export let htmlFor = '';
 </script>
 
 <label
 	{...$$restProps}
 	for={htmlFor}
 	class={`
-        ${customClasses ?? ''}
+        ${customClasses}
         text-sm
         m-1
     `}

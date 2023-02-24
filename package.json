@@ -12,6 +12,7 @@
 		"test:unit": "vitest",
 		"test:coverage": "vitest run --coverage",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"lint:fix": "prettier --plugin-search-dir . --check . && eslint . --fix",
 		"format": "prettier --plugin-search-dir . --write .",
 		"story:dev": "histoire dev",
 		"story:build": "histoire build",

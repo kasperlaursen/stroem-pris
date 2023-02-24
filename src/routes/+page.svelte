@@ -10,7 +10,7 @@
 	import Select from '$lib/components/Select/Select.svelte';
 
 	export let data: PageData;
-	let { data: pageData, errors, session, area } = data;
+	let { data: pageData, errors, area } = data;
 	let { spotAverage, spotData, spotMax } = pageData;
 
 	let spotChartData: SpotChartData | null = null;
@@ -22,9 +22,9 @@
 			entries: spotDataToSpotChartEntries({ spotData })
 		};
 	}
-
-	const handleChange = (event: any) => {
-		event.target.form.submit();
+	let areaForm: HTMLFormElement;
+	const handleChange = () => {
+		areaForm.submit();
 	};
 </script>
 
@@ -34,7 +34,7 @@
 
 <div class="flex justify-between items-center p-2">
 	<h1 class="font-medium text-gray-800 dark:text-gray-200">Variabel Strømpris</h1>
-	<form method="get" action="/" data-sveltekit-reload>
+	<form method="get" action="/" data-sveltekit-reload bind:this={areaForm}>
 		<Select id="area" name="area" bind:value={area} on:change={handleChange}>
 			<Option value="DK1">Vest for storebælt</Option>
 			<Option value="DK2">Øst for storebælt</Option>
