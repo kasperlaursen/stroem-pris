@@ -1,16 +1,14 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
 import { returnError } from '$lib/utils/returnError';
-import { LIMIT } from '../supabase/client';
 import type { SpotBaseParams, SpotData, SupabaseBaseParams } from './types';
 import { getSpotFromDatabase } from './getSpotFromDatabase';
 import { energidataservice } from './energidataservice';
-import type { SpotDataRaw, SpotResponse } from './energidataservice/types';
-import { DateTime } from 'luxon';
 import { filterSpotData } from './filterSpotData';
 import { saveSpotDataToDatabasse } from './saveSpotDataToDatabasse';
 import { convertDatesToFullDays } from '$lib/utils/convertDatesToFullDays';
 import { filterDataToInterval } from './filterDataToInterval';
 import { spotResponseToSpotData } from './spotResponseToSpotData';
+import { LIMIT } from '../supabase/constants';
 
 export interface Params extends SpotBaseParams, SupabaseBaseParams {}
 

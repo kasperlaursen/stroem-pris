@@ -7,7 +7,7 @@ import { getSpotFromDatabase } from './getSpotFromDatabase';
 import { saveSpotDataToDatabasse } from './saveSpotDataToDatabasse';
 import { energidataservice } from './energidataservice';
 import type { SpotData } from './types';
-import { LIMIT } from '../supabase/client';
+import { LIMIT } from '../supabase/constants';
 
 const mockHour: SpotData = {
 	hourUTC: new Date('2022-01-01T00:00:00.000Z'),
