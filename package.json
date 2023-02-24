@@ -20,7 +20,7 @@
 	},
 	"devDependencies": {
 		"@histoire/plugin-svelte": "^0.14.2",
-		"@playwright/test": "^1.29.0",
+		"@playwright/test": "^1.31.1",
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.5.6",
 		"@types/luxon": "^3.1.0",
