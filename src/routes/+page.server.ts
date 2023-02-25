@@ -70,6 +70,8 @@ export const load: Load = async (event): Promise<PageResponse> => {
  * Gets the default range.
  * If the current time is 13 or more, the full day tomorrow is included.
  * If the time is before 13, the last hour is today at midnight.
+ *
+ * This logic is based on the fact that the spot price api gets updated arround 13 to include the next day prices.
  */
 const getDefaultRange = () => {
 	const { year, month, day, hour } = DateTime.now().setZone('Europe/Copenhagen');
