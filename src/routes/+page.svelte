@@ -2,13 +2,12 @@
 	import SpotChart from '$lib/components/Charts/SpotChart/SpotChart.svelte';
 	import Card from '$lib/components/Card/Card.svelte';
 	import type { PageData } from './$types';
-	import Alert from '$lib/components/Alert/Alert.svelte';
 	import type { SpotChartData } from '$lib/components/Charts/SpotChart/types';
 	import { spotDataToSpotChartEntries } from '$lib/utils/spotDataToSpotChartEntries';
 	import { PRICE_MULTIPLIER } from '$lib/utils/constants';
-	import Option from '$lib/components/Select/Option.svelte';
-	import Select from '$lib/components/Select/Select.svelte';
 	import { onMount } from 'svelte';
+	import ErrorList from '$lib/ui/ErrorList/ErrorList.svelte';
+	import PriceAreaForm from './PriceAreaForm.svelte';
 
 	export let data: PageData;
 	let { data: pageData, errors, area } = data;
@@ -24,11 +23,6 @@
 		};
 	}
 
-	let areaForm: HTMLFormElement;
-	const handleChange = () => {
-		areaForm.submit();
-	};
-
 	onMount(() => {
 		document
 			.querySelector('#spotCard [data-state="active"]')
@@ -37,20 +31,10 @@
 </script>
 
 <div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_1fr]">
-	<div class="grid gap-4">
-		{#each errors ?? [] as error}
-			<Alert>{error.message}</Alert>
-		{/each}
-	</div>
-
+	<ErrorList {errors} />
 	<div class="flex justify-between items-center p-2">
 		<h1 class="font-medium text-gray-800 dark:text-gray-200">Variabel Strømpris</h1>
-		<form method="get" action="/" data-sveltekit-reload bind:this={areaForm}>
-			<Select id="area" name="area" bind:value={area} on:change={handleChange}>
-				<Option value="DK1">Vest for storebælt</Option>
-				<Option value="DK2">Øst for storebælt</Option>
-			</Select>
-		</form>
+		<PriceAreaForm {area} />
 	</div>
 	<div class="overflow-hidden">
 		<Card spacing="base" class="overflow-y-auto mb-2 max-h-full" id="spotCard">
