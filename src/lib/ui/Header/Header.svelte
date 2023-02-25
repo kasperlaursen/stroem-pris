@@ -14,7 +14,6 @@
 	{...$$restProps}
 	class={`
 	${customClasses}
-		fixed
 		w-full
 		bottom-0
 		flex
@@ -28,7 +27,6 @@
 		border-t
 		sm:border-t-0
 		sm:border-b
-		sm:relative
 		border-gray-200
         dark:border-neutral-900
 

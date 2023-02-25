@@ -35,9 +35,9 @@
 	<title>Strømpris</title>
 </svelte:head>
 
-<main class="h-full grid-rows-[1fr_auto] sm:grid-rows-[auto_1fr]">
+<main class="h-full grid grid-rows-[1fr_auto] sm:grid-rows-[auto_1fr]">
 	<Header isOnline={Boolean($page.data.session)} class="row-start-2 sm:row-start-1 z-10" />
-	<div class="grid container mx-auto overflow-y-auto">
+	<div class="grid container mx-auto overflow-hidden">
 		<slot />
 	</div>
 </main>

@@ -8,6 +8,7 @@
 	import { PRICE_MULTIPLIER } from '$lib/utils/constants';
 	import Option from '$lib/components/Select/Option.svelte';
 	import Select from '$lib/components/Select/Select.svelte';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
 	let { data: pageData, errors, area } = data;
@@ -22,28 +23,40 @@
 			entries: spotDataToSpotChartEntries({ spotData })
 		};
 	}
+
 	let areaForm: HTMLFormElement;
 	const handleChange = () => {
 		areaForm.submit();
 	};
+
+	onMount(() => {
+		document
+			.querySelector('#spotCard [data-state="active"]')
+			?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	});
 </script>
 
-{#each errors ?? [] as error}
-	<Alert>{error.message}</Alert>
-{/each}
+<div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_1fr]">
+	<div class="grid gap-4">
+		{#each errors ?? [] as error}
+			<Alert>{error.message}</Alert>
+		{/each}
+	</div>
 
-<div class="flex justify-between items-center p-2">
-	<h1 class="font-medium text-gray-800 dark:text-gray-200">Variabel Strømpris</h1>
-	<form method="get" action="/" data-sveltekit-reload bind:this={areaForm}>
-		<Select id="area" name="area" bind:value={area} on:change={handleChange}>
-			<Option value="DK1">Vest for storebælt</Option>
-			<Option value="DK2">Øst for storebælt</Option>
-		</Select>
-	</form>
+	<div class="flex justify-between items-center p-2">
+		<h1 class="font-medium text-gray-800 dark:text-gray-200">Variabel Strømpris</h1>
+		<form method="get" action="/" data-sveltekit-reload bind:this={areaForm}>
+			<Select id="area" name="area" bind:value={area} on:change={handleChange}>
+				<Option value="DK1">Vest for storebælt</Option>
+				<Option value="DK2">Øst for storebælt</Option>
+			</Select>
+		</form>
+	</div>
+	<div class="overflow-hidden">
+		<Card spacing="base" class="overflow-y-auto mb-2 max-h-full" id="spotCard">
+			{#if spotChartData}
+				<SpotChart data={spotChartData} />
+			{/if}
+		</Card>
+	</div>
 </div>
-
-<Card spacing="base">
-	{#if spotChartData}
-		<SpotChart data={spotChartData} />
-	{/if}
-</Card>

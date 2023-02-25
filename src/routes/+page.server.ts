@@ -82,6 +82,5 @@ const getDefaultRange = () => {
 
 	const to = lastExpectedData;
 
-	console.log(from.toISO(), to.toISO());
 	return { from, to };
 };

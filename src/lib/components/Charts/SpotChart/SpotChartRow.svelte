@@ -13,6 +13,7 @@
 
 <div
 	{...$$restProps}
+	data-state={state}
 	class={`
 		${customClasses}
 		${stateClasses[state]}
