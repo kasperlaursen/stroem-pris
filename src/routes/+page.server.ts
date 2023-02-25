@@ -66,9 +66,20 @@ export const load: Load = async (event): Promise<PageResponse> => {
 	};
 };
 
+/**
+ * Gets the default range.
+ * If the current time is 13 or more, the full day tomorrow is included.
+ * If the time is before 13, the last hour is today at midnight.
+ */
 const getDefaultRange = () => {
 	const { year, month, day, hour } = DateTime.now().setZone('Europe/Copenhagen');
 	const from = DateTime.fromObject({ year, month, day, hour }).minus({ hours: 11 });
-	const to = from.plus({ days: 1 });
+
+	const lastHourToday = DateTime.fromObject({ year, month, day, hour: 24 });
+	const lastExpectedData = hour >= 13 ? lastHourToday.plus({ day: 1 }) : lastHourToday;
+
+	const to = lastExpectedData;
+
+	console.log(from.toISO(), to.toISO());
 	return { from, to };
 };
