@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { classFromProps } from '$lib/utils/classFromProps';
 	import { DateTime } from 'luxon';
 	import { onMount } from 'svelte';
@@ -11,20 +12,38 @@
 
 	const customClasses: string = classFromProps($$restProps);
 	export let data: SpotChartData;
-	export let showDayDivider: boolean = true;
+	export let showDayDivider = true;
+	export let autoScroll = false;
 
 	let now = DateTime.now().setZone('Europe/Copenhagen');
+
+	const scrollToActive = () => {
+		if (browser && autoScroll) {
+			document
+				.querySelector('#spotCard [data-state="active"]')
+				?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+	};
+
+	const onHourChange = () => {
+		scrollToActive();
+		now = DateTime.now().setZone('Europe/Copenhagen');
+	};
+
+	const msToNextHour =
+		DateTime.fromObject({
+			year: now.year,
+			month: now.month,
+			day: now.day,
+			hour: now.hour + 1
+		}).diffNow('milliseconds').milliseconds + 5;
+
 	onMount(() => {
-		const msToNextHour =
-			DateTime.fromObject({
-				year: now.year,
-				month: now.month,
-				day: now.day,
-				hour: now.hour + 1
-			}).diffNow('milliseconds').milliseconds + 5;
+		scrollToActive();
+
 		setTimeout(() => {
 			now = DateTime.now().setZone('Europe/Copenhagen');
-			setInterval(() => (now = DateTime.now().setZone('Europe/Copenhagen')), 60 * 60 * 1000);
+			setInterval(() => onHourChange(), 60 * 60 * 1000);
 		}, msToNextHour);
 	});
 </script>
@@ -32,6 +51,7 @@
 <div
 	{...$$restProps}
 	class={`${customClasses} grid text-xs md:text-sm select-none w-full font-mono cursor-default`}
+	id="spotCard"
 >
 	{#each data.entries as entry}
 		<SpotChartRow

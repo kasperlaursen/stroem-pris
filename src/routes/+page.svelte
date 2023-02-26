@@ -5,7 +5,6 @@
 	import type { SpotChartData } from '$lib/components/Charts/SpotChart/types';
 	import { spotDataToSpotChartEntries } from '$lib/utils/spotDataToSpotChartEntries';
 	import { PRICE_MULTIPLIER } from '$lib/utils/constants';
-	import { onMount } from 'svelte';
 	import ErrorList from '$lib/ui/ErrorList/ErrorList.svelte';
 	import PriceAreaForm from './PriceAreaForm.svelte';
 
@@ -22,12 +21,6 @@
 			entries: spotDataToSpotChartEntries({ spotData })
 		};
 	}
-
-	onMount(() => {
-		document
-			.querySelector('#spotCard [data-state="active"]')
-			?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-	});
 </script>
 
 <div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_1fr]">
@@ -37,9 +30,9 @@
 		<PriceAreaForm {area} />
 	</div>
 	<div class="overflow-hidden">
-		<Card spacing="base" class="overflow-y-auto mb-2 max-h-full" id="spotCard">
+		<Card spacing="base" class="overflow-y-auto mb-2 max-h-full">
 			{#if spotChartData}
-				<SpotChart data={spotChartData} />
+				<SpotChart data={spotChartData} autoScroll />
 			{/if}
 		</Card>
 	</div>
