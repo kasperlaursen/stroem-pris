@@ -11,6 +11,7 @@
 
 	const customClasses: string = classFromProps($$restProps);
 	export let data: SpotChartData;
+	export let showDayDivider: boolean = true;
 
 	let now = DateTime.now().setZone('Europe/Copenhagen');
 	onMount(() => {
@@ -46,5 +47,8 @@
 				color={getColor({ current: entry.price, average: data.average })}
 			/>
 		</SpotChartRow>
+		{#if showDayDivider && entry.time.hour === 0}
+			<SpotChartLabel class="m-2 h-px bg-current opacity-30" />
+		{/if}
 	{/each}
 </div>
