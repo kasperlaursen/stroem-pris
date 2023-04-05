@@ -1,6 +1,7 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
 import { returnError } from '$lib/utils/returnError';
-import type { SpotData, SupabaseBaseParams } from './types';
+import type { SupabaseBaseParams } from '../types';
+import type { SpotData } from './types';
 
 interface Params extends SupabaseBaseParams {
 	newDataPoints: SpotData[];

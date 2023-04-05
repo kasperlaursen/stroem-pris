@@ -2,7 +2,8 @@ import type { InternalResponse } from '$lib/types/InternalResponse';
 import { returnError } from '$lib/utils/returnError';
 import { DateTime } from 'luxon';
 import type { PriceAreas } from './energidataservice/types';
-import type { SpotBaseParams, SpotData, SupabaseBaseParams } from './types';
+import type { SpotBaseParams, SpotData } from './types';
+import type { SupabaseBaseParams } from '../types';
 
 interface Params extends SpotBaseParams, SupabaseBaseParams {
 	area: PriceAreas;

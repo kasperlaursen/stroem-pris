@@ -1,7 +1,8 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
 import { returnError } from '$lib/utils/returnError';
 import { DateTime } from 'luxon';
-import type { SpotBaseParams, SupabaseBaseParams } from './types';
+import type { SpotBaseParams } from './types';
+import type { SupabaseBaseParams } from '../types';
 
 export interface Params extends Pick<SpotBaseParams, 'area'>, SupabaseBaseParams {
 	days: number;

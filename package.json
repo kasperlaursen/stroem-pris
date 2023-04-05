@@ -17,7 +17,7 @@
 		"story:dev": "histoire dev",
 		"story:build": "histoire build",
 		"story:preview": "histoire preview",
-		"supabase:types": "npx supabase gen types typescript --project-id 'sdqtbpqrecvpngdqditz' --schema public > types/supabase.ts"
+		"supabase:types": "npx supabase gen types typescript --project-id 'sdqtbpqrecvpngdqditz' --schema public > src/lib/data/supabase/types.ts"
 	},
 	"devDependencies": {
 		"@histoire/plugin-svelte": "^0.15.9",

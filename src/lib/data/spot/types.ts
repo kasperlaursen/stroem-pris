@@ -1,7 +1,6 @@
 import type { LoadEvent } from '@sveltejs/kit';
 import type { DateTime } from 'luxon';
 import type { PriceAreas } from './energidataservice/types';
-import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface SpotBaseParams {
 	/** The first date to get data points from. (Danish time) */
@@ -15,11 +14,6 @@ export interface SpotBaseParams {
 	 * If passed it will be used, if not "normal" fetch will be used.
 	 */
 	customFetch?: LoadEvent['fetch'];
-}
-
-export interface SupabaseBaseParams {
-	/** The supabaseClient used to get data from the database */
-	supabaseClient: SupabaseClient;
 }
 
 export interface SpotData {

@@ -2,9 +2,9 @@ import { spot } from '$lib/data/spot';
 import type { PriceAreas } from '$lib/data/spot/energidataservice/types';
 import type { SpotData } from '$lib/data/spot/types';
 import type { InternalError } from '$lib/types/InternalResponse';
-import type { Load } from '@sveltejs/kit';
 import { DateTime } from 'luxon';
 import type { PageServerLoad } from './$types';
+import { getFees, type Fees } from '$lib/data/fees/getFees';
 
 interface PageData {
 	/** Spot data for the given range */
@@ -13,6 +13,8 @@ interface PageData {
 	spotAverage?: number;
 	/** Max spot value of the returned spotData */
 	spotMax?: number;
+	/** Fees data used to calculate full price */
+	feesData?: Fees[];
 }
 
 interface PageResponse {
@@ -47,7 +49,13 @@ export const load: PageServerLoad = async ({
 	});
 	const spotAverageRequest = spot.getAverage({ days: 30, area, supabaseClient: supabase });
 
-	const [spotData, spotAverage] = await Promise.all([spotDataRequest, spotAverageRequest]);
+	const feesDataRequest = getFees({ supabaseClient: supabase });
+
+	const [spotData, spotAverage, feesData] = await Promise.all([
+		spotDataRequest,
+		spotAverageRequest,
+		feesDataRequest
+	]);
 
 	if (spotData.success === false) {
 		errors.push(spotData.error);
@@ -60,6 +68,12 @@ export const load: PageServerLoad = async ({
 		errors.push(spotAverage.error);
 	} else {
 		data.spotAverage = spotAverage.data;
+	}
+
+	if (feesData.success === false) {
+		errors.push(feesData.error);
+	} else {
+		data.feesData = feesData.data;
 	}
 
 	return {

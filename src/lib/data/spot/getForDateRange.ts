@@ -1,6 +1,6 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
 import { returnError } from '$lib/utils/returnError';
-import type { SpotBaseParams, SpotData, SupabaseBaseParams } from './types';
+import type { SpotBaseParams, SpotData } from './types';
 import { getSpotFromDatabase } from './getSpotFromDatabase';
 import { energidataservice } from './energidataservice';
 import { filterSpotData } from './filterSpotData';
@@ -9,6 +9,7 @@ import { convertDatesToFullDays } from '$lib/utils/convertDatesToFullDays';
 import { filterDataToInterval } from './filterDataToInterval';
 import { spotResponseToSpotData } from './spotResponseToSpotData';
 import { LIMIT } from '../supabase/constants';
+import type { SupabaseBaseParams } from '../types';
 
 export interface Params extends SpotBaseParams, SupabaseBaseParams {}
 
