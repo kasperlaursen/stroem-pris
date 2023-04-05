@@ -53,21 +53,21 @@
 	class={`${customClasses} grid text-xs md:text-sm select-none w-full font-mono cursor-default`}
 	id="spotCard"
 >
-	{#each data.entries as entry}
+	{#each data.entries as { time, price }}
 		<SpotChartRow
-			state={getState({ now, time: entry.time })}
-			title={`${getTimeLabel({ time: entry.time })}: ${entry.price} kr`}
+			state={getState({ now, time: time })}
+			title={`${getTimeLabel({ time: time })}: ${price} kr`}
 		>
-			<SpotChartLabel>{getTimeLabel({ time: entry.time })}</SpotChartLabel>
+			<SpotChartLabel>{getTimeLabel({ time: time })}</SpotChartLabel>
 			<SpotChartValue>
-				{getPriceLabel({ price: entry.price })}
+				{getPriceLabel({ price: price })}
 			</SpotChartValue>
 			<SpotChartBar
-				width={getWidth({ current: entry.price, max: data.max })}
-				color={getColor({ current: entry.price, average: data.average })}
+				width={getWidth({ current: price, max: data.max })}
+				color={getColor({ current: price, average: data.average })}
 			/>
 		</SpotChartRow>
-		{#if showDayDivider && entry.time.hour === 0}
+		{#if showDayDivider && time.hour === 0}
 			<SpotChartLabel class="m-2 h-px bg-current opacity-30" />
 		{/if}
 	{/each}
