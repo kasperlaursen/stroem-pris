@@ -1,12 +1,11 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
 import { returnError } from '$lib/utils/returnError';
-import { getSupabase } from '@supabase/auth-helpers-sveltekit';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type { RequestEvent } from '@sveltejs/kit';
 
-export const setPassword = async (event: RequestEvent): Promise<InternalResponse<null>> => {
+export const setPassword = async (event: RequestEvent, supabaseClient: SupabaseClient): Promise<InternalResponse<null>> => {
 	// TODO: Require and handle repeat password
 	const { request } = event;
-	const { supabaseClient } = await getSupabase(event);
 	const formData = await request.formData();
 	const password = formData.get('password');
 

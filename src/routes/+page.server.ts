@@ -2,9 +2,9 @@ import { spot } from '$lib/data/spot';
 import type { PriceAreas } from '$lib/data/spot/energidataservice/types';
 import type { SpotData } from '$lib/data/spot/types';
 import type { InternalError } from '$lib/types/InternalResponse';
-import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import type { Load } from '@sveltejs/kit';
 import { DateTime } from 'luxon';
+import type { PageServerLoad } from './$types';
 
 interface PageData {
 	/** Spot data for the given range */
@@ -21,12 +21,15 @@ interface PageResponse {
 	area: PriceAreas;
 }
 
-export const load: Load = async (event): Promise<PageResponse> => {
-	const { supabaseClient } = await getSupabase(event);
+export const load: PageServerLoad = async ({
+	url,
+	fetch,
+	locals: { supabase }
+}): Promise<PageResponse> => {
 	const { from: defualtFrom, to: defaultTo } = getDefaultRange();
-	const dateParam = event.url.searchParams.get('date');
+	const dateParam = url.searchParams.get('date');
 
-	const area = event.url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
+	const area = url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
 	const from = dateParam ? DateTime.fromISO(dateParam, { zone: 'Europe/Copenhagen' }) : defualtFrom;
 	const to = dateParam
 		? DateTime.fromISO(dateParam, { zone: 'Europe/Copenhagen' }).plus({ days: 1 })
@@ -39,10 +42,10 @@ export const load: Load = async (event): Promise<PageResponse> => {
 		from,
 		to,
 		area,
-		supabaseClient,
-		customFetch: event.fetch
+		supabaseClient: supabase,
+		customFetch: fetch
 	});
-	const spotAverageRequest = spot.getAverage({ days: 30, area, supabaseClient });
+	const spotAverageRequest = spot.getAverage({ days: 30, area, supabaseClient: supabase });
 
 	const [spotData, spotAverage] = await Promise.all([spotDataRequest, spotAverageRequest]);
 

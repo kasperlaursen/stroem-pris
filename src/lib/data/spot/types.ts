@@ -1,7 +1,7 @@
-import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit/dist/types';
 import type { LoadEvent } from '@sveltejs/kit';
 import type { DateTime } from 'luxon';
 import type { PriceAreas } from './energidataservice/types';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface SpotBaseParams {
 	/** The first date to get data points from. (Danish time) */
@@ -19,7 +19,7 @@ export interface SpotBaseParams {
 
 export interface SupabaseBaseParams {
 	/** The supabaseClient used to get data from the database */
-	supabaseClient: TypedSupabaseClient;
+	supabaseClient: SupabaseClient;
 }
 
 export interface SpotData {

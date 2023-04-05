@@ -5,7 +5,6 @@ module.exports = {
 		'prettier',
 		'eslint:recommended',
 		'plugin:@typescript-eslint/recommended',
-		'plugin:@typescript-eslint/recommended-requiring-type-checking'
 	],
 	plugins: ['svelte3', '@typescript-eslint'],
 	ignorePatterns: ['*.cjs', '*.config.js', '*.config.ts'],

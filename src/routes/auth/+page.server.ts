@@ -1,9 +1,9 @@
 import type { InternalResponse } from '$lib/types/InternalResponse';
-import { getSupabase } from '@supabase/auth-helpers-sveltekit';
-import { error, redirect, type Actions, type Load } from '@sveltejs/kit';
+import { error, redirect, type Actions } from '@sveltejs/kit';
+import type { PageServerLoad } from '../$types';
 
-export const load: Load = async (event) => {
-	const { session } = await getSupabase(event);
+export const load: PageServerLoad = async ({  locals: { getSession } }) => {
+	const session = await getSession();
 	if (session) {
 		throw redirect(303, '/');
 	}
@@ -15,9 +15,8 @@ const InvalidCredentialsResponse: InternalResponse<null> = {
 };
 
 export const actions: Actions = {
-	signin: async (event) => {
-		const { request } = event;
-		const { supabaseClient } = await getSupabase(event);
+	signin: async ({ request, locals: { supabase } }) => {
+		const supabaseClient = supabase;
 		const formData = await request.formData();
 
 		const email = formData.get('email');
@@ -43,8 +42,8 @@ export const actions: Actions = {
 
 		throw redirect(303, '/');
 	},
-	signout: async (event) => {
-		const { supabaseClient } = await getSupabase(event);
+	signout: async ({ locals: { supabase } }) => {
+		const supabaseClient = supabase;
 		await supabaseClient.auth.signOut();
 		throw redirect(303, '/');
 	}

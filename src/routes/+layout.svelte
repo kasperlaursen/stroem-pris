@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { supabase } from '$lib/data/supabase/client';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 
@@ -11,23 +10,22 @@
 	import '../app.css';
 	import Header from '$lib/ui/Header/Header.svelte';
 
+	import type { LayoutData } from './$types';
+
+	export let data: LayoutData;
+
+	$: ({ supabase, session } = data);
+
 	onMount(() => {
 		const {
 			data: { subscription }
-		} = supabase.auth.onAuthStateChange(() => {
-			invalidate('supabase:auth').catch((e) => console.error(e));
+		} = supabase.auth.onAuthStateChange((event, _session) => {
+			if (_session?.expires_at !== session?.expires_at) {
+				invalidate('supabase:auth');
+			}
 		});
 
-		// Set a height used as a fallback for browsers not suppoting the "dvh" unit
-		const appHeight = () => {
-			document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
-		};
-		window.addEventListener('resize', appHeight);
-		appHeight();
-
-		return () => {
-			subscription.unsubscribe();
-		};
+		return () => subscription.unsubscribe();
 	});
 </script>
 
