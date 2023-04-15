@@ -7,7 +7,7 @@ interface GetColorParams {
 	multiplyer?: number;
 }
 
-export const getColor = ({ current, average, multiplyer = 0.1 }: GetColorParams): Colors => {
+export const getColor = ({ current, average, multiplyer = 0.2 }: GetColorParams): Colors => {
 	const max = average * (1 + multiplyer);
 	const min = average * (1 - multiplyer);
 
