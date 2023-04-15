@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Icon } from '@steeze-ui/svelte-icon';
 	import { Sun, Moon } from '@steeze-ui/heroicons';
-	import { theme } from '$lib/stores/theme';
+	import { theme } from '$lib/stores/themeStore';
 
 	const clickHandler = () => {
 		theme.set($theme === 'light' ? 'dark' : 'light');

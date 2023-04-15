@@ -4,7 +4,7 @@ import type { SpotData } from '$lib/data/spot/types';
 import type { InternalError } from '$lib/types/InternalResponse';
 import { DateTime } from 'luxon';
 import type { PageServerLoad } from './$types';
-import { getFees, type Fees } from '$lib/data/fees/getFees';
+import { getFees, type FeesData } from '$lib/data/fees/getFees';
 
 interface PageData {
 	/** Spot data for the given range */
@@ -14,7 +14,7 @@ interface PageData {
 	/** Max spot value of the returned spotData */
 	spotMax?: number;
 	/** Fees data used to calculate full price */
-	feesData?: Fees[];
+	feesData?: FeesData[];
 }
 
 interface PageResponse {

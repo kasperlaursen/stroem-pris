@@ -3,13 +3,15 @@ import { returnError } from '$lib/utils/returnError';
 import type { Database } from '../supabase/types';
 import type { SupabaseBaseParams } from '../types';
 
+export type FeeKey = Database['public']['Enums']['energy_fees'];
+
 /** Fees interface representing a fee structure. */
-export interface Fees {
+export interface FeesData {
 	/** The starting point for the fee range. */
 	from: string;
 
 	/** The key identifying the fee. */
-	key: Database['public']['Enums']['energy_fees'];
+	key: FeeKey;
 
 	/** The value of the fee. */
 	value: number;
@@ -19,9 +21,9 @@ export interface Fees {
  * Fetches fees from the database and returns them in an InternalResponse object.
  *
  * @param {SupabaseBaseParams} params - The parameters required for making a request to the Supabase client.
- * @returns {Promise<InternalResponse<Fees[]>>} - A promise that resolves to an InternalResponse object containing an array of Fees.
+ * @returns {Promise<InternalResponse<FeesData[]>>} - A promise that resolves to an InternalResponse object containing an array of Fees.
  */
-export const getFees = async (params: SupabaseBaseParams): Promise<InternalResponse<Fees[]>> => {
+export const getFees = async (params: SupabaseBaseParams): Promise<InternalResponse<FeesData[]>> => {
 	const { supabaseClient } = params;
 	const fees = await supabaseClient.from('fees').select('from, key, value');
 	const { data, error } = fees;

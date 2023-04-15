@@ -5,7 +5,7 @@
 
 	// Needed for theming to work...
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	import { theme } from '$lib/stores/theme';
+	import { theme } from '$lib/stores/themeStore';
 
 	import '../app.css';
 	import Header from '$lib/ui/Header/Header.svelte';

@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 import type { PriceAreas } from '$lib/data/spot/energidataservice/types';
 import { priceAreas } from '$lib/data/spot/energidataservice/types';
 import { writable } from 'svelte/store';
@@ -26,13 +27,19 @@ const defaultUserSettings: UserSettings = {
 };
 
 const STORAGE_KEY = 'userSettings';
+let validUserSettings;
 
-const storedUserSettings = localStorage.getItem(STORAGE_KEY);
-const parsedUserSettings = storedUserSettings && JSON.parse(storedUserSettings);
-const validUserSettings = validateUserSettings(parsedUserSettings);
+if (browser) {
+	const storedUserSettings = localStorage.getItem(STORAGE_KEY);
+	const parsedUserSettings = storedUserSettings && JSON.parse(storedUserSettings);
+	validUserSettings = validateUserSettings(parsedUserSettings);
+}
 
 export const userSettings = writable<UserSettings>(validUserSettings || defaultUserSettings);
-userSettings.subscribe((value) => localStorage.setItem(STORAGE_KEY, JSON.stringify(value)));
+
+if (browser) {
+	userSettings.subscribe((value) => localStorage.setItem(STORAGE_KEY, JSON.stringify(value)));
+}
 
 /**
  * Validates the user settings object and returns a valid UserSettings object.
@@ -42,7 +49,6 @@ userSettings.subscribe((value) => localStorage.setItem(STORAGE_KEY, JSON.stringi
  * @returns {UserSettings} - A valid UserSettings object.
  */
 function validateUserSettings(userSettings: unknown): UserSettings {
-    
 	if (typeof userSettings !== 'object' || userSettings === null) {
 		return defaultUserSettings;
 	}

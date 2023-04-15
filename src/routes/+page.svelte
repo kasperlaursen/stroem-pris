@@ -1,26 +1,48 @@
 <script lang="ts">
 	import SpotChart from '$lib/components/Charts/SpotChart/SpotChart.svelte';
 	import Card from '$lib/components/Card/Card.svelte';
-	import type { PageData } from './$types';
 	import type { SpotChartData } from '$lib/components/Charts/SpotChart/types';
 	import { spotDataToSpotChartEntries } from '$lib/utils/spotDataToSpotChartEntries';
-	import { PRICE_MULTIPLIER } from '$lib/utils/constants';
 	import ErrorList from '$lib/ui/ErrorList/ErrorList.svelte';
 	import PriceAreaForm from './PriceAreaForm.svelte';
+	import { type UserSettings, userSettings } from '$lib/stores/userSettingsStore';
 
-	export let data: PageData;
+	const CHART_MAX_MULTIPLIER = 1.1;
+
+	export let data;
 	let { data: pageData, errors, area } = data;
-	let { spotAverage, spotData, spotMax } = pageData;
+	let { spotData, feesData } = pageData;
 
 	let spotChartData: SpotChartData | null = null;
 
-	if (spotAverage && spotMax && spotData) {
+	if (spotData && feesData) {
+		const chartEntries = spotDataToSpotChartEntries({
+			spotData,
+			feesData,
+			settings: $userSettings
+		});
+		const entiresPrice = chartEntries.map((entry) => entry.price);
+		const entiresAverage = entiresPrice.reduce((sum, num) => sum + num, 0) / entiresPrice.length;
+		const chartMax = Math.max(...entiresPrice);
+
 		spotChartData = {
-			average: spotAverage * PRICE_MULTIPLIER,
-			max: spotMax * PRICE_MULTIPLIER * 1.1,
-			entries: spotDataToSpotChartEntries({ spotData })
+			average: entiresAverage,
+			max: chartMax * CHART_MAX_MULTIPLIER,
+			entries: chartEntries
 		};
 	}
+
+	const priceInfoMessage = ({ includeFees, includeTariff, includeVat }: UserSettings): string => {
+		const includedList = [
+			includeFees ? `Elafgift` : null,
+			includeTariff ? `Gebyrer` : null,
+			includeVat ? `Moms` : null
+		];
+		const includedString = includedList.filter(Boolean).join(', ');
+		return includedString
+			? `Viser Spot pris inkluisv: ${includedString}`
+			: 'Viser Spot pris eksklusiv gebyrer, elafgift og moms';
+	};
 </script>
 
 <div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_1fr]">
@@ -34,6 +56,7 @@
 			{#if spotChartData}
 				<SpotChart data={spotChartData} autoScroll />
 			{/if}
+			<small class="px-2">{priceInfoMessage($userSettings)}</small>
 		</Card>
 	</div>
 </div>
