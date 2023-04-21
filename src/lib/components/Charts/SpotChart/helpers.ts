@@ -11,8 +11,8 @@ export const getColor = ({ current, average, multiplyer = 0.2 }: GetColorParams)
 	const max = average * (1 + multiplyer);
 	const min = average * (1 - multiplyer);
 
-	if (current > max) return 'red';
-	if (current < min) return 'green';
+	if (current >= max) return 'red';
+	if (current <= min) return 'green';
 	return 'yellow';
 };
 
