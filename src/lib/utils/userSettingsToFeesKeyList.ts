@@ -22,7 +22,7 @@ export const userSettingsToFeesKeyList = ({
 	}
 
 	if (includeTariff) {
-		feeKeys.push('balancetarif', 'systemtarif', 'transmissionstarif');
+		feeKeys.push('systemtarif', 'transmissionstarif');
 	}
 
 	return feeKeys;

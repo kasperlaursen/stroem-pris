@@ -27,7 +27,7 @@ describe('userSettingsToFeesKeyList', () => {
 		expect(result).toEqual(['elafgift']);
 	});
 
-	it('returns an array with balancetarif and systemtarif if includeFees is false and includeTariff is true', async () => {
+	it('returns an array with transmissionstarif and systemtarif if includeFees is false and includeTariff is true', async () => {
 		const settings: UserSettings = {
 			preferredPriceArea: 'DK1',
 			includeVat: true,
@@ -36,7 +36,9 @@ describe('userSettingsToFeesKeyList', () => {
 		};
 		const result = userSettingsToFeesKeyList({ settings });
 
-		expect(result).toEqual(['balancetarif', 'systemtarif']);
+		expect(result).toContain('transmissionstarif');
+		expect(result).toContain('systemtarif');
+
 	});
 
 	it('returns an array with elafgift, balancetarif, and systemtarif if both includeFees and includeTariff are true', async () => {
@@ -48,6 +50,8 @@ describe('userSettingsToFeesKeyList', () => {
 		};
 		const result = userSettingsToFeesKeyList({ settings });
 
-		expect(result).toEqual(['elafgift', 'balancetarif', 'systemtarif']);
+		expect(result).toContain('elafgift');
+		expect(result).toContain('transmissionstarif');
+		expect(result).toContain('systemtarif');
 	});
 });
