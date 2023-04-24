@@ -6,12 +6,13 @@
 	import ErrorList from '$lib/ui/ErrorList/ErrorList.svelte';
 	import PriceAreaForm from './PriceAreaForm.svelte';
 	import { type UserSettings, userSettings } from '$lib/stores/userSettingsStore';
+	import { browser } from '$app/environment';
 
 	const CHART_MAX_MULTIPLIER = 1.1;
 
 	export let data;
-	let { data: pageData, errors, area } = data;
-	let { spotData, feesData } = pageData;
+	let { data: pageData, errors, area, netcompanyParam } = data;
+	let { spotData, feesData, netTarifData } = pageData;
 
 	let spotChartData: SpotChartData | null = null;
 
@@ -19,8 +20,10 @@
 		const chartEntries = spotDataToSpotChartEntries({
 			spotData,
 			feesData,
+			netTarifData,
 			settings: $userSettings
 		});
+
 		const entiresPrice = chartEntries.map((entry) => entry.price);
 		const entiresAverage = entiresPrice.reduce((sum, num) => sum + num, 0) / entiresPrice.length;
 		const chartMax = Math.max(...entiresPrice);
@@ -32,17 +35,30 @@
 		};
 	}
 
-	const priceInfoMessage = ({ includeFees, includeTariff, includeVat }: UserSettings): string => {
+	const priceInfoMessage = ({
+		includeTax,
+		includeFees,
+		includeTariff,
+		includeVat,
+		netCompany
+	}: UserSettings): string => {
 		const includedList = [
-			includeFees ? `Elafgift` : null,
-			includeTariff ? `Gebyrer` : null,
+			includeTax ? `Elafgift` : null,
+			includeTariff ? `Tariffer (${netCompany})` : null,
+			includeFees ? `Gebyrer` : null,
 			includeVat ? `Moms` : null
 		];
 		const includedString = includedList.filter(Boolean).join(', ');
 		return includedString
 			? `Viser Spot pris inkluisv: ${includedString}`
-			: 'Viser Spot pris eksklusiv gebyrer, elafgift og moms';
+			: 'Viser Spot pris eksklusiv Gebyrer, Tariffer, Elafgift og Moms';
 	};
+
+	if($userSettings.netCompany && !netcompanyParam && browser) {
+		const url = new URL(window.location.href);
+		url.searchParams.set('netcompany', $userSettings.netCompany);
+		window.location.href = url.href;
+	}
 </script>
 
 <div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_1fr]">

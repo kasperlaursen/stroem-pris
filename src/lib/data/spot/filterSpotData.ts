@@ -10,7 +10,6 @@ interface Params {
  * Used to filter out existing datapoints before saving them to the database.
  */
 export const filterSpotData = ({ existingEntries, newEntries }: Params) => {
-	// console.log(existingEntries, newEntries);
 	const filteredData = newEntries.filter(
 		(newEntry) =>
 			!existingEntries?.some(

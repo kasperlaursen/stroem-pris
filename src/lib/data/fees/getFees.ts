@@ -3,7 +3,7 @@ import { returnError } from '$lib/utils/returnError';
 import type { Database } from '../supabase/types';
 import type { SupabaseBaseParams } from '../types';
 
-export type FeeKey = Database['public']['Enums']['energy_fees'];
+export type FeeKey = Exclude<Database['public']['Enums']['energy_fees'], "balancetarif">;
 
 /** Fees interface representing a fee structure. */
 export interface FeesData {

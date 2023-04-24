@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { netCompaniesArray, type NetCompany } from '$lib/data/fees/types';
 import type { PriceAreas } from '$lib/data/spot/energidataservice/types';
 import { priceAreas } from '$lib/data/spot/energidataservice/types';
 import { writable } from 'svelte/store';
@@ -7,23 +8,29 @@ import { writable } from 'svelte/store';
 export interface UserSettings {
 	/** The user's preferred price area. */
 	preferredPriceArea: PriceAreas;
-
-	/** Whether to include VAT in the price. */
+	/**
+	 * The user's selected Net Company.
+	 * This is used to calculate the net tariff.
+	 */
+	netCompany?: NetCompany;
+	/** Whether to include VAT (Moms) in the price. */
 	includeVat: boolean;
-
-	/** Whether to include fees in the price. */
-	includeFees: boolean;
-
-	/** Whether to include tariff in the price. */
+	/** Whether to include Tax (Elafgift) in the price. */
+	includeTax: boolean;
+	/** Whether to include Tariff (NetTarif) in the price. */
 	includeTariff: boolean;
+	/** Whether to include Fees (TRANSMISSIONSNETTARIF & SYSTEMTARIF) in the price. */
+	includeFees: boolean;
 }
 
 // Default user settings.
 const defaultUserSettings: UserSettings = {
 	preferredPriceArea: 'DK1',
+	netCompany: 'elinord',
 	includeVat: true,
-	includeFees: true,
-	includeTariff: true
+	includeTax: true,
+	includeTariff: true,
+	includeFees: true
 };
 
 const STORAGE_KEY = 'userSettings';
@@ -58,9 +65,12 @@ function validateUserSettings(userSettings: unknown): UserSettings {
 	if (
 		!settings.preferredPriceArea ||
 		!priceAreas.includes(settings.preferredPriceArea) ||
+		!settings.netCompany ||
+		!netCompaniesArray.includes(settings.netCompany) ||
 		typeof settings.includeVat !== 'boolean' ||
-		typeof settings.includeFees !== 'boolean' ||
-		typeof settings.includeTariff !== 'boolean'
+		typeof settings.includeTax !== 'boolean' ||
+		typeof settings.includeTariff !== 'boolean' ||
+		typeof settings.includeFees !== 'boolean'
 	) {
 		return defaultUserSettings;
 	}
@@ -69,6 +79,8 @@ function validateUserSettings(userSettings: unknown): UserSettings {
 		preferredPriceArea: settings.preferredPriceArea,
 		includeVat: settings.includeVat,
 		includeFees: settings.includeFees,
-		includeTariff: settings.includeTariff
+		includeTariff: settings.includeTariff,
+		netCompany: settings.netCompany,
+		includeTax: settings.includeTax
 	};
 }

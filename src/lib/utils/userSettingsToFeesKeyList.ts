@@ -14,14 +14,14 @@ export interface UserSettingsToFeesKeyListParams {
 export const userSettingsToFeesKeyList = ({
 	settings
 }: UserSettingsToFeesKeyListParams): FeeKey[] => {
-	const { includeFees, includeTariff } = settings;
+	const { includeTax, includeFees } = settings;
 	const feeKeys: FeeKey[] = [];
-
-	if (includeFees) {
+	
+	if (includeTax) {
 		feeKeys.push('elafgift');
 	}
 
-	if (includeTariff) {
+	if (includeFees) {
 		feeKeys.push('systemtarif', 'transmissionstarif');
 	}
 

@@ -24,10 +24,12 @@ export const currentFeesByDateAndKey = ({
 	date
 }: CurrentFeesByDateAndKeyParams): number => {
 	const feeKeys = userSettingsToFeesKeyList({ settings });
-	const allFees = feeKeys.map((key) => singleFeeByDateAndKey({ feesData, feeKey: key, date }));
+
+	const allFees = feeKeys.map((key) => {
+		return singleFeeByDateAndKey({ feesData, feeKey: key, date });
+	});
 	return allFees.reduce((prev, current) => prev + current, 0);
 };
-
 
 export interface SingleFeeByDateAndKeyParams extends CommonParams {
 	feeKey: FeeKey;

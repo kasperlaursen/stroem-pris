@@ -5,6 +5,8 @@ import { PRICE_MULTIPLIER } from './constants';
 import type { FeesData } from '$lib/data/fees/getFees';
 import type { UserSettings } from '$lib/stores/userSettingsStore';
 import { currentFeesByDateAndKey } from './currentFeesByDateAndKey';
+import type { NettariffsData } from '$lib/data/fees/getNettarrifs';
+import { currentNetTarrifByDate } from './currentNetTarrifByDate';
 
 /**
  * Interface representing the parameters for the spotDataToSpotChartEntries function.
@@ -17,6 +19,8 @@ interface Params {
 	spotData: SpotData[];
 	/** Fees added to the price based on user settings. */
 	feesData: FeesData[];
+	/** The tarriffs for the selected net company */
+	netTarifData?: NettariffsData[];
 	/** User settings used to determine what fees to include in the price. */
 	settings: UserSettings;
 	/** Optional order for sorting the data. Defaults to 'ASC'. */
@@ -33,19 +37,21 @@ interface Params {
 export const spotDataToSpotChartEntries = ({
 	spotData,
 	feesData,
+	netTarifData,
 	settings,
 	order = 'ASC'
 }: Params): SpotChartDataEntry[] => {
-	//TODO: Based on settings, add the fees to the reutned price.
 	const transformedData = spotData.map(({ hourUTC, priceDKK }) => {
 		const time = DateTime.fromJSDate(hourUTC).setZone('Europe/Copenhagen');
 		const feesAtTime = currentFeesByDateAndKey({ feesData, settings, date: time }) / 100;
-
+		const netTarrifAtTime =
+			currentNetTarrifByDate({ netTarifData, settings, dateTime: time }) / 100;
 		const spotPrice = priceDKK * PRICE_MULTIPLIER;
 		const vatMultiplier = settings.includeVat ? 1.25 : 1;
+		const price = (spotPrice + feesAtTime + netTarrifAtTime) * vatMultiplier;
 
 		return {
-			price: (spotPrice + feesAtTime) * vatMultiplier,
+			price,
 			time
 		};
 	});

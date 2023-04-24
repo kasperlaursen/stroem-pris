@@ -5,6 +5,8 @@ import type { InternalError } from '$lib/types/InternalResponse';
 import { DateTime } from 'luxon';
 import type { PageServerLoad } from './$types';
 import { getFees, type FeesData } from '$lib/data/fees/getFees';
+import { getNettarrifs, type NettariffsData } from '$lib/data/fees/getNettarrifs';
+import { netCompaniesArray, type NetCompany } from '$lib/data/fees/types';
 
 interface PageData {
 	/** Spot data for the given range */
@@ -15,12 +17,15 @@ interface PageData {
 	spotMax?: number;
 	/** Fees data used to calculate full price */
 	feesData?: FeesData[];
+	/** The tarriffs for the selected net company */
+	netTarifData?: NettariffsData[];
 }
 
 interface PageResponse {
 	data: PageData;
 	errors?: InternalError[];
 	area: PriceAreas;
+	netcompanyParam?: NetCompany | string | null;
 }
 
 export const load: PageServerLoad = async ({
@@ -30,6 +35,7 @@ export const load: PageServerLoad = async ({
 }): Promise<PageResponse> => {
 	const { from: defualtFrom, to: defaultTo } = getDefaultRange();
 	const dateParam = url.searchParams.get('date');
+	const netcompanyParam = url.searchParams.get('netcompany');
 
 	const area = url.searchParams.get('area') === 'DK2' ? 'DK2' : 'DK1';
 	const from = dateParam ? DateTime.fromISO(dateParam, { zone: 'Europe/Copenhagen' }) : defualtFrom;
@@ -51,11 +57,24 @@ export const load: PageServerLoad = async ({
 
 	const feesDataRequest = getFees({ supabaseClient: supabase });
 
-	const [spotData, spotAverage, feesData] = await Promise.all([
-		spotDataRequest,
-		spotAverageRequest,
-		feesDataRequest
-	]);
+	const promiseArray = [spotDataRequest, spotAverageRequest, feesDataRequest] as const;
+
+	// TODO Propper NetCompany Validation and error handling
+	if (netcompanyParam && netCompaniesArray.includes(netcompanyParam as NetCompany)) {
+		const netTarifDataRequest = getNettarrifs({
+			supabaseClient: supabase,
+			netCompany: netcompanyParam as NetCompany
+		});
+		const netTarifData = await netTarifDataRequest;
+
+		if (netTarifData.success === false) {
+			errors.push(netTarifData.error);
+		} else {
+			data.netTarifData = netTarifData.data;
+		}
+	}
+
+	const [spotData, spotAverage, feesData] = await Promise.all(promiseArray);
 
 	if (spotData.success === false) {
 		errors.push(spotData.error);
@@ -79,7 +98,8 @@ export const load: PageServerLoad = async ({
 	return {
 		errors,
 		data,
-		area
+		area,
+		netcompanyParam
 	};
 };
 

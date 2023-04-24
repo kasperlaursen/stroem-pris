@@ -90,6 +90,52 @@ export interface Database {
           user_id?: string
         }
       }
+      net_companies: {
+        Row: {
+          created_at: string | null
+          id: number
+          identifier: string
+          name: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          identifier: string
+          name?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          identifier?: string
+          name?: string | null
+        }
+      }
+      nettarrif: {
+        Row: {
+          created_at: string | null
+          from_date: string
+          hour_of_day: number
+          id: number
+          net_company: string
+          price_dkk: number
+        }
+        Insert: {
+          created_at?: string | null
+          from_date: string
+          hour_of_day: number
+          id?: number
+          net_company: string
+          price_dkk: number
+        }
+        Update: {
+          created_at?: string | null
+          from_date?: string
+          hour_of_day?: number
+          id?: number
+          net_company?: string
+          price_dkk?: number
+        }
+      }
       spot: {
         Row: {
           created_at: string | null

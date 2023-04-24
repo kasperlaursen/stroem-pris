@@ -42,5 +42,8 @@ export const getAverage = async ({
 type Datapoint = { price_dkk: number | null };
 type ValidDatapoint = { price_dkk: number };
 
+/**
+ * Validate that the datapoint has a price
+ */
 const hasPrice = (dataPoint: Datapoint): dataPoint is ValidDatapoint =>
 	dataPoint.price_dkk !== null;
