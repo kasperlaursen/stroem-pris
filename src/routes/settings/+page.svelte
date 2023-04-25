@@ -16,12 +16,15 @@
 		<Card>
 			<Fieldset>
 				<Label>Net selskab</Label>
+                <!-- TODO Make this select get optiosn from supabase -->
 				<Select id="netCompany" name="netCompany" bind:value={$userSettings.netCompany}>
 					{#each netCompaniesArray as netCompany}
 						<Option class="capitalize" value={netCompany}>{netCompany.replace('_', ' ')}</Option>
 					{/each}
 				</Select>
 			</Fieldset>
+
+                <!-- TODO Add PriceArea select to this page -->
 
 			<Fieldset class="grid-cols-[auto_1fr] gap-2 px-4">
 				<input
