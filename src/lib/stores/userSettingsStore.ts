@@ -12,7 +12,7 @@ export interface UserSettings {
 	 * The user's selected Net Company.
 	 * This is used to calculate the net tariff.
 	 */
-	netCompany?: NetCompany;
+	netCompany: NetCompany;
 	/** Whether to include VAT (Moms) in the price. */
 	includeVat: boolean;
 	/** Whether to include Tax (Elafgift) in the price. */
