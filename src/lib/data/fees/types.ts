@@ -12,7 +12,8 @@ export const netCompanies = {
 	elektrus: 'elektrus',
 	vores_elnet: 'vores_elnet',
 	konstant: 'konstant',
-	dinels: 'dinels'
+	dinels: 'dinels',
+	ingen: 'ingen'
 } as const;
 
 export const netCompaniesArray = Object.keys(netCompanies) as NetCompany[];

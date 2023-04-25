@@ -26,7 +26,7 @@ export interface UserSettings {
 // Default user settings.
 const defaultUserSettings: UserSettings = {
 	preferredPriceArea: 'DK1',
-	netCompany: 'elinord',
+	netCompany: 'ingen',
 	includeVat: true,
 	includeTax: true,
 	includeTariff: true,
