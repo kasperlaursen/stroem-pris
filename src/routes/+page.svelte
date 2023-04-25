@@ -54,7 +54,7 @@
 			: 'Viser Spot pris eksklusiv Gebyrer, Tariffer, Elafgift og Moms';
 	};
 
-	if($userSettings.netCompany && !netcompanyParam && browser) {
+	if ($userSettings.netCompany && !netcompanyParam && browser) {
 		const url = new URL(window.location.href);
 		url.searchParams.set('netcompany', $userSettings.netCompany);
 		window.location.href = url.href;
@@ -72,7 +72,16 @@
 			{#if spotChartData}
 				<SpotChart data={spotChartData} autoScroll />
 			{/if}
-			<small class="px-2">{priceInfoMessage($userSettings)}</small>
-		</Card>
+			<small class="px-2"
+				>{priceInfoMessage($userSettings)} - 
+				<a
+					class="text-primary-500 underline hover:text-primary-400"
+					target="_blank"
+					href="/settings"
+				>
+					Tilpas her
+				</a>
+			</small></Card
+		>
 	</div>
 </div>

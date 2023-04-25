@@ -16,15 +16,25 @@
 		<Card>
 			<Fieldset>
 				<Label>Net selskab</Label>
-                <!-- TODO Make this select get optiosn from supabase -->
+				<!-- TODO Make this select get optiosn from supabase -->
 				<Select id="netCompany" name="netCompany" bind:value={$userSettings.netCompany}>
 					{#each netCompaniesArray as netCompany}
 						<Option class="capitalize" value={netCompany}>{netCompany.replace('_', ' ')}</Option>
 					{/each}
 				</Select>
+				<small>
+					Find dit selskab på
+					<a
+						class="text-primary-500 underline hover:text-primary-400"
+						target="_blank"
+						href="https://greenpowerdenmark.dk/vejledning-teknik/nettilslutning/find-netselskab"
+					>
+						Greenpowerdenmark.dk
+					</a>
+				</small>
 			</Fieldset>
 
-                <!-- TODO Add PriceArea select to this page -->
+			<!-- TODO Add PriceArea select to this page -->
 
 			<Fieldset class="grid-cols-[auto_1fr] gap-2 px-4">
 				<input
