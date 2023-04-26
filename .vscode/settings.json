@@ -4,5 +4,6 @@
 		"*.ts": "${capture}.ts, ${capture}.test.ts, ${capture}.d.ts",
 		"app.html": "app.css, app.d.ts"
 	},
+	"tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
 	"eslint.validate": ["typescript", "svelte"]
 }
