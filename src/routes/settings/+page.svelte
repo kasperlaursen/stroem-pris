@@ -4,6 +4,7 @@
 	import Label from '$lib/components/Label/Label.svelte';
 	import Option from '$lib/components/Select/Option.svelte';
 	import Select from '$lib/components/Select/Select.svelte';
+	import Toggle from '$lib/components/Toggle/Toggle.svelte';
 	import { netCompaniesArray } from '$lib/data/fees/types';
 	import { userSettings } from '$lib/stores/userSettingsStore';
 </script>
@@ -36,9 +37,8 @@
 
 			<!-- TODO Add PriceArea select to this page -->
 
-			<Fieldset class="grid-cols-[auto_1fr] gap-2 px-4">
-				<input
-					type="checkbox"
+			<Fieldset direction="inline">
+				<Toggle
 					id="includeTariff"
 					name="includeTariff"
 					bind:checked={$userSettings.includeTariff}
@@ -46,33 +46,18 @@
 				<Label htmlFor="includeTariff">Inkluder Nettarif</Label>
 			</Fieldset>
 
-			<Fieldset class="grid-cols-[auto_1fr] gap-2 px-4">
-				<input
-					type="checkbox"
-					id="includeVat"
-					name="includeVat"
-					bind:checked={$userSettings.includeVat}
-				/>
+			<Fieldset direction="inline">
+				<Toggle id="includeVat" name="includeVat" bind:checked={$userSettings.includeVat} />
 				<Label htmlFor="includeVat">Inkluder Moms</Label>
 			</Fieldset>
 
-			<Fieldset class="grid-cols-[auto_1fr] gap-2 px-4">
-				<input
-					type="checkbox"
-					id="includeTax"
-					name="includeTax"
-					bind:checked={$userSettings.includeTax}
-				/>
+			<Fieldset direction="inline">
+				<Toggle id="includeTax" name="includeTax" bind:checked={$userSettings.includeTax} />
 				<Label htmlFor="includeTax">Inkluder Elafgift</Label>
 			</Fieldset>
 
-			<Fieldset class="grid-cols-[auto_1fr] gap-2 px-4">
-				<input
-					type="checkbox"
-					id="includeFees"
-					name="includeFees"
-					bind:checked={$userSettings.includeFees}
-				/>
+			<Fieldset direction="inline">
+				<Toggle id="includeFees" name="includeFees" bind:checked={$userSettings.includeFees} />
 				<Label htmlFor="includeFees">Inkluder Gebyrer</Label>
 			</Fieldset>
 		</Card>
