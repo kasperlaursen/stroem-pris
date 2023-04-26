@@ -1,12 +1,13 @@
 <script lang="ts">
 	import Alert from './Alert.svelte';
 	import type { Hst as HstType } from '@histoire/plugin-svelte';
+	import type { Intent } from './types';
 	export let Hst: HstType;
 
 	let title = 'Alert title';
 	let content =
 		'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt assumenda quia ad cupiditate culpa recusandae provident aperiam aliquam vero! Dolorem.';
-	let intent: 'info' | 'warning' | 'danger' | 'neutral' = 'danger';
+	let intent: Intent = 'danger';
 </script>
 
 <Hst.Story>
