@@ -15,6 +15,6 @@ html,
 body {
 	width: 100vw;
 	height: 100dvh;
-	height: var(— app-height);
+	height: var(—-app-height);
 	color: var(--text-color);
 }
