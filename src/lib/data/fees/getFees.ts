@@ -3,7 +3,7 @@ import { returnError } from '$lib/utils/returnError';
 import type { Database } from '../supabase/types';
 import type { SupabaseBaseParams } from '../types';
 
-export type FeeKey = Exclude<Database['public']['Enums']['energy_fees'], "balancetarif">;
+export type FeeKey = Exclude<Database['public']['Enums']['energy_fees'], 'balancetarif'>;
 
 /** Fees interface representing a fee structure. */
 export interface FeesData {
@@ -23,7 +23,9 @@ export interface FeesData {
  * @param {SupabaseBaseParams} params - The parameters required for making a request to the Supabase client.
  * @returns {Promise<InternalResponse<FeesData[]>>} - A promise that resolves to an InternalResponse object containing an array of Fees.
  */
-export const getFees = async (params: SupabaseBaseParams): Promise<InternalResponse<FeesData[]>> => {
+export const getFees = async (
+	params: SupabaseBaseParams
+): Promise<InternalResponse<FeesData[]>> => {
 	const { supabaseClient } = params;
 	const fees = await supabaseClient.from('fees').select('from, key, value');
 	const { data, error } = fees;

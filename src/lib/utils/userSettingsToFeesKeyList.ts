@@ -16,7 +16,7 @@ export const userSettingsToFeesKeyList = ({
 }: UserSettingsToFeesKeyListParams): FeeKey[] => {
 	const { includeTax, includeFees } = settings;
 	const feeKeys: FeeKey[] = [];
-	
+
 	if (includeTax) {
 		feeKeys.push('elafgift');
 	}

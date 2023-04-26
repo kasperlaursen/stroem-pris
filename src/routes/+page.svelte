@@ -73,7 +73,7 @@
 				<SpotChart data={spotChartData} autoScroll />
 			{/if}
 			<small class="px-2"
-				>{priceInfoMessage($userSettings)} - 
+				>{priceInfoMessage($userSettings)} -
 				<a
 					class="text-primary-500 underline hover:text-primary-400"
 					target="_blank"

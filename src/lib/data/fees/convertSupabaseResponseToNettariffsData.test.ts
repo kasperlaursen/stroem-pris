@@ -47,7 +47,11 @@ describe('convertSupabaseResponseToNettariffsData', () => {
 		const resultForEmptyData = convertSupabaseResponseToNettariffsData(emptyData);
 		expect(resultForEmptyData).toEqual([]);
 
-		const nullData = null as unknown as { from_date: unknown; hour_of_day: unknown; value: unknown }[];
+		const nullData = null as unknown as {
+			from_date: unknown;
+			hour_of_day: unknown;
+			value: unknown;
+		}[];
 		const resultForNullData = convertSupabaseResponseToNettariffsData(nullData);
 		expect(resultForNullData).toEqual([]);
 	});

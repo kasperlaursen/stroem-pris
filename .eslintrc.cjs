@@ -1,11 +1,7 @@
 module.exports = {
 	root: true,
 	parser: '@typescript-eslint/parser',
-	extends: [
-		'prettier',
-		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
-	],
+	extends: ['prettier', 'eslint:recommended', 'plugin:@typescript-eslint/recommended'],
 	plugins: ['svelte3', '@typescript-eslint'],
 	ignorePatterns: ['*.cjs', '*.config.js', '*.config.ts'],
 	rules: {

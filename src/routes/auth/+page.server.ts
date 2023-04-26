@@ -2,7 +2,7 @@ import type { InternalResponse } from '$lib/types/InternalResponse';
 import { error, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 
-export const load: PageServerLoad = async ({  locals: { getSession } }) => {
+export const load: PageServerLoad = async ({ locals: { getSession } }) => {
 	const session = await getSession();
 	if (session) {
 		throw redirect(303, '/');
