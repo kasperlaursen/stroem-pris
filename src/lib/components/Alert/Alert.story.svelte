@@ -6,12 +6,12 @@
 	let title = 'Alert title';
 	let content =
 		'Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt assumenda quia ad cupiditate culpa recusandae provident aperiam aliquam vero! Dolorem.';
-	let variant: 'info' | 'warning' | 'danger' | 'neutral' = 'danger';
+	let intent: 'info' | 'warning' | 'danger' | 'neutral' = 'danger';
 </script>
 
 <Hst.Story>
 	<div class="grid gap-4">
-		<Alert {title} {variant}>
+		<Alert {title} {intent}>
 			{content}
 		</Alert>
 	</div>
@@ -25,8 +25,8 @@
 				{ label: 'danger', value: 'danger' },
 				{ label: 'neutral', value: 'neutral' }
 			]}
-			bind:value={variant}
-			title="Variant"
+			bind:value={intent}
+			title="Intent"
 		/>
 	</svelte:fragment>
 </Hst.Story>

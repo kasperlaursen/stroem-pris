@@ -1,1 +1,1 @@
-export type Vairants = 'info' | 'warning' | 'danger' | 'neutral';
+export type Intent = 'info' | 'warning' | 'danger' | 'neutral';
