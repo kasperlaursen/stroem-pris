@@ -1,9 +1,12 @@
 import { DateTime } from 'luxon';
 import { describe, it, expect } from 'vitest';
 import { spotDataToSpotChartEntries } from './spotDataToSpotChartEntries';
+import type { UserSettings } from '$lib/stores/userSettingsStore';
 
-const MockSettings = {
+const mockSettings: UserSettings = {
 	preferredPriceArea: 'DK1',
+	netCompany: 'radius',
+	includeTax: false,
 	includeFees: false,
 	includeTariff: false,
 	includeVat: false
@@ -13,7 +16,7 @@ describe('spotDataToSpotChartEntries', () => {
 	it('converts one datapoint correctly', () => {
 		const result = spotDataToSpotChartEntries({
 			feesData: [],
-			settings: MockSettings,
+			settings: mockSettings,
 			spotData: [
 				{
 					hourUTC: DateTime.fromISO('2022-01-01T00:00:00.000Z', { zone: 'UTC' }).toJSDate(),
@@ -36,7 +39,7 @@ describe('spotDataToSpotChartEntries', () => {
 	it('converts multiple datapoint correctly', () => {
 		const result = spotDataToSpotChartEntries({
 			feesData: [],
-			settings: MockSettings,
+			settings: mockSettings,
 			spotData: [
 				{
 					hourUTC: DateTime.fromISO('2022-01-01T03:00:00.000Z', { zone: 'UTC' }).toJSDate(),
@@ -86,7 +89,7 @@ describe('spotDataToSpotChartEntries', () => {
 	it('sorts ASC by default', () => {
 		const result = spotDataToSpotChartEntries({
 			feesData: [],
-			settings: MockSettings,
+			settings: mockSettings,
 			spotData: [
 				{
 					hourUTC: DateTime.fromISO('2022-01-01T00:00:00.000Z', { zone: 'UTC' }).toJSDate(),
@@ -136,7 +139,7 @@ describe('spotDataToSpotChartEntries', () => {
 	it('sorts DESC correctly', () => {
 		const result = spotDataToSpotChartEntries({
 			feesData: [],
-			settings: MockSettings,
+			settings: mockSettings,
 			order: 'DESC',
 			spotData: [
 				{

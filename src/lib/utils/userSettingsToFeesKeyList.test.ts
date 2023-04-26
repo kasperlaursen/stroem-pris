@@ -5,6 +5,7 @@ import type { UserSettings } from '$lib/stores/userSettingsStore';
 describe('userSettingsToFeesKeyList', () => {
 	it('returns an empty array if both includeFees and includeTax are false', async () => {
 		const settings: UserSettings = {
+			netCompany: 'radius',
 			preferredPriceArea: 'DK1',
 			includeVat: false,
 			includeTax: false,
@@ -18,6 +19,7 @@ describe('userSettingsToFeesKeyList', () => {
 
 	it('returns an array with only elafgift if includeTax is true', async () => {
 		const settings: UserSettings = {
+			netCompany: 'radius',
 			preferredPriceArea: 'DK1',
 			includeVat: false,
 			includeTax: true,
@@ -31,6 +33,7 @@ describe('userSettingsToFeesKeyList', () => {
 
 	it('returns an array with transmissionstarif and systemtarif if includeFees is true', async () => {
 		const settings: UserSettings = {
+			netCompany: 'radius',
 			preferredPriceArea: 'DK1',
 			includeVat: false,
 			includeTax: false,
@@ -45,6 +48,7 @@ describe('userSettingsToFeesKeyList', () => {
 
 	it('returns an array with elafgift, balancetarif, and systemtarif if both includeFees and includeTax are true', async () => {
 		const settings: UserSettings = {
+			netCompany: 'radius',
 			preferredPriceArea: 'DK1',
 			includeVat: false,
 			includeTax: true,

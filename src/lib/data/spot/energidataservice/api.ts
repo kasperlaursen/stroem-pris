@@ -24,6 +24,10 @@ export const getSpotData = async ({
 
 	const fetchClient = customFetch ?? fetch;
 
+	if (!start || !end) {
+		return { success: false, error: { code: 0, message: 'No start or end date provided' } };
+	}
+
 	console.log(
 		`💸 🌍`,
 		`Calling Energidataservice Elspotprices for data between: ${start} AND ${end}`
