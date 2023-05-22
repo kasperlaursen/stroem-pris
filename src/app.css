@@ -7,8 +7,10 @@
 	--app-height: 100%;
 }
 
-.dark {
-	--text-color: #fafafa;
+@media (prefers-color-scheme: dark) {
+	:root {
+		--text-color: #fafafa;
+	}
 }
 
 html,
