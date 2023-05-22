@@ -20,7 +20,7 @@
 	{...$$restProps}
 	class={`
         ${customClasses}
-		${fieldset({ direction })}}
+		${fieldset({ direction })}
     `}
 >
 	<slot />

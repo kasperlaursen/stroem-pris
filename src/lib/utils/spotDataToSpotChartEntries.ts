@@ -48,7 +48,8 @@ export const spotDataToSpotChartEntries = ({
 			currentNetTarrifByDate({ netTarifData, settings, dateTime: time }) / 100;
 		const spotPrice = priceDKK * PRICE_MULTIPLIER;
 		const vatMultiplier = settings.includeVat ? 1.25 : 1;
-		const price = (spotPrice + feesAtTime + netTarrifAtTime) * vatMultiplier;
+		const spotWithVat = spotPrice > 0 ? spotPrice * vatMultiplier : spotPrice;
+		const price = (feesAtTime + netTarrifAtTime) * vatMultiplier + spotWithVat;
 
 		return {
 			price,
