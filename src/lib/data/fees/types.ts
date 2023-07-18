@@ -13,6 +13,7 @@ export const netCompanies = {
 	vores_elnet: 'vores_elnet',
 	konstant: 'konstant',
 	dinels: 'dinels',
+	noe: 'noe',
 	ingen: 'ingen'
 } as const;
 
