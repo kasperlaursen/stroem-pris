@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { Icon } from '@steeze-ui/svelte-icon';
-	import { Squares2x2, Cog, InformationCircle, Home, UserCircle } from '@steeze-ui/heroicons';
+	import {
+		Squares2x2,
+		Cog,
+		InformationCircle,
+		UserCircle,
+		ChartBarSquare
+	} from '@steeze-ui/heroicons';
 	import Logo from '../Logo/Logo.svelte';
 	import NavItem from './NavItem.svelte';
 	import { classFromProps } from '$lib/utils/classFromProps';
@@ -39,8 +45,8 @@
 		class="grid gap-4 place-items-center grid-rows-1 grid-cols-4 sm:grid-cols-none w-full sm:w-min"
 	>
 		<NavItem href="/" class="col-start-1 row-start-1 sm:col-auto">
-			<Icon slot="icon" src={Home} theme="solid" class="h-4 w-4" />
-			Forside
+			<Icon slot="icon" src={ChartBarSquare} theme="solid" class="h-4 w-4" />
+			Live priser
 		</NavItem>
 		<NavItem href="/info" class="col-start-3 row-start-1 sm:col-auto">
 			<Icon slot="icon" src={InformationCircle} theme="solid" class="h-4 w-4" />
