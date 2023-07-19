@@ -17,6 +17,10 @@ export default defineConfig({
 			{
 				id: 'SpotChart',
 				title: 'SpotChart'
+			},
+			{
+				id: 'PieChart',
+				title: 'PieChart'
 			}
 		]
 	}
