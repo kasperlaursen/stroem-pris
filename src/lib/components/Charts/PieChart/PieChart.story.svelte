@@ -8,7 +8,7 @@
 		{value: 6, label:"label 1", color: "fill-primary-500"},
 		{value: 4, label:"label 2", color: "fill-red-500" },
 		{value: 2, label:"label 3", color: "fill-yellow-500" },
-		{value: 2, label:"label 3", color: "fill-orange-500" } 
+		{value: 2, label:"label 4", color: "fill-orange-500" } 
 	];
 </script>
 

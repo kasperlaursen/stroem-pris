@@ -3,6 +3,7 @@
 	import { classFromProps } from '$lib/utils/classFromProps';
 	import PieSlice from './PieSlice.svelte';
 	import type { PiceSliceProps, PieChartData } from './types';
+	import PieChartLabels from './PieChartLabels.svelte';
 
 	const customClasses: string = classFromProps($$restProps);
 	const pieChart = cva(["w-full"]);
@@ -11,7 +12,7 @@
 	export let data: PieChartData[];
 
 	$: total = data.reduce((acc, slice) => acc + slice.value, 0);
-	$: currentAngle = 0;
+	$: currentAngle = 90;
 
 	const getSliceProps = (data: PieChartData[]):PiceSliceProps[] => {
 		const sliceProps: PiceSliceProps[] = [];
@@ -31,8 +32,12 @@
 	}
 </script>
 
-<svg viewBox={`0 0 ${chartSize} ${chartSize}`} class={pieChart({class: customClasses})}>
+<svg 
+	viewBox={`0 0 ${chartSize} ${chartSize}`} 
+	class={pieChart({class: customClasses})} >
 	{#each getSliceProps(data) as slice }
 		<PieSlice {...slice}  />
 	{/each}
 </svg>
+
+<PieChartLabels {data}/>
