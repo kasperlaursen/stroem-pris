@@ -6,6 +6,7 @@
 	import ErrorList from '$lib/ui/ErrorList/ErrorList.svelte';
 	import PriceAreaForm from './PriceAreaForm.svelte';
 	import { type UserSettings, userSettings } from '$lib/stores/userSettingsStore';
+	import { selectedHour } from '$lib/stores/selectedHourStore';
 	import { browser } from '$app/environment';
 	import HourPriceInfo from './HourPriceInfo.svelte';
 	import SettingsCard from '$lib/ui/SettingsCard.svelte';
@@ -93,7 +94,7 @@
 		<div class="hidden lg:grid max-h-full overflow-y-auto gap-4 h-min">
 			{#if showPieChart }
 				<Card class="hidden lg:block h-max">
-					<HourPriceInfo spotData={spotData ?? []} feesData={feesData ?? []} netTarifData={netTarifData ?? []} />
+					<HourPriceInfo spotData={spotData ?? []} feesData={feesData ?? []} netTarifData={netTarifData ?? []} hour={$selectedHour.selectedHour} />
 				</Card>
 			{/if}
 			<!-- <SettingsCard class="hidden lg:block h-max gap-4" /> -->

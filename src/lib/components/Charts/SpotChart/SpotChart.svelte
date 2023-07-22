@@ -8,6 +8,7 @@
 	import SpotChartLabel from './SpotChartLabel.svelte';
 	import SpotChartRow from './SpotChartRow.svelte';
 	import SpotChartValue from './SpotChartValue.svelte';
+	import { selectedHour } from '$lib/stores/selectedHourStore';
 	import type { SpotChartData } from './types';
 
 	const customClasses: string = classFromProps($$restProps);
@@ -55,8 +56,9 @@
 >
 	{#each data.entries as { time, price }}
 		<SpotChartRow
-			state={getState({ now, time: time })}
+			state={getState({ now, time: time, selected: $selectedHour.selectedHour  })}
 			title={`${getTimeLabel({ time: time })}: ${price} kr`}
+			onClick={() => {console.log(time); selectedHour.set({selectedHour: time})} }
 		>
 			<SpotChartLabel>{getTimeLabel({ time: time })}</SpotChartLabel>
 			<SpotChartValue>

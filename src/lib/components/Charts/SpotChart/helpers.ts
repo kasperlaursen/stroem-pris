@@ -42,13 +42,16 @@ export const getPriceLabel = ({ price }: GetPriceLabelParams): string =>
 interface GetStateParams {
 	time: DateTime;
 	now: DateTime;
+	selected?: DateTime;
 }
 
-export const getState = ({ time, now }: GetStateParams): RowState => {
+export const getState = ({ time, now, selected }: GetStateParams): RowState => {
 	const isNow = time.day === now.day && time.hour === now.hour;
 	const isPast = time.diffNow('hours').hours <= 0;
+	const isSelected = selected && time.day === selected.day && time.hour === selected.hour;
 
 	if (isNow) return 'active';
+	if (isSelected) return 'selected';
 	if (isPast) return 'inactive';
 	return 'none';
 };

@@ -13,28 +13,33 @@ import type { PieChartData } from '$lib/components/Charts/PieChart/types';
    export let spotData: SpotData[];
    export let feesData: FeesData[];
    export let netTarifData: NettariffsData[];
+   export let hour: DateTime = DateTime.now();
 
+   const currentTime = DateTime.now();
+
+   $: label = currentTime.day === hour.day && currentTime.hour === hour.hour ? "Nuværende prisfordeling" : `Prisfordeling ${hour.toFormat("kl H")} ${hour.plus({days: currentTime.diff(hour).days}).toRelativeCalendar({locale: "da"})}`
 
     $: getChartData = () => {
-        const currentTime = DateTime.now().set({minute: 0, second: 0, millisecond: 0});
+
+        const timeToShow = hour.set({minute: 0, second: 0, millisecond: 0});
 
         const feeKeys = userSettingsToFeesKeyList({ settings: $userSettings });
 
         const currentSpot = spotData.find(spot => {
             const entryTime = DateTime.fromJSDate(spot.hourUTC).setZone('Europe/Copenhagen').set({minute: 0, second: 0, millisecond: 0});
-            if(currentTime.toISODate() === entryTime.toISODate() && currentTime.hour === entryTime.hour) {
+            if(timeToShow.toISODate() === entryTime.toISODate() && timeToShow.hour === entryTime.hour) {
                 return true;
             }
             return false;
         })
 
         const prices: {[key: string]: number} = {
-            "nettarif": currentNetTarrifByDate({ netTarifData: netTarifData, settings: $userSettings, dateTime: currentTime }),
+            "nettarif": currentNetTarrifByDate({ netTarifData: netTarifData, settings: $userSettings, dateTime: timeToShow }),
             "spot": (currentSpot?.priceDKK ?? 0) / 10
         }
 
         feeKeys.forEach((key) => {
-            prices[key] = singleFeeByDateAndKey({ feesData, feeKey: key, date: currentTime });
+            prices[key] = singleFeeByDateAndKey({ feesData, feeKey: key, date: timeToShow });
         });
 
         const totalPrice = Object.values(prices).reduce((sum, entry) => sum + entry, 0);
@@ -77,11 +82,10 @@ import type { PieChartData } from '$lib/components/Charts/PieChart/types';
         return chartData;
     }
 
-    
 
 </script>
 
     <div class="grid place-items-center">
-        <h2 class="font-medium">Nuværende prisfordeling</h2>
+        <h2 class="font-medium">{label}</h2>
         <PieChart class="w-full" data={getChartData()} />
     </div>

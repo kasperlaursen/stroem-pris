@@ -1,7 +1,7 @@
 import type { DateTime } from 'luxon';
 
 export type Colors = 'green' | 'yellow' | 'red' | 'neutral';
-export type RowState = 'inactive' | 'active' | 'none';
+export type RowState = 'inactive' | 'active' | 'selected' | 'none';
 
 export interface SpotChartData {
 	max: number;
