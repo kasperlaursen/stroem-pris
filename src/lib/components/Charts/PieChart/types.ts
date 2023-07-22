@@ -21,4 +21,5 @@ export interface PiceSliceProps {
 	startAngle: number;
 	class: string;
 	title: string;
+	sliceLabel?: string;
 }

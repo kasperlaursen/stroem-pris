@@ -7,6 +7,8 @@
 	import PriceAreaForm from './PriceAreaForm.svelte';
 	import { type UserSettings, userSettings } from '$lib/stores/userSettingsStore';
 	import { browser } from '$app/environment';
+	import HourPriceInfo from './HourPriceInfo.svelte';
+	import SettingsCard from '$lib/ui/SettingsCard.svelte';
 
 	const CHART_MAX_MULTIPLIER = 1.1;
 
@@ -16,23 +18,25 @@
 
 	let spotChartData: SpotChartData | null = null;
 
-	if (spotData && feesData) {
-		const chartEntries = spotDataToSpotChartEntries({
-			spotData,
-			feesData,
-			netTarifData,
-			settings: $userSettings
-		});
+	$:{
+		if (spotData && feesData) {
+			const chartEntries = spotDataToSpotChartEntries({
+				spotData,
+				feesData,
+				netTarifData,
+				settings: $userSettings
+			});
 
-		const entiresPrice = chartEntries.map((entry) => entry.price);
-		const entiresAverage = entiresPrice.reduce((sum, num) => sum + num, 0) / entiresPrice.length;
-		const chartMax = Math.max(...entiresPrice);
+			const entiresPrice = chartEntries.map((entry) => entry.price);
+			const entiresAverage = entiresPrice.reduce((sum, num) => sum + num, 0) / entiresPrice.length;
+			const chartMax = Math.max(...entiresPrice);
 
-		spotChartData = {
-			average: entiresAverage,
-			max: chartMax * CHART_MAX_MULTIPLIER,
-			entries: chartEntries
-		};
+			spotChartData = {	
+				average: entiresAverage,
+				max: chartMax * CHART_MAX_MULTIPLIER,
+				entries: chartEntries
+			};
+		}
 	}
 
 	const priceInfoMessage = ({
@@ -59,6 +63,9 @@
 		url.searchParams.set('netcompany', $userSettings.netCompany);
 		window.location.href = url.href;
 	}
+
+	$: showPieChart = Object.values($userSettings).some(value => value === true);
+
 </script>
 
 <div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_1fr]">
@@ -67,8 +74,8 @@
 		<h1 class="font-medium text-gray-800 dark:text-gray-200">Variabel Strømpris</h1>
 		<PriceAreaForm {area} />
 	</div>
-	<div class="overflow-hidden">
-		<Card spacing="base" class="overflow-y-auto mb-2 max-h-full">
+	<div class={`overflow-hidden gap-4 grid lg:grid-rows-1 ${showPieChart ? "lg:grid-cols-[1fr,400px]" : ""}`}>
+		<Card class="overflow-y-auto mb-2 max-h-full h-max">
 			{#if spotChartData}
 				<SpotChart data={spotChartData} autoScroll />
 			{/if}
@@ -81,7 +88,15 @@
 				>
 					Tilpas her
 				</a>
-			</small></Card
-		>
+			</small>
+		</Card>
+		<div class="hidden lg:grid max-h-full overflow-y-auto gap-4 h-min">
+			{#if showPieChart }
+				<Card class="hidden lg:block h-max">
+					<HourPriceInfo spotData={spotData ?? []} feesData={feesData ?? []} netTarifData={netTarifData ?? []} />
+				</Card>
+			{/if}
+			<!-- <SettingsCard class="hidden lg:block h-max gap-4" /> -->
+		</div>
 	</div>
 </div>

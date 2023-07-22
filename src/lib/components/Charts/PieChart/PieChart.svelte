@@ -23,7 +23,8 @@
 				decimalValue,
 				startAngle: currentAngle,
 				class: slice.color,
-				title: slice.label
+				title: slice.label,
+				sliceLabel: `(${slice.value.toFixed(0)} øre)`
 			})
 			const fillAngle = Math.ceil(360 * decimalValue)
 			currentAngle += fillAngle;
