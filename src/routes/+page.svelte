@@ -9,7 +9,12 @@
 	import { selectedHour } from '$lib/stores/selectedHourStore';
 	import { browser } from '$app/environment';
 	import HourPriceInfo from './HourPriceInfo.svelte';
-	import SettingsCard from '$lib/ui/SettingsCard.svelte';
+	import { cva } from 'class-variance-authority';
+	import Button from '$lib/components/Button/Button.svelte';
+	import { Icon } from '@steeze-ui/svelte-icon';
+	import {
+		XMark
+	} from '@steeze-ui/heroicons';
 
 	const CHART_MAX_MULTIPLIER = 1.1;
 
@@ -65,7 +70,31 @@
 		window.location.href = url.href;
 	}
 
-	$: showPieChart = Object.values($userSettings).some(value => value === true);
+	$: hasSelectedSettings = Object.values($userSettings).some(value => value === true);
+
+	const cardContainer = cva(["grid", "overflow-hidden","gap-4"], {
+		variants: {
+			isMultiColumn: {
+				true: ["lg:grid-cols-[1fr,400px]"],
+				false: []
+			}
+		}
+	})
+
+	const pieChartCard = cva([ "grid", "h-full", "lg:relative", "lg:h-max"], {
+		variants: {
+
+		}
+	})
+
+	const rightColumn = cva([ "z-10", "inset-0", "absolute", "lg:relative", "h-full","overflow-y-auto","gap-4", "lg:max-h-full","lg:h-min"], {
+		variants: {
+			visible: {
+				true: ["grid"],
+				false: ["hidden", "lg:grid"]
+			}
+		}
+	})
 
 </script>
 
@@ -75,7 +104,7 @@
 		<h1 class="font-medium text-gray-800 dark:text-gray-200">Variabel Strømpris</h1>
 		<PriceAreaForm {area} />
 	</div>
-	<div class={`overflow-hidden gap-4 grid ${showPieChart ? "lg:grid-cols-[1fr,400px]" : ""}`}>
+	<div class={cardContainer({isMultiColumn: hasSelectedSettings})}>
 		<Card class="overflow-y-auto mb-2 max-h-full">
 			{#if spotChartData}
 				<SpotChart data={spotChartData} autoScroll />
@@ -91,13 +120,17 @@
 				</a>
 			</small>
 		</Card>
-		<div class="hidden lg:grid max-h-full overflow-y-auto gap-4 h-min">
-			{#if showPieChart }
-				<Card class="hidden lg:block h-max">
+
+			{#if hasSelectedSettings}
+		<div class={rightColumn({visible: Boolean($selectedHour.selectedHour)})}>
+				<Card class={pieChartCard()}>
+					<Button class="absolute top-4 right-4 lg:hidden bg-transparent hover:bg-red-500 bg-opacity-25 text-current" on:click={() => selectedHour.set({selectedHour: undefined})}>
+						<Icon src={XMark} theme="solid" class="h-4 w-4" />
+					</Button>
 					<HourPriceInfo spotData={spotData ?? []} feesData={feesData ?? []} netTarifData={netTarifData ?? []} hour={$selectedHour.selectedHour} />
 				</Card>
-			{/if}
 			<!-- <SettingsCard class="hidden lg:block h-max gap-4" /> -->
 		</div>
+		{/if}
 	</div>
 </div>

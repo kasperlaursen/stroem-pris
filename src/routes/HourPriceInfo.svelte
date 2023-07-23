@@ -10,18 +10,29 @@ import type { PieChartData } from '$lib/components/Charts/PieChart/types';
 	import { userSettingsToFeesKeyList } from '$lib/utils/userSettingsToFeesKeyList';
 	import { DateTime } from 'luxon';
 
-   export let spotData: SpotData[];
-   export let feesData: FeesData[];
-   export let netTarifData: NettariffsData[];
-   export let hour: DateTime = DateTime.now();
+    export let spotData: SpotData[];
+    export let feesData: FeesData[];
+    export let netTarifData: NettariffsData[];
+    export let hour: DateTime = DateTime.now();
 
-   const currentTime = DateTime.now();
+    const currentTime = DateTime.now();
 
-   $: label = currentTime.day === hour.day && currentTime.hour === hour.hour ? "Nuværende prisfordeling" : `Prisfordeling ${hour.toFormat("kl H")} ${hour.plus({days: currentTime.diff(hour).days}).toRelativeCalendar({locale: "da"})}`
+    $: getLabel = () => {
+        const currentLabel = "Nuværende prisfordeling";
+        if(!hour) {
+            return currentLabel;
+        }
+
+        if(currentTime.day !== hour.day || currentTime.hour !== hour.hour) {
+            return `Prisfordeling ${hour.toFormat("kl H")} ${hour.plus({days: currentTime.diff(hour).days}).toRelativeCalendar({locale: "da"})}`
+        }
+        
+        return currentLabel
+    }
 
     $: getChartData = () => {
 
-        const timeToShow = hour.set({minute: 0, second: 0, millisecond: 0});
+        const timeToShow = hour ? hour.set({minute: 0, second: 0, millisecond: 0}) : currentTime;
 
         const feeKeys = userSettingsToFeesKeyList({ settings: $userSettings });
 
@@ -86,6 +97,6 @@ import type { PieChartData } from '$lib/components/Charts/PieChart/types';
 </script>
 
     <div class="grid place-items-center">
-        <h2 class="font-medium">{label}</h2>
+        <h2 class="font-medium">{getLabel()}</h2>
         <PieChart class="w-full" data={getChartData()} />
     </div>
