@@ -1,4 +1,4 @@
-import type { InternalResponseError } from '$lib/types/InternalResponse';
+import type { InternalResponseError } from "$lib/types/InternalResponse";
 
 /**
  * Returns an InternalResponse error in fewer lines
@@ -6,10 +6,13 @@ import type { InternalResponseError } from '$lib/types/InternalResponse';
  * @param code error code
  * @param message error message
  */
-export const returnError = (code: number | string, message: string): InternalResponseError => ({
-	success: false,
-	error: {
-		code,
-		message
-	}
+export const returnError = (
+  code: number | string,
+  message: string,
+): InternalResponseError => ({
+  success: false,
+  error: {
+    code,
+    message,
+  },
 });

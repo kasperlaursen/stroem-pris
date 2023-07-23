@@ -1,9 +1,11 @@
 {
-	"explorer.fileNesting.enabled": true,
-	"explorer.fileNesting.patterns": {
-		"*.ts": "${capture}.ts, ${capture}.test.ts, ${capture}.d.ts",
-		"app.html": "app.css, app.d.ts"
-	},
-	"tailwindCSS.experimental.classRegex": [["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]],
-	"eslint.validate": ["typescript", "svelte"]
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.ts, ${capture}.test.ts, ${capture}.d.ts",
+    "app.html": "app.css, app.d.ts"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "eslint.validate": ["typescript", "svelte"]
 }

@@ -1,8 +1,8 @@
-import type { FeeKey } from '$lib/data/fees/getFees';
-import type { UserSettings } from '$lib/stores/userSettingsStore';
+import type { FeeKey } from "$lib/data/fees/getFees";
+import type { UserSettings } from "$lib/stores/userSettingsStore";
 
 export interface UserSettingsToFeesKeyListParams {
-	settings: UserSettings;
+  settings: UserSettings;
 }
 
 /**
@@ -12,18 +12,18 @@ export interface UserSettingsToFeesKeyListParams {
  * @returns {FeeKey[]} An array of FeeKeys according to the user settings.
  */
 export const userSettingsToFeesKeyList = ({
-	settings
+  settings,
 }: UserSettingsToFeesKeyListParams): FeeKey[] => {
-	const { includeTax, includeFees } = settings;
-	const feeKeys: FeeKey[] = [];
+  const { includeTax, includeFees } = settings;
+  const feeKeys: FeeKey[] = [];
 
-	if (includeTax) {
-		feeKeys.push('elafgift');
-	}
+  if (includeTax) {
+    feeKeys.push("elafgift");
+  }
 
-	if (includeFees) {
-		feeKeys.push('systemtarif', 'transmissionstarif');
-	}
+  if (includeFees) {
+    feeKeys.push("systemtarif", "transmissionstarif");
+  }
 
-	return feeKeys;
+  return feeKeys;
 };

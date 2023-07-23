@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { classFromProps } from '$lib/utils/classFromProps';
-	import type { InputTypes } from './types';
+  import { classFromProps } from "$lib/utils/classFromProps";
+  import type { InputTypes } from "./types";
 
-	const customClasses: string = classFromProps($$restProps);
-	export let type: InputTypes;
+  const customClasses: string = classFromProps($$restProps);
+  export let type: InputTypes;
 </script>
 
 <input
-	{...$$restProps}
-	{type}
-	on:change
-	on:input
-	on:keydown
-	on:keypress
-	on:keyup
-	on:click
-	on:focus
-	on:blur
-	class={`
+  {...$$restProps}
+  {type}
+  on:change
+  on:input
+  on:keydown
+  on:keypress
+  on:keyup
+  on:click
+  on:focus
+  on:blur
+  class={`
         ${customClasses}
         text-sm
         py-1

@@ -1,20 +1,23 @@
-import type { InternalResponse } from '$lib/types/InternalResponse';
-import { returnError } from '$lib/utils/returnError';
-import type { Database } from '../supabase/types';
-import type { SupabaseBaseParams } from '../types';
+import type { InternalResponse } from "$lib/types/InternalResponse";
+import { returnError } from "$lib/utils/returnError";
+import type { Database } from "../supabase/types";
+import type { SupabaseBaseParams } from "../types";
 
-export type FeeKey = Exclude<Database['public']['Enums']['energy_fees'], 'balancetarif'>;
+export type FeeKey = Exclude<
+  Database["public"]["Enums"]["energy_fees"],
+  "balancetarif"
+>;
 
 /** Fees interface representing a fee structure. */
 export interface FeesData {
-	/** The starting point for the fee range. */
-	from: string;
+  /** The starting point for the fee range. */
+  from: string;
 
-	/** The key identifying the fee. */
-	key: FeeKey;
+  /** The key identifying the fee. */
+  key: FeeKey;
 
-	/** The value of the fee. */
-	value: number;
+  /** The value of the fee. */
+  value: number;
 }
 
 /**
@@ -24,16 +27,19 @@ export interface FeesData {
  * @returns {Promise<InternalResponse<FeesData[]>>} - A promise that resolves to an InternalResponse object containing an array of Fees.
  */
 export const getFees = async (
-	params: SupabaseBaseParams
+  params: SupabaseBaseParams,
 ): Promise<InternalResponse<FeesData[]>> => {
-	const { supabaseClient } = params;
-	const fees = await supabaseClient.from('fees').select('from, key, value');
-	const { data, error } = fees;
+  const { supabaseClient } = params;
+  const fees = await supabaseClient.from("fees").select("from, key, value");
+  const { data, error } = fees;
 
-	if (!data || error) {
-		return returnError(error?.code ?? 404, error?.message ?? 'No fees found...');
-	}
+  if (!data || error) {
+    return returnError(
+      error?.code ?? 404,
+      error?.message ?? "No fees found...",
+    );
+  }
 
-	//TODO: Add a data validation step here to ensure that the data is in the correct format.
-	return { success: true, data };
+  //TODO: Add a data validation step here to ensure that the data is in the correct format.
+  return { success: true, data };
 };

@@ -1,5 +1,5 @@
-import { getSpotData } from './api';
+import { getSpotData } from "./api";
 
 export const energidataservice = {
-	getSpotData
+  getSpotData,
 };

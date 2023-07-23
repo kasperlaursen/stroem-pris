@@ -1,1 +1,1 @@
-export type Spacing = 'base' | 'none';
+export type Spacing = "base" | "none";

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { classFromProps } from '$lib/utils/classFromProps';
+  import { classFromProps } from "$lib/utils/classFromProps";
 
-	const customClasses: string = classFromProps($$restProps);
-	export let href: string;
+  const customClasses: string = classFromProps($$restProps);
+  export let href: string;
 </script>
 
 <a
-	{...$$restProps}
-	{href}
-	class={`
+  {...$$restProps}
+  {href}
+  class={`
 	${customClasses}
 		flex
         flex-col
@@ -36,8 +36,8 @@
         transition
 	`}
 >
-	<slot name="icon" />
-	<span>
-		<slot />
-	</span>
+  <slot name="icon" />
+  <span>
+    <slot />
+  </span>
 </a>

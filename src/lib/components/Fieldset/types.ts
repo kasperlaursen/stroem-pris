@@ -1,1 +1,1 @@
-export type Direction = 'stacked' | 'inline';
+export type Direction = "stacked" | "inline";

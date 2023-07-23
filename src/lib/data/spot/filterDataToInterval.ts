@@ -1,4 +1,4 @@
-import { DateTime, Interval } from 'luxon';
+import { DateTime, Interval } from "luxon";
 
 /**
  * Interface representing a data object containing an hourUTC property.
@@ -6,8 +6,8 @@ import { DateTime, Interval } from 'luxon';
  * @property {Date} hourUTC - A date object representing the hour in UTC.
  */
 interface DataWithHourUTC {
-	/** A date object representing the hour in UTC. */
-	hourUTC: Date;
+  /** A date object representing the hour in UTC. */
+  hourUTC: Date;
 }
 /**
  * Interface representing the parameters for the filterDataToInterval function.
@@ -18,12 +18,12 @@ interface DataWithHourUTC {
  * @property {DataType[]} data - An array of data objects to be filtered.
  */
 interface filterDataToIntervalParams<DataType extends DataWithHourUTC> {
-	/** The start date and time for filtering data. */
-	from: DateTime;
-	/** The end date and time for filtering data. */
-	to: DateTime;
-	/** An array of data objects to be filtered */
-	data: DataType[];
+  /** The start date and time for filtering data. */
+  from: DateTime;
+  /** The end date and time for filtering data. */
+  to: DateTime;
+  /** An array of data objects to be filtered */
+  data: DataType[];
 }
 
 /**
@@ -33,13 +33,13 @@ interface filterDataToIntervalParams<DataType extends DataWithHourUTC> {
  * @returns {DataType[]} - An array of filtered data objects.
  */
 export const filterDataToInterval = <DataType extends DataWithHourUTC>({
-	from,
-	to,
-	data
+  from,
+  to,
+  data,
 }: filterDataToIntervalParams<DataType>) => {
-	const requestedInterval = Interval.fromDateTimes(from, to);
-	const requestedDatapoints = data.filter(({ hourUTC }) =>
-		requestedInterval.contains(DateTime.fromJSDate(hourUTC))
-	);
-	return requestedDatapoints;
+  const requestedInterval = Interval.fromDateTimes(from, to);
+  const requestedDatapoints = data.filter(({ hourUTC }) =>
+    requestedInterval.contains(DateTime.fromJSDate(hourUTC)),
+  );
+  return requestedDatapoints;
 };

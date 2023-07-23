@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { classFromProps } from '$lib/utils/classFromProps';
+  import { classFromProps } from "$lib/utils/classFromProps";
 
-	const customClasses: string = classFromProps($$restProps);
-	export let value: string;
+  const customClasses: string = classFromProps($$restProps);
+  export let value: string;
 </script>
 
 <select
-	{...$$restProps}
-	bind:value
-	on:change
-	on:input
-	on:keydown
-	on:keypress
-	on:keyup
-	on:click
-	on:focus
-	on:blur
-	class={`
+  {...$$restProps}
+  bind:value
+  on:change
+  on:input
+  on:keydown
+  on:keypress
+  on:keyup
+  on:click
+  on:focus
+  on:blur
+  class={`
             ${customClasses}
             appearance-none
             text-sm
@@ -34,17 +34,17 @@
             focus:ring-primary-500
         `}
 >
-	<slot />
+  <slot />
 </select>
 
 <style>
-	select {
-		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23737373' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-		background-position: right 0.5em center;
-		background-repeat: no-repeat;
-		background-size: 1.5em 1.5em;
-		padding-right: 2.5em !important;
-		-webkit-print-color-adjust: exact;
-		print-color-adjust: exact;
-	}
+  select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23737373' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5em center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5em !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 </style>

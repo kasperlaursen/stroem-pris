@@ -1,1 +1,1 @@
-export type LogoVariant = 'full' | 'condensed';
+export type LogoVariant = "full" | "condensed";

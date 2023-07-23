@@ -1,30 +1,30 @@
-import type { InternalResponse } from '$lib/types/InternalResponse';
-import { returnError } from '$lib/utils/returnError';
-import type { SupabaseBaseParams } from '../types';
-import type { SpotData } from './types';
+import type { InternalResponse } from "$lib/types/InternalResponse";
+import { returnError } from "$lib/utils/returnError";
+import type { SupabaseBaseParams } from "../types";
+import type { SpotData } from "./types";
 
 interface Params extends SupabaseBaseParams {
-	newDataPoints: SpotData[];
+  newDataPoints: SpotData[];
 }
 
 export const saveSpotDataToDatabasse = async ({
-	newDataPoints,
-	supabaseClient
+  newDataPoints,
+  supabaseClient,
 }: Params): Promise<InternalResponse<SpotData[]>> => {
-	const { error } = await supabaseClient
-		.from('spot')
-		.insert(
-			newDataPoints.map(({ priceDKK, priceArea, hourUTC }) => ({
-				price_dkk: priceDKK,
-				price_area: priceArea,
-				hour_utc: hourUTC.toISOString()
-			}))
-		)
-		.select('price_dkk, price_area, hour_utc');
+  const { error } = await supabaseClient
+    .from("spot")
+    .insert(
+      newDataPoints.map(({ priceDKK, priceArea, hourUTC }) => ({
+        price_dkk: priceDKK,
+        price_area: priceArea,
+        hour_utc: hourUTC.toISOString(),
+      })),
+    )
+    .select("price_dkk, price_area, hour_utc");
 
-	if (error) {
-		return returnError(500, error.message);
-	}
+  if (error) {
+    return returnError(500, error.message);
+  }
 
-	return { success: true, data: newDataPoints };
+  return { success: true, data: newDataPoints };
 };

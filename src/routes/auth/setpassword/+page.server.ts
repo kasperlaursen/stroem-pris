@@ -1,14 +1,14 @@
-import { setPassword } from '$lib/auth/setPassword';
-import { redirect, type Actions } from '@sveltejs/kit';
+import { setPassword } from "$lib/auth/setPassword";
+import { redirect, type Actions } from "@sveltejs/kit";
 
 export const actions: Actions = {
-	setPassword: async (event) => {
-		const setPasswordResult = await setPassword(event, event.locals.supabase);
+  setPassword: async (event) => {
+    const setPasswordResult = await setPassword(event, event.locals.supabase);
 
-		if (setPasswordResult.success === false) {
-			return setPasswordResult;
-		}
+    if (setPasswordResult.success === false) {
+      return setPasswordResult;
+    }
 
-		throw redirect(303, '/');
-	}
+    throw redirect(303, "/");
+  },
 };

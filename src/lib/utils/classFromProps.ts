@@ -7,17 +7,17 @@
  * @throws {Error} If props is not an object.
  */
 export const classFromProps = (props: unknown): string => {
-	if (!props || typeof props !== 'object') {
-		throw new Error('Props must be an object');
-	}
-	return classFromObject(props);
+  if (!props || typeof props !== "object") {
+    throw new Error("Props must be an object");
+  }
+  return classFromObject(props);
 };
 
 const classFromObject = (props: unknown): string => {
-	const classProp = (props as { class: string })?.class;
-	if (classProp && typeof classProp === 'string') {
-		return classProp;
-	}
+  const classProp = (props as { class: string })?.class;
+  if (classProp && typeof classProp === "string") {
+    return classProp;
+  }
 
-	return '';
+  return "";
 };

@@ -3,20 +3,20 @@
 @tailwind utilities;
 
 :root {
-	--text-color: #171717;
-	--app-height: 100%;
+  --text-color: #171717;
+  --app-height: 100%;
 }
 
 @media (prefers-color-scheme: dark) {
-	:root {
-		--text-color: #fafafa;
-	}
+  :root {
+    --text-color: #fafafa;
+  }
 }
 
 html,
 body {
-	width: 100vw;
-	height: 100dvh;
-	height: var(—-app-height);
-	color: var(--text-color);
+  width: 100vw;
+  height: 100dvh;
+  height: var(—-app-height);
+  color: var(--text-color);
 }

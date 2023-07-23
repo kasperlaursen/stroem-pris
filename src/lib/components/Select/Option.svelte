@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { classFromProps } from '$lib/utils/classFromProps';
+  import { classFromProps } from "$lib/utils/classFromProps";
 
-	const customClasses: string = classFromProps($$restProps);
-	export let value: string;
+  const customClasses: string = classFromProps($$restProps);
+  export let value: string;
 </script>
 
 <option
-	{...$$restProps}
-	{value}
-	class={`
+  {...$$restProps}
+  {value}
+  class={`
         ${customClasses}
         text-sm
         py-1
@@ -25,5 +25,5 @@
         focus:ring-primary-500
     `}
 >
-	<slot />
+  <slot />
 </option>

@@ -1,11 +1,13 @@
-import type { InternalResponse } from '$lib/types/InternalResponse';
-import { returnError } from '$lib/utils/returnError';
-import { DateTime } from 'luxon';
-import type { SpotBaseParams } from './types';
-import type { SupabaseBaseParams } from '../types';
+import type { InternalResponse } from "$lib/types/InternalResponse";
+import { returnError } from "$lib/utils/returnError";
+import { DateTime } from "luxon";
+import type { SpotBaseParams } from "./types";
+import type { SupabaseBaseParams } from "../types";
 
-export interface Params extends Pick<SpotBaseParams, 'area'>, SupabaseBaseParams {
-	days: number;
+export interface Params
+  extends Pick<SpotBaseParams, "area">,
+    SupabaseBaseParams {
+  days: number;
 }
 
 /**
@@ -13,30 +15,35 @@ export interface Params extends Pick<SpotBaseParams, 'area'>, SupabaseBaseParams
  * Then returns an average price if data exists.
  */
 export const getAverage = async ({
-	area,
-	days,
-	supabaseClient
+  area,
+  days,
+  supabaseClient,
 }: Params): Promise<InternalResponse<number>> => {
-	const firstDate = DateTime.now().minus({ days });
-	const pastSpot = await supabaseClient
-		.from('spot')
-		.select('price_dkk')
-		.eq('price_area', area)
-		.gt('hour_utc', firstDate.toISODate());
+  const firstDate = DateTime.now().minus({ days });
+  const pastSpot = await supabaseClient
+    .from("spot")
+    .select("price_dkk")
+    .eq("price_area", area)
+    .gt("hour_utc", firstDate.toISODate());
 
-	const { data, error } = pastSpot;
+  const { data, error } = pastSpot;
 
-	if (!data || error) {
-		return returnError(error?.code ?? 404, error?.message ?? 'No past spot data found...');
-	}
+  if (!data || error) {
+    return returnError(
+      error?.code ?? 404,
+      error?.message ?? "No past spot data found...",
+    );
+  }
 
-	const relevantSpotItems = data.filter(hasPrice);
+  const relevantSpotItems = data.filter(hasPrice);
 
-	const averageSpot =
-		relevantSpotItems.reduce((accumulator, current) => accumulator + current.price_dkk, 0) /
-		relevantSpotItems.length;
+  const averageSpot =
+    relevantSpotItems.reduce(
+      (accumulator, current) => accumulator + current.price_dkk,
+      0,
+    ) / relevantSpotItems.length;
 
-	return { success: true, data: averageSpot };
+  return { success: true, data: averageSpot };
 };
 
 type Datapoint = { price_dkk: number | null };
@@ -46,4 +53,4 @@ type ValidDatapoint = { price_dkk: number };
  * Validate that the datapoint has a price
  */
 const hasPrice = (dataPoint: Datapoint): dataPoint is ValidDatapoint =>
-	dataPoint.price_dkk !== null;
+  dataPoint.price_dkk !== null;

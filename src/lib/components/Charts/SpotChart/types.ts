@@ -1,15 +1,15 @@
-import type { DateTime } from 'luxon';
+import type { DateTime } from "luxon";
 
-export type Colors = 'green' | 'yellow' | 'red' | 'neutral';
-export type RowState = 'inactive' | 'active' | 'selected' | 'none';
+export type Colors = "green" | "yellow" | "red" | "neutral";
+export type RowState = "inactive" | "active" | "selected" | "none";
 
 export interface SpotChartData {
-	max: number;
-	average: number;
-	entries: SpotChartDataEntry[];
+  max: number;
+  average: number;
+  entries: SpotChartDataEntry[];
 }
 
 export interface SpotChartDataEntry {
-	price: number;
-	time: DateTime;
+  price: number;
+  time: DateTime;
 }
