@@ -75,8 +75,8 @@
 		<h1 class="font-medium text-gray-800 dark:text-gray-200">Variabel Strømpris</h1>
 		<PriceAreaForm {area} />
 	</div>
-	<div class={`overflow-hidden gap-4 grid lg:grid-rows-1 ${showPieChart ? "lg:grid-cols-[1fr,400px]" : ""}`}>
-		<Card class="overflow-y-auto mb-2 max-h-full h-max">
+	<div class={`overflow-hidden gap-4 grid ${showPieChart ? "lg:grid-cols-[1fr,400px]" : ""}`}>
+		<Card class="overflow-y-auto mb-2 max-h-full">
 			{#if spotChartData}
 				<SpotChart data={spotChartData} autoScroll />
 			{/if}
