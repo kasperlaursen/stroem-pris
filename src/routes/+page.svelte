@@ -112,7 +112,7 @@
   );
 </script>
 
-<div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_1fr]">
+<div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_minmax(auto,1fr)]">
   <ErrorList {errors} />
   <div class="flex justify-between items-center p-2">
     <h1 class="font-medium text-gray-800 dark:text-gray-200">
