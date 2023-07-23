@@ -53,7 +53,7 @@
       Info
     </NavItem>
     {#if !isOnline}
-      <NavItem href="/auth" class="col-start-4 row-start-1 sm:col-auto">
+      <NavItem href="/auth" class="col-start-2 row-start-1 sm:col-auto">
         <Icon slot="icon" src={UserCircle} theme="solid" class="h-4 w-4" />
         Log ind
       </NavItem>
