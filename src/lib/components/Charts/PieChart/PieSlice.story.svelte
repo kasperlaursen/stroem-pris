@@ -5,5 +5,5 @@
 </script>
 
 <Hst.Story title="PieSlice" group="PieChart">
-  <PieSlice />
+  <PieSlice title="My Title" decimalValue={0.5} startAngle={0} />
 </Hst.Story>
