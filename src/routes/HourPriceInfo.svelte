@@ -80,32 +80,32 @@
       {
         label: "Spot",
         value: prices.spot,
-        color: "fill-primary-600",
+        color: "fill-primary-500 dark:fill-primary-600",
       },
       {
         label: "Nettarif",
         value: prices.nettarif,
-        color: "fill-cyan-600",
+        color: "fill-cyan-500 dark:fill-cyan-600",
       },
       {
         label: "Moms",
         value: moms,
-        color: "fill-sky-600",
+        color: "fill-sky-500 dark:fill-sky-600",
       },
       {
         label: "Elafgift",
         value: prices.elafgift,
-        color: "fill-slate-700",
+        color: "fill-slate-600 dark:fill-slate-700",
       },
       {
         label: "Transmissionstarif",
         value: prices.transmissionstarif,
-        color: "fill-slate-400",
+        color: "fill-slate-400 dark:fill-slate-400",
       },
       {
         label: "Systemtarif",
         value: prices.systemtarif,
-        color: "fill-slate-500",
+        color: "fill-slate-500 dark:fill-slate-500",
       },
     ].filter((entry) => Boolean(entry.value)) as PieChartData[];
 

@@ -143,10 +143,11 @@
       >
         <Card class={pieChartCard()}>
           <Button
-            class="absolute top-4 right-4 lg:hidden bg-transparent hover:bg-red-500 bg-opacity-25 text-current"
+            variant="ghost"
+            class="absolute top-4 right-4 lg:hidden"
             on:click={() => selectedHour.set({ selectedHour: undefined })}
           >
-            <Icon src={XMark} theme="solid" class="h-4 w-4" />
+            <Icon src={XMark} theme="solid" class="h-6 w-6" />
           </Button>
           <HourPriceInfo
             spotData={spotData ?? []}

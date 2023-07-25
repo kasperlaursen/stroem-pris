@@ -3,7 +3,7 @@
   import { classFromProps } from "$lib/utils/classFromProps";
 
   const customClasses: string = classFromProps($$restProps);
-  const pieSlice = cva([]);
+  const pieSlice = cva(["stroke-white","dark:stroke-neutral-800"]);
 
   export let chartSize = 400;
   export let startAngle: number;
@@ -32,7 +32,6 @@
 
 <g {id}>
   <path
-    stroke="rgb(38 38 38)"
     stroke-width="5"
     data-label={title}
     d={`M${chartRadius},${chartRadius}  L${x1},${y1} A180,180 0 ${
@@ -54,7 +53,7 @@
       >
       <tspan
         text-anchor="middle"
-        class="fill-slate-300 font-normal"
+        class="fill-slate-50 opacity-80 font-normal"
         x={xCenter}
         y={yCenter + 25}>{sliceLabel}</tspan
       >
