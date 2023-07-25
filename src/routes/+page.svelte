@@ -121,7 +121,7 @@
     <PriceAreaForm {area} />
   </div>
   <div class={cardContainer({ isMultiColumn: hasSelectedSettings })}>
-    <Card class="overflow-y-auto mb-2 max-h-full">
+    <Card class="overflow-y-auto mb-2 max-h-full h-fit">
       {#if spotChartData}
         <SpotChart data={spotChartData} autoScroll />
       {/if}
