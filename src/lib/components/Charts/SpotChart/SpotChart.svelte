@@ -69,7 +69,6 @@
       })}
       title={`${getTimeLabel({ time: time })}: ${price} kr`}
       onClick={() => {
-        console.log(time);
         selectedHour.set({ selectedHour: time });
       }}
     >

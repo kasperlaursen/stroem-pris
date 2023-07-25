@@ -7,6 +7,7 @@
   import { userSettings } from "$lib/stores/userSettingsStore";
   import { singleFeeByDateAndKey } from "$lib/utils/currentFeesByDateAndKey";
   import { currentNetTarrifByDate } from "$lib/utils/currentNetTarrifByDate";
+    import { getLabelFromTime } from "$lib/utils/getLabelFromTime";
   import { userSettingsToFeesKeyList } from "$lib/utils/userSettingsToFeesKeyList";
   import { DateTime } from "luxon";
 
@@ -15,24 +16,9 @@
   export let netTarifData: NettariffsData[];
   export let hour: DateTime = DateTime.now();
 
-  const currentTime = DateTime.now();
-
-  $: getLabel = () => {
-    const currentLabel = "Nuværende prisfordeling";
-    if (!hour) {
-      return currentLabel;
-    }
-
-    if (currentTime.day !== hour.day || currentTime.hour !== hour.hour) {
-      return `Prisfordeling ${hour.toFormat("kl H")} ${hour
-        .plus({ days: currentTime.diff(hour).days })
-        .toRelativeCalendar({ locale: "da" })}`;
-    }
-
-    return currentLabel;
-  };
-
   $: getChartData = () => {
+    const currentTime = DateTime.now();
+
     const timeToShow = hour
       ? hour.set({ minute: 0, second: 0, millisecond: 0 })
       : currentTime;
@@ -114,6 +100,6 @@
 </script>
 
 <div class="grid place-items-center">
-  <h2 class="font-medium">{getLabel()}</h2>
+  <h2 class="font-medium">{getLabelFromTime({hour, append: "Prisfordeling"})}</h2>
   <PieChart class="w-full" data={getChartData()} />
 </div>
