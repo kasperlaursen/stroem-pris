@@ -9,7 +9,7 @@
   export let startAngle: number;
   export let decimalValue: number;
   export let sliceLabel: string = "";
-  export let title: string;
+  export let title: string = "";
   
   $: sliceOffset = chartSize / 2 * 0.9;
   $: labelOffset = sliceOffset * 0.6;
