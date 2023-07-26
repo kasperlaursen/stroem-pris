@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 
 interface GetLabelFromTimeProps {
-  hour: DateTime;
+  hour?: DateTime;
   append?: string;
 }
 
@@ -33,6 +33,10 @@ interface GetLabelFromTimeProps {
 export const getLabelFromTime = ({ hour, append }: GetLabelFromTimeProps) => {
   const currentTime = DateTime.now();
   const currentLabel = `Nuværende ${append}`;
+
+  if(!hour) {
+    return currentLabel
+  }
 
   if (currentTime.day !== hour.day || currentTime.hour !== hour.hour) {
     return `${append} ${hour.toFormat("kl H")} ${hour
