@@ -3,10 +3,10 @@
   import Card from "$lib/components/Card/Card.svelte";
   import type { SpotChartData } from "$lib/components/Charts/SpotChart/types";
   import { spotDataToSpotChartEntries } from "$lib/utils/spotDataToSpotChartEntries";
+  import { priceInfoMessageFromUserSettings } from "$lib/utils/priceInfoMessageFromUserSettings";
   import ErrorList from "$lib/ui/ErrorList/ErrorList.svelte";
   import PriceAreaForm from "./PriceAreaForm.svelte";
   import {
-    type UserSettings,
     userSettings,
   } from "$lib/stores/userSettingsStore";
   import { selectedHour } from "$lib/stores/selectedHourStore";
@@ -47,24 +47,7 @@
     }
   }
 
-  const priceInfoMessage = ({
-    includeTax,
-    includeFees,
-    includeTariff,
-    includeVat,
-    netCompany,
-  }: UserSettings): string => {
-    const includedList = [
-      includeTax ? `Elafgift` : null,
-      includeTariff ? `Tariffer (${netCompany})` : null,
-      includeFees ? `Gebyrer` : null,
-      includeVat ? `Moms` : null,
-    ];
-    const includedString = includedList.filter(Boolean).join(", ");
-    return includedString
-      ? `Viser Spot pris inkluisv: ${includedString}`
-      : "Viser Spot pris eksklusiv Gebyrer, Tariffer, Elafgift og Moms";
-  };
+
 
   if ($userSettings.netCompany && !netcompanyParam && browser) {
     const url = new URL(window.location.href);
@@ -121,12 +104,13 @@
     <PriceAreaForm {area} />
   </div>
   <div class={cardContainer({ isMultiColumn: hasSelectedSettings })}>
-    <Card class="overflow-y-auto mb-2 max-h-full h-fit">
+    <div class="overflow-hidden">
+    <Card class="overflow-y-auto mb-2 max-h-full">
       {#if spotChartData}
         <SpotChart data={spotChartData} autoScroll />
       {/if}
       <small class="px-2"
-        >{priceInfoMessage($userSettings)} -
+        >{priceInfoMessageFromUserSettings($userSettings)} -
         <a
           class="text-primary-500 underline hover:text-primary-400"
           target="_blank"
@@ -136,6 +120,7 @@
         </a>
       </small>
     </Card>
+  </div>
 
     {#if hasSelectedSettings}
       <div
