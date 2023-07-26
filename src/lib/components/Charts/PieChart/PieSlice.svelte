@@ -10,6 +10,9 @@
   export let decimalValue: number;
   export let sliceLabel: string = "";
   export let title: string;
+  
+  $: sliceOffset = chartSize / 2 * 0.9;
+  $: labelOffset = sliceOffset * 0.6;
 
   $: id = title.replaceAll(" ", "_");
 
@@ -20,21 +23,21 @@
 
   $: isMoreThanHalf = decimalValue > 1 / 2;
 
-  $: x1 = chartRadius + 180 * Math.cos((Math.PI * startAngle) / 180);
-  $: y1 = chartRadius + 180 * Math.sin((Math.PI * startAngle) / 180);
+  $: x1 = chartRadius + sliceOffset * Math.cos((Math.PI * startAngle) / 180);
+  $: y1 = chartRadius + sliceOffset * Math.sin((Math.PI * startAngle) / 180);
 
-  $: x2 = chartRadius + 180 * Math.cos((Math.PI * endAngle) / 180);
-  $: y2 = chartRadius + 180 * Math.sin((Math.PI * endAngle) / 180);
+  $: x2 = chartRadius + sliceOffset * Math.cos((Math.PI * endAngle) / 180);
+  $: y2 = chartRadius + sliceOffset * Math.sin((Math.PI * endAngle) / 180);
 
-  $: xCenter = chartRadius + 110 * Math.cos((Math.PI * middleAngle) / 180);
-  $: yCenter = chartRadius + 110 * Math.sin((Math.PI * middleAngle) / 180);
+  $: xCenter = chartRadius + labelOffset * Math.cos((Math.PI * middleAngle) / 180);
+  $: yCenter = chartRadius + labelOffset * Math.sin((Math.PI * middleAngle) / 180);
 </script>
 
 <g {id}>
   <path
-    stroke-width="5"
+    stroke-width={chartSize/100}
     data-label={title}
-    d={`M${chartRadius},${chartRadius}  L${x1},${y1} A180,180 0 ${
+    d={`M${chartRadius},${chartRadius}  L${x1},${y1} A${sliceOffset},${sliceOffset} 0 ${
       isMoreThanHalf ? 1 : 0
     }, 1 ${x2},${y2} z`}
     class={pieSlice({ class: customClasses })}

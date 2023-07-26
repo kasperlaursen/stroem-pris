@@ -34,8 +34,8 @@ export const getLabelFromTime = ({ hour, append }: GetLabelFromTimeProps) => {
   const currentTime = DateTime.now();
   const currentLabel = `Nuværende ${append}`;
 
-  if(!hour) {
-    return currentLabel
+  if (!hour) {
+    return currentLabel;
   }
 
   if (currentTime.day !== hour.day || currentTime.hour !== hour.hour) {
