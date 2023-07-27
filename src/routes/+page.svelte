@@ -5,7 +5,6 @@
   import { spotDataToSpotChartEntries } from "$lib/utils/spotDataToSpotChartEntries";
   import { priceInfoMessageFromUserSettings } from "$lib/utils/priceInfoMessageFromUserSettings";
   import ErrorList from "$lib/ui/ErrorList/ErrorList.svelte";
-  import PriceAreaForm from "./PriceAreaForm.svelte";
   import {
     userSettings,
   } from "$lib/stores/userSettingsStore";
@@ -16,6 +15,7 @@
   import Button from "$lib/components/Button/Button.svelte";
   import { Icon } from "@steeze-ui/svelte-icon";
   import { XMark } from "@steeze-ui/heroicons";
+    import TitleAndSelect from "./TitleAndSelect.svelte";
 
   const CHART_MAX_MULTIPLIER = 1.1;
 
@@ -97,30 +97,25 @@
 
 <div class="max-h-full overflow-hidden grid grid-rows-[auto_auto_minmax(auto,1fr)]">
   <ErrorList {errors} />
-  <div class="flex justify-between items-center p-2">
-    <h1 class="font-medium text-gray-800 dark:text-gray-200">
-      Variabel Strømpris
-    </h1>
-    <PriceAreaForm {area} />
-  </div>
+  <TitleAndSelect {area} />
   <div class={cardContainer({ isMultiColumn: hasSelectedSettings })}>
     <div class="overflow-hidden">
-    <Card class="overflow-y-auto mb-2 max-h-full">
-      {#if spotChartData}
-        <SpotChart data={spotChartData} autoScroll />
-      {/if}
-      <small class="px-2"
-        >{priceInfoMessageFromUserSettings($userSettings)} -
-        <a
-          class="text-primary-500 underline hover:text-primary-400"
-          target="_blank"
-          href="/settings"
-        >
-          Tilpas her
-        </a>
-      </small>
-    </Card>
-  </div>
+      <Card class="overflow-y-auto mb-2 max-h-full">
+        {#if spotChartData}
+          <SpotChart data={spotChartData} autoScroll />
+        {/if}
+        <small class="px-2">
+          {priceInfoMessageFromUserSettings($userSettings)} -
+          <a
+            class="text-primary-500 underline hover:text-primary-400"
+            target="_blank"
+            href="/settings"
+          >
+            Tilpas her
+          </a>
+        </small>
+      </Card>
+    </div>
 
     {#if hasSelectedSettings}
       <div
