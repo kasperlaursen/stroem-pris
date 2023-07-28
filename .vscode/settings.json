@@ -5,7 +5,7 @@
     "app.html": "app.css, app.d.ts",
     "+page.svelte": "+page.server.ts, +page.ts",
     "+layout.svelte": "+layout.server.ts, +layout.ts",
-    "*.svelte": "${capture}.ts, ${capture}.story.svelte"
+    "*.svelte": "${capture}.ts, ${capture}.test.ts, ${capture}.story.svelte"
   },
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]

@@ -12,7 +12,7 @@
 </script>
 
 <form method="get" action="/" data-sveltekit-reload bind:this={areaForm}>
-  <Select id="area" name="area" bind:value={area} on:change={handleChange}>
+  <Select id="area" name="area" data-testid="price-area-select" bind:value={area} on:change={handleChange}>
     <Option value="DK1">Vest for storebælt</Option>
     <Option value="DK2">Øst for storebælt</Option>
   </Select>

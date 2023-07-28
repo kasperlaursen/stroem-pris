@@ -27,7 +27,7 @@
 		to-emerald-500
 	`}
 >
-  <a href="/" class="">
+  <a href="/">
     <Icon
       src={Bolt}
       theme="solid"
