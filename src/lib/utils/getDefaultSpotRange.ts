@@ -9,7 +9,7 @@ import { DateTime } from "luxon";
  */
 
 export const getDefaultSpotRange = (now?: DateTime) => {
-  now = now ?? DateTime.now()
+  now = now ?? DateTime.now();
   const { year, month, day, hour } =
     DateTime.now().setZone("Europe/Copenhagen");
   const from = DateTime.fromObject({ year, month, day, hour }).minus({
