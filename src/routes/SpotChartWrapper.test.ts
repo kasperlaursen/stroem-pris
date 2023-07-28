@@ -10,12 +10,11 @@ vi.mock("$lib/components/Charts/SpotChart/SpotChart.svelte");
 
 describe("SpotChartWrapper", () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.clearAllMocks();
   });
 
   it("Does not render SpotChart if spotData and feesData are not defined", () => {
     render(SpotChartWrapper);
-    expect(screen.queryByRole('SpotChart')).toBeNull();
+    expect(screen.queryByRole("SpotChart")).toBeNull();
   });
-
 });

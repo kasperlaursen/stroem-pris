@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/svelte";
 import { describe, it, expect } from "vitest";
 import TitleAndSelect from "./TitleAndSelect.svelte";
-4
+4;
 describe("TitleAndSelect", () => {
   it("Renders the title ", () => {
     render(TitleAndSelect, { props: { area: "DK1" } });
