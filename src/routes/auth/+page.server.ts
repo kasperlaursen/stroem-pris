@@ -5,7 +5,7 @@ import type { PageServerLoad } from "../$types";
 export const load: PageServerLoad = async ({ locals: { getSession } }) => {
   const session = await getSession();
   if (session) {
-    throw redirect(303, "/");
+    redirect(303, "/");
   }
 };
 
@@ -40,16 +40,16 @@ export const actions: Actions = {
       if (signinError.status === 400) {
         return InvalidCredentialsResponse;
       }
-      throw error(500, {
-        message: "Der er sket en server fejl. Prøv venligst igen.",
-      });
+      error(500, {
+                message: "Der er sket en server fejl. Prøv venligst igen.",
+              });
     }
 
-    throw redirect(303, "/");
+    redirect(303, "/");
   },
   signout: async ({ locals: { supabase } }) => {
     const supabaseClient = supabase;
     await supabaseClient.auth.signOut();
-    throw redirect(303, "/");
+    redirect(303, "/");
   },
 };

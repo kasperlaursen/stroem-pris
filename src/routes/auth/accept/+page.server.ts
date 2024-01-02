@@ -9,6 +9,6 @@ export const actions: Actions = {
       return setPasswordResult;
     }
 
-    throw redirect(303, "/guide");
+    redirect(303, "/guide");
   },
 };

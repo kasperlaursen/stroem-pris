@@ -13,7 +13,7 @@ const InvalidCredentialsResponse: InternalResponse<null> = {
 export const load: PageServerLoad = async ({ locals: { getSession } }) => {
   const session = await getSession();
   if (session) {
-    throw redirect(303, "/");
+    redirect(303, "/");
   }
 };
 
@@ -29,6 +29,6 @@ export const actions: Actions = {
     }
 
     await supabaseClient.auth.resetPasswordForEmail(email);
-    throw redirect(303, "/");
+    redirect(303, "/");
   },
 };
