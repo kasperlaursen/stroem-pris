@@ -1,3 +1,4 @@
+import { netCompanies } from "$lib/data/fees/types";
 import { type UserSettings } from "$lib/stores/userSettingsStore";
 
 export const priceInfoMessageFromUserSettings = ({
@@ -9,7 +10,7 @@ export const priceInfoMessageFromUserSettings = ({
 }: UserSettings): string => {
   const includedList = [
     includeTax ? `Elafgift` : null,
-    includeTariff ? `Tariffer (${netCompany})` : null,
+    includeTariff ? `Tariffer (${netCompanies[netCompany]})` : null,
     includeFees ? `Gebyrer` : null,
     includeVat ? `Moms` : null,
   ];

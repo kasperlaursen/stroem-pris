@@ -3,17 +3,17 @@
  * Must be kept in sync with the net_company column in the nettarif table.
  */
 export const netCompanies = {
-  elinord: "elinord",
-  n1: "n1",
-  radius: "radius",
-  cerius: "cerius",
-  trefor_ost: "trefor_ost",
-  trefor_vest: "trefor_vest",
-  elektrus: "elektrus",
-  vores_elnet: "vores_elnet",
-  konstant: "konstant",
-  dinels: "dinels",
-  noe: "noe",
+  elinord: "Elinord ikke opdateret",
+  n1: "N1 ikke opdateret",
+  radius: "Radiuse ikke opdateret",
+  cerius: "Cerius ikke opdateret",
+  trefor_ost: "Trefor Øst ikke opdateret",
+  trefor_vest: "Trefor Vest ikke opdateret",
+  elektrus: "Elektrus ikke opdateret",
+  vores_elnet: "Vores Elnet ikke opdateret",
+  konstant: "Konstant kke opdateret",
+  dinels: "Dinels ikke opdateret",
+  noe: "NOE opdateret 01-24",
   ingen: "ingen",
 } as const;
 

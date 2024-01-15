@@ -5,7 +5,7 @@
   import Option from "$lib/components/Select/Option.svelte";
   import Select from "$lib/components/Select/Select.svelte";
   import Toggle from "$lib/components/Toggle/Toggle.svelte";
-  import { netCompaniesArray } from "$lib/data/fees/types";
+  import { netCompaniesArray, netCompanies } from "$lib/data/fees/types";
   import { classFromProps } from "$lib/utils/classFromProps";
   import { userSettings } from "$lib/stores/userSettingsStore";
   import { cva } from "class-variance-authority";
@@ -25,7 +25,7 @@
     >
       {#each netCompaniesArray as netCompany}
         <Option class="capitalize" value={netCompany}
-          >{netCompany.replace("_", " ")}</Option
+          >{netCompanies[netCompany]}</Option
         >
       {/each}
     </Select>
